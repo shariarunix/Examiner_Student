@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Examiner</string>
+    <string name="hello">Hello !!!</string>
+    <string name="prev_result">Previous exam result : </string>
+    <string name="personal_information">Personal Information</string>
+    <string name="change_password">Change Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="sign_in">Sign in</string>
+    <string name="to_your_account">to your account</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="remember_me">Remember me</string>
+    <string name="glad_to_see_you">Glad To See You.</string>
+    <string name="welcome">Welcome.</string>
+    <string name="to_get_start_now">to get start now.</string>
+    <string name="create_account">Create Account</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="course">Course</string>
+    <string name="select_your_course">Select Your Course</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up">Sign up</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="forgot_otp">Enter your email here for verification process. We will send you an OTP to your email.</string>
+    <string name="continue_btn">Continue</string>
+    <string name="enter_the_otp">Enter the OTP</string>
+    <string name="enter_otp">Enter the OTP that we\'ve sent to your email.</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="set_paas">Set the new password for your account so you can Login.</string>
+    <string name="change_personal_info">You can change your personal information here.</string>
+    <string name="change_information">Change Information</string>
+    <string name="change_your_information">Change \nYour Information Here</string>
+    <string name="submit">Submit</string>
+    <string name="next">Next</string>
+    <string name="congratulation">Congratulation</string>
+    <string name="answered_all">You have answered all question.</string>
+    <string name="your_score_txt">Your Score is</string>
+
+</resources>
