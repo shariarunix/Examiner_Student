@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="20dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:orientation="vertical"
+    android:background="@drawable/white_radius_top_bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/img_btn_dialog_close"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_close"
+            android:foreground="@drawable/white_ripple"
+            android:background="@color/transparent"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your Results"
+        android:textSize="32sp"
+        android:textColor="@color/blue_pr"
+        android:fontFamily="@font/barlow_semibold"
+        tools:ignore="HardcodedText" />
+    <ListView
+        android:id="@+id/result_list"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginTop="15dp"
+        android:paddingBottom="20dp"
+        android:clipToPadding="false"
+        android:dividerHeight="5dp"
+        android:divider="@color/transparent"
+        android:scrollbars="none"/>
+
+</LinearLayout>
