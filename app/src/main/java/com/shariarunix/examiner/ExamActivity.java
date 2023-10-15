@@ -33,7 +33,6 @@ public class ExamActivity extends AppCompatActivity {
 
     int result = 0, questionIndex = 1, examTotalMarks, examDuration;
     long totalTimeMillis, tempCountDownTime;
-
     TextView txtExamPageName, txtQuestion, txtShowTimer;
     RadioGroup questionOptionGroup;
     RadioButton optionOne, optionTwo, optionThree, optionFour;

@@ -71,11 +71,18 @@ public class MainActivity extends AppCompatActivity {
 
                 if (item.getItemId() == R.id.profile){
                     // Loading Profile Fragment
-                    loadFrag(ProfileFragment.getInstance(studentDataModel.getName(),studentDataModel.getEmail(),studentDataModel.getPhone(),studentDataModel.getCourse(), studentDataModel.getPassword()), 1);
+                    loadFrag(ProfileFragment.getInstance(studentDataModel.getName(),
+                            studentDataModel.getEmail(),
+                            studentDataModel.getPhone(),
+                            studentDataModel.getCourse(),
+                            studentDataModel.getPassword()), 1);
                 }
                 if (item.getItemId() == R.id.home) {
                     // Load Home Fragment
-                    loadFrag(HomeFragment.getInstance(studentDataModel.getName(), studentDataModel.getCourse(), prevExamResult, prevExamFullMarks), 1);
+                    loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
+                            studentDataModel.getCourse(),
+                            prevExamResult,
+                            prevExamFullMarks), 1);
                 }
                 if (item.getItemId() == R.id.resource) {
                     loadFrag(new ResourceFragment(), 1);
@@ -95,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         }else{
             fragTrans.replace(R.id.fragment_frame, fragment);
         }
+
+        fragTrans.addToBackStack(null);
         fragTrans.commit();
     }
 

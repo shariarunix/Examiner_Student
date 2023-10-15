@@ -64,6 +64,7 @@ public class ResourceFragment extends Fragment {
                 adapterResource.setResourceDataModelList(resourceDataModelList);
 
                 listView.setAdapter(adapterResource);
+//                listView.setStackFromBottom(true);
             }
 
             @Override
