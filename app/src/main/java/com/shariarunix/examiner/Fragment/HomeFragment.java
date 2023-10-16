@@ -33,7 +33,7 @@ public class HomeFragment extends Fragment {
     private static final String U_PREV_EXAM = "arg2";
     private static final String U_PREV_EXAM_MARKS = "arg3";
     private static final String U_COURSE = "arg4";
-    String userName, userCourse, prevExamResultStr, prevExamTotalMarksStr;
+    String userName, userCourse;
     int prevExamResult, prevExamTotalMarks;
     List<ExamDataModel> examDataList = new ArrayList<>();
 
@@ -41,14 +41,14 @@ public class HomeFragment extends Fragment {
         //Default Empty Constructor
     }
 
-    public static HomeFragment getInstance(String uName, String uCourse, String prevExamResult, String prevExamTotalMarks){
+    public static HomeFragment getInstance(String uName, String uCourse, int prevExamResult, int prevExamTotalMarks){
         HomeFragment homeFragment = new HomeFragment();
         Bundle bundle = new Bundle();
 
         bundle.putString(U_NAME, uName);
         bundle.putString(U_COURSE, uCourse);
-        bundle.putString(U_PREV_EXAM, prevExamResult);
-        bundle.putString(U_PREV_EXAM_MARKS, prevExamTotalMarks);
+        bundle.putInt(U_PREV_EXAM, prevExamResult);
+        bundle.putInt(U_PREV_EXAM_MARKS, prevExamTotalMarks);
 
         homeFragment.setArguments(bundle);
         return homeFragment;
@@ -73,11 +73,8 @@ public class HomeFragment extends Fragment {
         if (getArguments() != null){
             userName = getArguments().getString(U_NAME);
             userCourse = getArguments().getString(U_COURSE);
-            prevExamResultStr = getArguments().getString(U_PREV_EXAM);
-            prevExamTotalMarksStr = getArguments().getString(U_PREV_EXAM_MARKS);
-
-            prevExamResult = Integer.parseInt(prevExamResultStr);
-            prevExamTotalMarks = Integer.parseInt(prevExamTotalMarksStr);
+            prevExamResult = getArguments().getInt(U_PREV_EXAM);
+            prevExamTotalMarks = getArguments().getInt(U_PREV_EXAM_MARKS);
 
             txtShowName.setText(userName);
         }

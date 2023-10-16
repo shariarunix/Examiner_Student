@@ -143,21 +143,21 @@ public class ExamInfoActivity extends AppCompatActivity {
         btnSetAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent calIntent = new Intent(Intent.ACTION_INSERT);
-                calIntent.setType("vnd.android.cursor.item/event");
+                Intent openCalender = new Intent(Intent.ACTION_INSERT);
+                openCalender.setType("vnd.android.cursor.item/event");
 
-                calIntent.putExtra(CalendarContract.Events.TITLE, "" + newExamData.getExamName());
+                openCalender.putExtra(CalendarContract.Events.TITLE, "" + newExamData.getExamName());
 
-                calIntent.putExtra(CalendarContract.Events.DESCRIPTION, "Exam Syllabus : \n" + newExamData.getExamSyllabus());
+                openCalender.putExtra(CalendarContract.Events.DESCRIPTION, "Exam Syllabus : \n" + newExamData.getExamSyllabus());
 
                 GregorianCalendar calDate = new GregorianCalendar(Integer.parseInt(newExamDate[2]),
                         Integer.parseInt(newExamDate[1])-1,
                         Integer.parseInt(newExamDate[0]),
                         examStartTimeArray[0], examStartTimeArray[1], 0);
 
-                calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calDate.getTimeInMillis());
-                calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calDate.getTimeInMillis());
-                startActivity(calIntent);
+                openCalender.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calDate.getTimeInMillis());
+                openCalender.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calDate.getTimeInMillis());
+                startActivity(openCalender);
             }
         });
         // Going back on clicking Exam Finished Button

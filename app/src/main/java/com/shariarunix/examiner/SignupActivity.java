@@ -237,7 +237,7 @@ public class SignupActivity extends AppCompatActivity {
                     assert user != null;
                     userID = user.getUid();
 
-                    sDataModel = new StudentDataModel(name, email, phone, course, confirmPass, userID);
+                    sDataModel = new StudentDataModel(name, email, phone, course, confirmPass, userID, 0, 0);
 
                     // Setting Data as a Child of UID
                     setData(userID);

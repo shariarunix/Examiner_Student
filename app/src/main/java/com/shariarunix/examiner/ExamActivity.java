@@ -187,7 +187,6 @@ public class ExamActivity extends AppCompatActivity {
 
                     questionIndex++;
 
-
                     tempCountDownTimer.cancel();
                     tempCountDownTimer.start();
 
@@ -235,10 +234,20 @@ public class ExamActivity extends AppCompatActivity {
         optionFour.setText(questionModelList.get(index).getOptionFour());
     }
     public void setDataToDatabase(){
-        ExamResultModel examResultModel = new ExamResultModel(examName, examDate, examTotalMarksString, ""+result, course, userEmail, userID);
+        ExamResultModel examResultModel = new ExamResultModel(examName,
+                examDate,
+                examTotalMarksString,
+                ""+result,
+                course,
+                userEmail,
+                userID);
+
         String resultKey = mReference.push().getKey();
         assert resultKey != null;
         mReference.child("result").child(resultKey).setValue(examResultModel);
+
+        mReference.child("student").child(userID).child("prevExamResult").setValue(result);
+        mReference.child("student").child(userID).child("prevExamTotalMarks").setValue(examTotalMarks);
     }
     public void submitResult(){
         boolean optionOneIsChecked = optionOne.isChecked();
@@ -258,15 +267,6 @@ public class ExamActivity extends AppCompatActivity {
 
         countDownTimer.cancel();
         tempCountDownTimer.cancel();
-
-        SharedPreferences sharedPreferences = getSharedPreferences("examinerPref", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        // Setting previous exam result and total mark to shared pref
-        editor.putString("prevExamResult", String.valueOf(result));
-        editor.putString("prevExamTotalMarks", String.valueOf(examTotalMarks));
-
-        editor.apply();
     }
     @Override
     public void onBackPressed() {

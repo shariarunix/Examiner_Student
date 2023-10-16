@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView navBottom;
     private DatabaseReference mReference;
     private StudentDataModel studentDataModel;
-    private String prevExamResult, prevExamFullMarks;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Dialog loadingDialog;
@@ -56,9 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         String uId =sharedPreferences.getString("userID","");
 
-        prevExamResult = sharedPreferences.getString("prevExamResult", "0");
-        prevExamFullMarks = sharedPreferences.getString("prevExamTotalMarks", "0");
-
         // Load data & Default fragment
         loadData(uId);
 
@@ -81,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
                     // Load Home Fragment
                     loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
                             studentDataModel.getCourse(),
-                            prevExamResult,
-                            prevExamFullMarks), 1);
+                            studentDataModel.getPrevExamResult(),
+                            studentDataModel.getPrevExamTotalMarks()), 1);
                 }
                 if (item.getItemId() == R.id.resource) {
                     loadFrag(new ResourceFragment(), 1);
@@ -103,8 +99,25 @@ public class MainActivity extends AppCompatActivity {
             fragTrans.replace(R.id.fragment_frame, fragment);
         }
 
-        fragTrans.addToBackStack(null);
         fragTrans.commit();
+    }
+
+    // Customizing BackPressed For Fragment
+    @Override
+    public void onBackPressed() {
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment currentFragment = manager.findFragmentById(R.id.fragment_frame);
+
+        if (currentFragment instanceof HomeFragment) {
+            super.onBackPressed();
+        }else {
+            navBottom.getMenu().findItem(R.id.home).setChecked(true);
+            // Load Home Fragment
+            loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
+                    studentDataModel.getCourse(),
+                    studentDataModel.getPrevExamResult(),
+                    studentDataModel.getPrevExamTotalMarks()), 1);
+        }
     }
 
     // Load user Data
@@ -122,7 +135,11 @@ public class MainActivity extends AppCompatActivity {
                 editor.apply();
 
                 // Default Fragment
-                loadFrag(HomeFragment.getInstance(studentDataModel.getName(), studentDataModel.getCourse(), prevExamResult, prevExamFullMarks), 0);
+                loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
+                        studentDataModel.getCourse(),
+                        studentDataModel.getPrevExamResult(),
+                        studentDataModel.getPrevExamTotalMarks()), 0);
+
                 loadingDialog.dismiss();
             }
 

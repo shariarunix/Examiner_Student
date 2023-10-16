@@ -1,20 +1,29 @@
 package com.shariarunix.examiner.DataModel;
 
-
-
 public class StudentDataModel{
     private String name, email, phone, course, password, userId;
+    private int prevExamTotalMarks, prevExamResult;
 
     public StudentDataModel(){
         // Default Empty Contractor
     }
-    public StudentDataModel(String name, String email, String phone, String course, String password, String userId) {
+
+    public StudentDataModel(String name,
+                            String email,
+                            String phone,
+                            String course,
+                            String password,
+                            String userId,
+                            int prevExamTotalMarks,
+                            int prevExamResult) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.course = course;
         this.password = password;
         this.userId = userId;
+        this.prevExamTotalMarks = prevExamTotalMarks;
+        this.prevExamResult = prevExamResult;
     }
 
     public String getUserId() {
@@ -63,5 +72,21 @@ public class StudentDataModel{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getPrevExamTotalMarks() {
+        return prevExamTotalMarks;
+    }
+
+    public void setPrevExamTotalMarks(int prevExamTotalMarks) {
+        this.prevExamTotalMarks = prevExamTotalMarks;
+    }
+
+    public int getPrevExamResult() {
+        return prevExamResult;
+    }
+
+    public void setPrevExamResult(int prevExamResult) {
+        this.prevExamResult = prevExamResult;
     }
 }
