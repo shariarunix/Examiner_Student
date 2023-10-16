@@ -2,17 +2,18 @@ package com.shariarunix.examiner.DataModel;
 
 public class ResourceDataModel {
 
-    String resource, date, time, admin;
+    String resource, date, time, user, course;
 
     public ResourceDataModel() {
         // Default Empty Constructor
     }
 
-    public ResourceDataModel(String resource, String date, String time, String admin) {
+    public ResourceDataModel(String resource, String date, String time, String user, String course) {
         this.resource = resource;
         this.date = date;
         this.time = time;
-        this.admin = admin;
+        this.user = user;
+        this.course = course;
     }
 
     public String getResource() {
@@ -39,11 +40,19 @@ public class ResourceDataModel {
         this.time = time;
     }
 
-    public String getAdmin() {
-        return admin;
+    public String getUser() {
+        return user;
     }
 
-    public void setAdmin(String admin) {
-        this.admin = admin;
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
     }
 }

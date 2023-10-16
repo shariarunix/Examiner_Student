@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-
     private DatabaseReference mReference;
     private static final String U_NAME = "arg1";
     private static final String U_PREV_EXAM = "arg2";

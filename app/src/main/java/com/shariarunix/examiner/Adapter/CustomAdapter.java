@@ -78,8 +78,11 @@ public class CustomAdapter extends BaseAdapter {
     @SuppressLint("SetTextI18n")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        if (view == null){
+            view = LayoutInflater.from(context).inflate(layout, viewGroup, false);
+        }
+
         if (layout == R.layout.exam_list_item){
-            view = inflateLayout(view, viewGroup, false);
             ExamDataModel newModel = dataModelList.get(i);
             TextView txtListExamName = view.findViewById(R.id.txt_list_exam_name);
             TextView txtListExamDate = view.findViewById(R.id.txt_list_exam_date);
@@ -102,7 +105,6 @@ public class CustomAdapter extends BaseAdapter {
         }
 
         if (layout == R.layout.result_list_item){
-            view = inflateLayout(view, viewGroup, false);
             ExamResultModel newErm = examResultModelList.get(i);
 
             TextView txtShowExamName = view.findViewById(R.id.txt_show_exam_name);
@@ -115,7 +117,6 @@ public class CustomAdapter extends BaseAdapter {
         }
 
         if (layout == R.layout.resource_list_item) {
-            view = inflateLayout(view, viewGroup, false);
             ResourceDataModel resourceDataModel = resourceDataModelList.get(i);
 
             TextView txtShowMsgDate = view.findViewById(R.id.txt_show_msg_date);
@@ -126,15 +127,7 @@ public class CustomAdapter extends BaseAdapter {
             txtShowMsgDate.setText(resourceDataModel.getDate());
             txtShowMsgTime.setText(resourceDataModel.getTime());
             txtMsgBox.setText(resourceDataModel.getResource());
-            txtShowAdminName.setText("by " + resourceDataModel.getAdmin());
-        }
-
-        return view;
-    }
-
-    private View inflateLayout(View view, ViewGroup viewGroup, boolean b) {
-        if (view == null){
-            view = LayoutInflater.from(context).inflate(layout, viewGroup, b);
+            txtShowAdminName.setText("by " + resourceDataModel.getUser());
         }
 
         return view;

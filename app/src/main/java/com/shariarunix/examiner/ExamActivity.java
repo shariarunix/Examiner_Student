@@ -111,7 +111,7 @@ public class ExamActivity extends AppCompatActivity {
             }
         });
 
-        // Starting CountDown
+        // Starting CountDown For Exam Length
         totalTimeMillis = (long) examDuration * 60 * 1000;
 
         countDownTimer = new CountDownTimer(totalTimeMillis, 1000) {
@@ -123,8 +123,8 @@ public class ExamActivity extends AppCompatActivity {
                 long minutes = totalTimeMillis / 60000;
                 long seconds = (totalTimeMillis % 60000) / 1000;
 
-                String minutesStr = String.format("%02d", minutes);
-                String secondsStr = String.format("%02d", seconds);
+                @SuppressLint("DefaultLocale") String minutesStr = String.format("%02d", minutes);
+                @SuppressLint("DefaultLocale") String secondsStr = String.format("%02d", seconds);
 
                 String newTimeStr;
 
@@ -140,6 +140,7 @@ public class ExamActivity extends AppCompatActivity {
             }
         }.start();
 
+        // Checking User is Active or Not by this Countdown
         tempCountDownTime = 2 * 30 * 1000;
 
         tempCountDownTimer = new CountDownTimer(tempCountDownTime, 1000) {
@@ -208,6 +209,7 @@ public class ExamActivity extends AppCompatActivity {
                         }
                     }
                     Toast.makeText(ExamActivity.this, ""+result,Toast.LENGTH_SHORT).show();
+                    assert txtExamResultShow != null;
                     txtExamResultShow.setText(result + " / " + examTotalMarks);
                     examCompleteDialog.show();
                 }
