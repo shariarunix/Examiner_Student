@@ -2,6 +2,7 @@ package com.shariarunix.examiner;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -14,9 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.shariarunix.examiner.DataModel.ExamDataModel;
-import com.shariarunix.examiner.DataModel.QuestionModel;
-
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.GregorianCalendar;
@@ -26,13 +24,16 @@ import java.util.TimeZone;
 public class ExamInfoActivity extends AppCompatActivity {
     TextView txtExamName, txtExamDate, txtExamTime, txtExamSyllabus, txtExamTotalMarks, txtExamDuration;
     AppCompatButton btnSetAlarm, btnGiveExam, btnExamFinished;
-
+    SharedPreferences sharedPreferences;
     @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_info);
+
+        sharedPreferences = getSharedPreferences("examinerPref", MODE_PRIVATE);
+        String userID =sharedPreferences.getString("userID","");
 
         txtExamName = findViewById(R.id.txt_exam_name);
         txtExamDate = findViewById(R.id.txt_exam_date);
@@ -57,7 +58,7 @@ public class ExamInfoActivity extends AppCompatActivity {
         examTotalMarks = newExamData.getTotalMarks();
         examDuration = newExamData.getDuration();
 
-        List<QuestionModel> questionModelList = newExamData.getQuestionModelList();
+        List<String> usersList = newExamData.getUsersList();
 
         String[] newExamDate = examDate.split("/");
 
@@ -89,38 +90,39 @@ public class ExamInfoActivity extends AppCompatActivity {
                 btnSetAlarm.setVisibility(View.GONE);
                 btnGiveExam.setVisibility(View.VISIBLE);
                 btnExamFinished.setVisibility(View.GONE);
-//                Toast.makeText(ExamInfoActivity.this, "Condition 1", Toast.LENGTH_SHORT).show();
+                // Check is user already perform this exam or not
+                if (isUserCompletedExam(usersList, userID)) {
+                    btnGiveExam.setVisibility(View.GONE);
+                    btnExamFinished.setVisibility(View.VISIBLE);
+                    btnExamFinished.setText("You've Completed The Test");
+                }
 
             } else if (presentTime.isAfter(examEndTime)) {
 
                 btnSetAlarm.setVisibility(View.GONE);
                 btnGiveExam.setVisibility(View.GONE);
                 btnExamFinished.setVisibility(View.VISIBLE);
-//                Toast.makeText(ExamInfoActivity.this, "Condition 2", Toast.LENGTH_SHORT).show();
 
             } else if (presentTime.isBefore(examStartTime)) {
 
                 btnSetAlarm.setVisibility(View.VISIBLE);
                 btnGiveExam.setVisibility(View.GONE);
                 btnExamFinished.setVisibility(View.GONE);
-//                Toast.makeText(ExamInfoActivity.this, "Condition 3", Toast.LENGTH_SHORT).show();
 
             } else {
-                Toast.makeText(ExamInfoActivity.this, "Condition 4", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ExamInfoActivity.this, "Something Wrong, Please Try Again!", Toast.LENGTH_SHORT).show();
             }
         } else if (examDate.compareTo(getPresentDate()) > 0) {
 
             btnSetAlarm.setVisibility(View.VISIBLE);
             btnGiveExam.setVisibility(View.GONE);
             btnExamFinished.setVisibility(View.GONE);
-//            Toast.makeText(ExamInfoActivity.this, "Condition 5", Toast.LENGTH_SHORT).show();
 
         } else if (examDate.compareTo(getPresentDate()) < 0) {
 
             btnSetAlarm.setVisibility(View.GONE);
             btnGiveExam.setVisibility(View.GONE);
             btnExamFinished.setVisibility(View.VISIBLE);
-//            Toast.makeText(ExamInfoActivity.this, "Condition 6", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -129,12 +131,7 @@ public class ExamInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent examPage = new Intent(ExamInfoActivity.this, ExamActivity.class);
-                examPage.putExtra("questionList", (Serializable) questionModelList);
-                examPage.putExtra("examName", examName);
-                examPage.putExtra("examTotalMarks", examTotalMarks);
-                examPage.putExtra("examDuration", examDuration);
-                examPage.putExtra("examDate", examDate);
-                examPage.putExtra("course", newExamData.getCourse());
+                examPage.putExtra("examDataModel", newExamData);
 
                 startActivity(examPage);
             }
@@ -168,16 +165,19 @@ public class ExamInfoActivity extends AppCompatActivity {
             }
         });
     }
+    // Get User's Device Date
     private String getPresentDate(){
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         sDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
         return sDateFormat.format(new Date());
     }
+    // Get User's Device Time
     private String getPresentTime(){
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sTimeFormat = new SimpleDateFormat("hh:mm a");
         sTimeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
         return sTimeFormat.format(new Date());
     }
+    // Converting Time to 24 hr format
     private int[] normalToInt(String time){
         String[] newTime = time.split(" ");
         String[] hrMin = newTime[0].split(":");
@@ -201,9 +201,15 @@ public class ExamInfoActivity extends AppCompatActivity {
 
         return new int[]{hr, min};
     }
+    // Adding 0 in front of the number smaller than 10
     private String timeValidation(int hr, int min){
         String newHr = hr < 10 ? "0" + hr : String.valueOf(hr);
         String newMin = min < 10 ? "0" + min : String.valueOf(min);
         return newHr + ":" + newMin;
     }
+    // Check is user completed the exam already
+    private boolean isUserCompletedExam(List<String> usersList, String userID){
+        return usersList.contains(userID);
+    }
+
 }

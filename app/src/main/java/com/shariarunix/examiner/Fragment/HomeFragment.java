@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment {
             txtShowPrevResultComment.setText("Good");
         } else if (prevExamResult <= prevExamTotalMarks * 0.5) {
             txtShowPrevResultComment.setText("Very Bad");
-            layoutShowPrevResult.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.red_pr_bg));
+            layoutShowPrevResult.setBackground(ContextCompat.getDrawable(requireActivity(), R.drawable.red_pr_bg));
         }
 
         // Setting previous exam data to view
@@ -108,6 +108,7 @@ public class HomeFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                     examDataList.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                         ExamDataModel examDataModel = dataSnapshot.getValue(ExamDataModel.class);
@@ -115,14 +116,12 @@ public class HomeFragment extends Fragment {
                         examDataList.add(examDataModel);
                     }
 
-//                    Collections.reverse(examDataList);
-
-                    listView.setAdapter(new CustomAdapter(getActivity(), R.layout.exam_list_item, examDataList, examDataList.size()));
+                    listView.setAdapter(new CustomAdapter(requireActivity(), R.layout.exam_list_item, examDataList, examDataList.size()));
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(getActivity(), "Please check your internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Please check your internet", Toast.LENGTH_SHORT).show();
                 }
             });
     }

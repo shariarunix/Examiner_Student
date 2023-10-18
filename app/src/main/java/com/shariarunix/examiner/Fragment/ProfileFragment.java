@@ -108,7 +108,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 logOutUser();
-                Toast.makeText(getActivity(), "You've Been Logged Out.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "You've Been Logged Out.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -352,7 +352,7 @@ public class ProfileFragment extends Fragment {
         forgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "On Working", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "On Working", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -370,7 +370,7 @@ public class ProfileFragment extends Fragment {
 
         editor.apply();
 
-        startActivity(new Intent(getActivity(), LoginActivity.class));
+        startActivity(new Intent(requireActivity(), LoginActivity.class));
     }
 
     // Method for loading user result data from database
@@ -390,7 +390,7 @@ public class ProfileFragment extends Fragment {
 
                 Collections.reverse(examResultModelList);
 
-                resultList.setAdapter(new CustomAdapter(getActivity(),
+                resultList.setAdapter(new CustomAdapter(requireActivity(),
                         R.layout.result_list_item,
                         examResultModelList,
                         examResultModelList.size(),
@@ -399,7 +399,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "Something Went Wrong!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Something Went Wrong!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -432,15 +432,15 @@ public class ProfileFragment extends Fragment {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(getActivity(), "Password updated", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(requireActivity(), "Password updated", Toast.LENGTH_SHORT).show();
                                         logOutUser();
                                     } else {
-                                        Toast.makeText(getActivity(), "Something went wrong please try again.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(requireActivity(), "Something went wrong please try again.", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                         } else {
-                            Toast.makeText(getActivity(), "Something went wrong please try again.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireActivity(), "Something went wrong please try again.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

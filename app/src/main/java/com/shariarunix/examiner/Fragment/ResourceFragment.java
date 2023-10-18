@@ -3,7 +3,6 @@ package com.shariarunix.examiner.Fragment;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +72,7 @@ public class ResourceFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -95,7 +93,7 @@ public class ResourceFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -130,7 +128,10 @@ public class ResourceFragment extends Fragment {
             }
         });
 
-        CustomAdapter resListAdapter = new CustomAdapter(getActivity(),R.layout.resource_list_item, resourceDataModelList.size());
+        CustomAdapter resListAdapter = new CustomAdapter(requireActivity(),
+                R.layout.resource_list_item,
+                resourceDataModelList.size());
+
         resListAdapter.setResourceDataModelList(resourceDataModelList);
         listView.setAdapter(resListAdapter);
     }

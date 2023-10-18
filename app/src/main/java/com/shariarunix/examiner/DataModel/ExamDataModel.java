@@ -6,13 +6,25 @@ import java.util.List;
 
 public class ExamDataModel implements Serializable {
     private String examName, examSyllabus, examTime, examDate, totalMarks, duration, course, examId;
+
+    private List<String> usersList = new ArrayList<>();
     private List<QuestionModel> questionModelList = new ArrayList<>();
 
     public ExamDataModel(){
         //Default Constructor
     }
 
-    public ExamDataModel(String examName, String examSyllabus, String examTime, String examDate, String totalMarks, String duration, String course, String examId, List<QuestionModel> questionModelList) {
+    public ExamDataModel(String examName,
+                         String examSyllabus,
+                         String examTime,
+                         String examDate,
+                         String totalMarks,
+                         String duration,
+                         String course,
+                         String examId,
+                         List<String> usersList,
+                         List<QuestionModel> questionModelList) {
+
         this.examName = examName;
         this.examSyllabus = examSyllabus;
         this.examTime = examTime;
@@ -21,6 +33,7 @@ public class ExamDataModel implements Serializable {
         this.duration = duration;
         this.course = course;
         this.examId = examId;
+        this.usersList = usersList;
         this.questionModelList = questionModelList;
     }
 
@@ -86,6 +99,14 @@ public class ExamDataModel implements Serializable {
 
     public void setExamId(String examId) {
         this.examId = examId;
+    }
+
+    public List<String> getUsersList() {
+        return usersList;
+    }
+
+    public void setUsersList(List<String> usersList) {
+        this.usersList = usersList;
     }
 
     public List<QuestionModel> getQuestionModelList() {

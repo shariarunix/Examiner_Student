@@ -4,17 +4,27 @@ import java.io.Serializable;
 
 public class QuestionModel implements Serializable {
     private String question, optionOne, optionTwo, optionThree, optionFour, correctOption;
+    private int questionMark;
 
     public QuestionModel() {
         // Default empty constructor
     }
-    public QuestionModel(String question, String optionOne, String optionTwo, String optionThree, String optionFour, String correctOption) {
+
+    public QuestionModel(String question,
+                         String optionOne,
+                         String optionTwo,
+                         String optionThree,
+                         String optionFour,
+                         String correctOption,
+                         int questionMark) {
+
         this.question = question;
         this.optionOne = optionOne;
         this.optionTwo = optionTwo;
         this.optionThree = optionThree;
         this.optionFour = optionFour;
         this.correctOption = correctOption;
+        this.questionMark = questionMark;
     }
 
     public String getQuestion() {
@@ -63,5 +73,13 @@ public class QuestionModel implements Serializable {
 
     public void setCorrectOption(String correctOption) {
         this.correctOption = correctOption;
+    }
+
+    public int getQuestionMark() {
+        return questionMark;
+    }
+
+    public void setQuestionMark(int questionMark) {
+        this.questionMark = questionMark;
     }
 }

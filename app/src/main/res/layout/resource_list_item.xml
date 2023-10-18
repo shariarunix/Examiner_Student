@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/res_item_parent"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="15dp"
-    android:background="@drawable/white_bg">
+    android:background="@drawable/res_msg_bg">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,8 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:textColor="@color/black_sc"
-            android:textSize="18sp"
-            android:fontFamily="@font/barlow_regular"/>
+            android:textSize="14sp"
+            android:fontFamily="@font/barlow_regular"
+            />
 
         <TextView
             android:id="@+id/txt_show_msg_time"
@@ -25,36 +28,26 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:textColor="@color/black_sc"
-            android:textSize="18sp"
-            android:fontFamily="@font/barlow_regular"/>
+            android:textSize="14sp"
+            android:fontFamily="@font/barlow_regular"
+            tools:ignore="RelativeOverlap" />
     </RelativeLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/black_sc"/>
 
     <TextView
         android:id="@+id/txt_msg_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:textIsSelectable="true"
         android:textSize="22sp"
         android:textColor="@color/black_sc"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/black_sc"/>
 
     <TextView
         android:id="@+id/txt_show_admin_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black_sc"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:fontFamily="@font/barlow_regular"/>
 </LinearLayout>
