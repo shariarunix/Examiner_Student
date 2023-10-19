@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.home) {
                     // Load Home Fragment
                     loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
+                            studentDataModel.getEmail(),
+                            studentDataModel.getPhone(),
                             studentDataModel.getCourse(),
                             studentDataModel.getPrevExamResult(),
                             studentDataModel.getPrevExamTotalMarks()), 1);
@@ -114,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
             navBottom.getMenu().findItem(R.id.home).setChecked(true);
             // Load Home Fragment
             loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
+                    studentDataModel.getEmail(),
+                    studentDataModel.getPhone(),
                     studentDataModel.getCourse(),
                     studentDataModel.getPrevExamResult(),
                     studentDataModel.getPrevExamTotalMarks()), 1);
@@ -136,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // Default Fragment
                 loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
+                        studentDataModel.getEmail(),
+                        studentDataModel.getPhone(),
                         studentDataModel.getCourse(),
                         studentDataModel.getPrevExamResult(),
                         studentDataModel.getPrevExamTotalMarks()), 0);

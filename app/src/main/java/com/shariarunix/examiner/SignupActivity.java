@@ -249,6 +249,7 @@ public class SignupActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
                     editor.putBoolean("userCheck", true);
+                    editor.putBoolean("introDialog", true);
                     editor.putString("userID", userID);
                     editor.apply();
 

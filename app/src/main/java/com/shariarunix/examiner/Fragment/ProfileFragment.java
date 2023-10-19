@@ -367,6 +367,7 @@ public class ProfileFragment extends Fragment {
         editor.putString("userEmail", "");
         editor.putString("prevExamResult", "0");
         editor.putString("prevExamTotalMarks", "0");
+        editor.putBoolean("introDialog", false);
 
         editor.apply();
 
