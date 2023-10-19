@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -107,10 +108,12 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        // Making The List
+        // Making The List of Course
         courseList = personalInfoDialog.findViewById(R.id.course_list);
         assert courseList != null;
-        courseList.setAdapter(new ArrayAdapter<>(SignupActivity.this, R.layout.course_list_item, R.id.txt_list_item, courseListData));
+        courseList.setAdapter(new ArrayAdapter<>(SignupActivity.this,
+                R.layout.course_list_item,
+                R.id.txt_list_item, courseListData));
 
         // Firing on item click listener on list item
         courseList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -273,12 +276,13 @@ public class SignupActivity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     courseListData.add(dataSnapshot.getValue(String.class));
                 }
+                courseListData.remove("All");
                 loadingDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(SignupActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -32,8 +32,8 @@ import java.util.List;
 
 public class ResourceFragment extends Fragment {
 
-    String userCourse = "Android App Development";
-    String allCourse = "All";
+    public static final String USER_COURSE = "Arg1";
+    String allCourse = "All", userCourse;
     List<ResourceDataModel> courseResourceDataModelList = new ArrayList<>();
     List<ResourceDataModel> allCourseResourceDataModelList = new ArrayList<>();
     List<ResourceDataModel> resourceDataModelList = new ArrayList<>();
@@ -41,23 +41,38 @@ public class ResourceFragment extends Fragment {
     public  ResourceFragment(){
         // Default Empty Constructor
     }
+
+    public static ResourceFragment getInstance(String userCourse){
+        ResourceFragment resourceFragment = new ResourceFragment();
+        Bundle bundle = new Bundle();
+
+        bundle.putString(USER_COURSE, userCourse);
+
+        resourceFragment.setArguments(bundle);
+        return resourceFragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_resource, container, false);
 
+        if (getArguments() != null){
+            userCourse = getArguments().getString(USER_COURSE);
+        }
+
         ListView res_list = view.findViewById(R.id.res_list);
-        loadRes(res_list);
+        loadRes(res_list, userCourse);
 
         return view;
     }
 
-    private void loadRes(ListView listView){
+    private void loadRes(ListView listView, String specificCourse){
         mReference = FirebaseDatabase.getInstance().getReference();
 
         mReference.child("resource")
                 .orderByChild("course")
-                .equalTo(userCourse)
+                .equalTo(specificCourse)
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -115,8 +115,10 @@ public class HomeFragment extends Fragment {
 
                         examDataList.add(examDataModel);
                     }
+                    CustomAdapter examListAdapter = new CustomAdapter(requireActivity(), R.layout.exam_list_item, examDataList.size());
+                    examListAdapter.setExamDataModelList(examDataList);
 
-                    listView.setAdapter(new CustomAdapter(requireActivity(), R.layout.exam_list_item, examDataList, examDataList.size()));
+                    listView.setAdapter(examListAdapter);
                 }
 
                 @Override

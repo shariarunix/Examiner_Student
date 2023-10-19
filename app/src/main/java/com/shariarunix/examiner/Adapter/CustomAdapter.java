@@ -23,7 +23,8 @@ import java.util.List;
 public class CustomAdapter extends BaseAdapter {
 
     Context context;
-    List<ExamDataModel> dataModelList;
+    int layout, length;
+    List<ExamDataModel> examDataModelList;
     List<ExamResultModel> examResultModelList;
     List<ResourceDataModel> resourceDataModelList;
 
@@ -35,29 +36,27 @@ public class CustomAdapter extends BaseAdapter {
         this.resourceDataModelList = resourceDataModelList;
     }
 
-    int layout, length;
+    public List<ExamDataModel> getExamDataModelList() {
+        return examDataModelList;
+    }
 
-    boolean isResultAdapter;
+    public void setExamDataModelList(List<ExamDataModel> examDataModelList) {
+        this.examDataModelList = examDataModelList;
+    }
+
+    public List<ExamResultModel> getExamResultModelList() {
+        return examResultModelList;
+    }
+
+    public void setExamResultModelList(List<ExamResultModel> examResultModelList) {
+        this.examResultModelList = examResultModelList;
+    }
+
 
     public CustomAdapter(Context context, int layout, int length) {
         this.context = context;
         this.layout = layout;
         this.length = length;
-    }
-
-    public CustomAdapter(Context context, int layout, List<ExamDataModel> dataModelList, int length) {
-        this.dataModelList = dataModelList;
-        this.context = context;
-        this.layout = layout;
-        this.length = length;
-    }
-
-    public CustomAdapter(Context context, int layout, List<ExamResultModel> examResultModelList, int length, boolean isResultAdapter) {
-        this.examResultModelList = examResultModelList;
-        this.context = context;
-        this.layout = layout;
-        this.length = length;
-        this.isResultAdapter = isResultAdapter;
     }
 
     @Override
@@ -83,7 +82,7 @@ public class CustomAdapter extends BaseAdapter {
         }
 
         if (layout == R.layout.exam_list_item){
-            ExamDataModel newModel = dataModelList.get(i);
+            ExamDataModel newModel = examDataModelList.get(i);
             TextView txtListExamName = view.findViewById(R.id.txt_list_exam_name);
             TextView txtListExamDate = view.findViewById(R.id.txt_list_exam_date);
             TextView txtListExamTime = view.findViewById(R.id.txt_list_exam_time);

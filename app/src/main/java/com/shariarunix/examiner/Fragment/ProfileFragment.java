@@ -390,11 +390,10 @@ public class ProfileFragment extends Fragment {
 
                 Collections.reverse(examResultModelList);
 
-                resultList.setAdapter(new CustomAdapter(requireActivity(),
-                        R.layout.result_list_item,
-                        examResultModelList,
-                        examResultModelList.size(),
-                        true));
+                CustomAdapter resListAdapter = new CustomAdapter(requireActivity(), R.layout.result_list_item,examResultModelList.size());
+                resListAdapter.setExamResultModelList(examResultModelList);
+
+                resultList.setAdapter(resListAdapter);
             }
 
             @Override

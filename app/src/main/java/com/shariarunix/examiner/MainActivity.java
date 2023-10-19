@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                             studentDataModel.getPrevExamTotalMarks()), 1);
                 }
                 if (item.getItemId() == R.id.resource) {
-                    loadFrag(new ResourceFragment(), 1);
+                    loadFrag(ResourceFragment.getInstance(studentDataModel.getCourse()), 1);
                 }
                 return true;
             }
