@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Dialog loadingDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("examinerPref", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        String uId =sharedPreferences.getString("userID","");
+        String uId = sharedPreferences.getString("userID", "");
 
         // Load data & Default fragment
         loadData(uId);
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                if (item.getItemId() == R.id.profile){
+                if (item.getItemId() == R.id.profile) {
                     // Loading Profile Fragment
                     loadFrag(ProfileFragment.getInstance(studentDataModel.getName(),
                             studentDataModel.getEmail(),
@@ -89,15 +90,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     //Swapping Fragment
-    public void loadFrag(Fragment fragment, int flag){
+    public void loadFrag(Fragment fragment, int flag) {
 
         FragmentManager fragManager = getSupportFragmentManager();
         FragmentTransaction fragTrans = fragManager.beginTransaction();
 
-        if (flag == 0){
+        if (flag == 0) {
             fragTrans.add(R.id.fragment_frame, fragment);
-        }else{
+        } else {
             fragTrans.replace(R.id.fragment_frame, fragment);
         }
 
@@ -112,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentFragment instanceof HomeFragment) {
             super.onBackPressed();
-        }else {
+        } else {
             navBottom.getMenu().findItem(R.id.home).setChecked(true);
             // Load Home Fragment
             loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Load user Data
-    private void loadData(String key){
+    private void loadData(String key) {
 
         mReference.child("student").child(key).addValueEventListener(new ValueEventListener() {
             @Override
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Setting data to shared pref
                 editor.putString("userEmail", studentDataModel.getEmail());
+                editor.putString("userName", studentDataModel.getName());
                 editor.apply();
 
                 // Default Fragment

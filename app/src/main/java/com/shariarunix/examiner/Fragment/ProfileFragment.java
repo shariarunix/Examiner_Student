@@ -52,7 +52,7 @@ public class ProfileFragment extends Fragment {
     private static final String U_PHONE = "arg3";
     private static final String U_COURSE = "arg4";
     private static final String U_PASS = "arg5";
-    String userName , userEmail, userPhone, userCourse, userPass, userID;
+    String userName, userEmail, userPhone, userCourse, userPass, userID;
     List<ExamResultModel> examResultModelList = new ArrayList<>();
     BottomSheetDialog personalInfoDialog, changeInfoDialog, changePassDialog, resultDialog;
     DatabaseReference mReference;
@@ -68,7 +68,7 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ProfileFragment getInstance(String uName,String uEmail,String uPhone,String uCourse, String uPass){
+    public static ProfileFragment getInstance(String uName, String uEmail, String uPhone, String uCourse, String uPass) {
         ProfileFragment profileFragment = new ProfileFragment();
         Bundle bundle = new Bundle();
 
@@ -113,7 +113,7 @@ public class ProfileFragment extends Fragment {
         });
 
         // Set all info in variable
-        if (getArguments() != null){
+        if (getArguments() != null) {
             userName = getArguments().getString(U_NAME);
             userEmail = getArguments().getString(U_EMAIL);
             userPhone = getArguments().getString(U_PHONE);
@@ -208,20 +208,20 @@ public class ProfileFragment extends Fragment {
                                 String changePhone = edtChangePhone.getText().toString().trim();
 
                                 // Checking is name ok or not?
-                                String[] specialCharacter = new String[]{"~","!","@","#","$","%","^","&","*","(",")","_","-","+","=","/","\\","<",">","{","}","[","]",",","?","|","`"};
+                                String[] specialCharacter = new String[]{"~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "-", "+", "=", "/", "\\", "<", ">", "{", "}", "[", "]", ",", "?", "|", "`"};
                                 for (String s : specialCharacter) {
                                     if (changeName.contains(s)) {
                                         findSpecialChar = true;
                                         break;
                                     }
                                 }
-                                if (findSpecialChar){
+                                if (findSpecialChar) {
                                     assert showErrorChangeInfo != null;
                                     validator(edtChangeName, showErrorChangeInfo, "Please remove special character's from your name");
                                     findSpecialChar = false;
                                     return;
                                 }
-                                if (changeName.isEmpty()){
+                                if (changeName.isEmpty()) {
                                     assert showErrorChangeInfo != null;
                                     validator(edtChangeName, showErrorChangeInfo, "Please enter your name");
                                     return;
@@ -232,14 +232,14 @@ public class ProfileFragment extends Fragment {
                                     validator(edtChangePhone, showErrorChangeInfo, "Please enter your phone number");
                                     return;
                                 }
-                                if (!changePhone.matches("^(?:\\+88|0088)?(01[3-9]\\d{8})$")){
+                                if (!changePhone.matches("^(?:\\+88|0088)?(01[3-9]\\d{8})$")) {
                                     assert showErrorChangeInfo != null;
                                     validator(edtChangePhone, showErrorChangeInfo, "Please enter a valid phone number");
                                     return;
                                 }
 
 
-                                String uId =sharedPreferences.getString("userID","");
+                                String uId = sharedPreferences.getString("userID", "");
 
                                 mReference.child("student").child(uId).child("name").setValue(changeName);
                                 mReference.child("student").child(uId).child("phone").setValue(changePhone);
@@ -308,30 +308,30 @@ public class ProfileFragment extends Fragment {
                         String newPass = edtNewPass.getText().toString().trim();
 
                         // Checking old password
-                        if (oldPass.isEmpty()){
+                        if (oldPass.isEmpty()) {
                             assert showErrorChangePass != null;
                             validator(edtOldPass, showErrorChangePass, "Please enter your password");
                             return;
                         }
-                        if (oldPass.length()<8){
+                        if (oldPass.length() < 8) {
                             assert showErrorChangePass != null;
-                            validator(edtOldPass, showErrorChangePass,"Password must be at least 8 characters");
+                            validator(edtOldPass, showErrorChangePass, "Password must be at least 8 characters");
                             return;
                         }
                         // Checking old password
-                        if (newPass.isEmpty()){
+                        if (newPass.isEmpty()) {
                             assert showErrorChangePass != null;
-                            validator(edtNewPass, showErrorChangePass,"Please enter your password");
+                            validator(edtNewPass, showErrorChangePass, "Please enter your password");
                             return;
                         }
-                        if (newPass.length()<8){
+                        if (newPass.length() < 8) {
                             assert showErrorChangePass != null;
-                            validator(edtNewPass, showErrorChangePass,"Password must be at least 8 characters");
+                            validator(edtNewPass, showErrorChangePass, "Password must be at least 8 characters");
                             return;
                         }
 
                         // Checking is old password is valid or not
-                        if (userPass.equals(oldPass)){
+                        if (userPass.equals(oldPass)) {
                             String uId = user.getUid();
                             mReference.child("student").child(uId).child("password").setValue(newPass);
 
@@ -339,7 +339,7 @@ public class ProfileFragment extends Fragment {
                             changePassDialog.dismiss();
                         } else {
                             assert showErrorChangePass != null;
-                            validator(edtOldPass, showErrorChangePass,"Password you entered as old password is not valid");
+                            validator(edtOldPass, showErrorChangePass, "Password you entered as old password is not valid");
                         }
                     }
                 });
@@ -358,13 +358,15 @@ public class ProfileFragment extends Fragment {
 
         return view;
     }
+
     // Method for user logging out
-    private void logOutUser(){
+    private void logOutUser() {
         FirebaseAuth.getInstance().signOut();
 
         editor.putBoolean("userCheck", false);
         editor.putString("userID", "");
         editor.putString("userEmail", "");
+        editor.putString("userName", "");
         editor.putString("prevExamResult", "0");
         editor.putString("prevExamTotalMarks", "0");
         editor.putBoolean("introDialog", false);
@@ -372,6 +374,7 @@ public class ProfileFragment extends Fragment {
         editor.apply();
 
         startActivity(new Intent(requireActivity(), LoginActivity.class));
+        requireActivity().finish();
     }
 
     // Method for loading user result data from database
@@ -381,47 +384,47 @@ public class ProfileFragment extends Fragment {
                 .orderByChild("userId")
                 .equalTo(userID)
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                examResultModelList.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    ExamResultModel newERM = dataSnapshot.getValue(ExamResultModel.class);
-                    examResultModelList.add(newERM);
-                }
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        examResultModelList.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            ExamResultModel newERM = dataSnapshot.getValue(ExamResultModel.class);
+                            examResultModelList.add(newERM);
+                        }
 
-                Collections.reverse(examResultModelList);
+                        Collections.reverse(examResultModelList);
 
-                CustomAdapter resListAdapter = new CustomAdapter(requireActivity(), R.layout.result_list_item,examResultModelList.size());
-                resListAdapter.setExamResultModelList(examResultModelList);
+                        CustomAdapter resListAdapter = new CustomAdapter(requireActivity(), R.layout.result_list_item, examResultModelList.size());
+                        resListAdapter.setExamResultModelList(examResultModelList);
 
-                resultList.setAdapter(resListAdapter);
-            }
+                        resultList.setAdapter(resListAdapter);
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireActivity(), "Something Went Wrong!", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(requireActivity(), "Something Went Wrong!", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
     }
 
     // Bottom Dialog Style Change
-    private void bottomDialog(BottomSheetDialog bottomSheetDialog){
+    private void bottomDialog(BottomSheetDialog bottomSheetDialog) {
         Objects.requireNonNull(bottomSheetDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         bottomSheetDialog.getBehavior().setSkipCollapsed(true);
         bottomSheetDialog.getBehavior().setState(STATE_EXPANDED);
     }
 
     // Showing error
-    private void validator(EditText editText,TextView textView, String string){
+    private void validator(EditText editText, TextView textView, String string) {
         textView.setVisibility(View.VISIBLE);
         textView.setText(string);
         editText.requestFocus();
     }
 
     // Changing Password
-    private void changePassword(String email, String oldPass, String newPass){
+    private void changePassword(String email, String oldPass, String newPass) {
         AuthCredential credential = EmailAuthProvider.getCredential(email, oldPass);
         user.reauthenticate(credential)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {

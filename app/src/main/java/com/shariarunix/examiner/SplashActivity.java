@@ -12,13 +12,14 @@ import android.widget.ProgressBar;
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
     ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         setContentView(R.layout.activity_splash);
 
-        progressBar =findViewById(R.id.progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
 
         Thread threadOne = new Thread(this::showProgress);
         threadOne.start();
@@ -29,7 +30,7 @@ public class SplashActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences = getSharedPreferences("examinerPref", MODE_PRIVATE);
                 boolean userCheck = sharedPreferences.getBoolean("userCheck", false);
 
-                if (userCheck){
+                if (userCheck) {
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                 } else {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
@@ -40,9 +41,10 @@ public class SplashActivity extends AppCompatActivity {
         });
         threadTwo.start();
     }
+
     private void showProgress() {
 
-        for (int i = 0; i < 100; i++){
+        for (int i = 0; i < 100; i++) {
             try {
                 Thread.sleep(15);
                 progressBar.setProgress(i);
@@ -51,6 +53,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         }
     }
+
     @Override
     protected void onPause() {
         finish();

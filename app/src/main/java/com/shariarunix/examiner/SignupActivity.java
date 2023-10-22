@@ -167,8 +167,9 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
     }
+
     @SuppressLint("SetTextI18n")
-    private void userSignup(){
+    private void userSignup() {
         String name = edtSignUpName.getText().toString().trim();
         String email = edtSignUpEmail.getText().toString().trim();
         String phone = edtSignUpPhone.getText().toString().trim();
@@ -176,56 +177,56 @@ public class SignupActivity extends AppCompatActivity {
         String pass = edtSignUpPass.getText().toString().trim();
         String confirmPass = edtSignUpConfirmPass.getText().toString().trim();
         // Checking is name ok or not?
-        String[] specialCharacter = new String[]{"~","!","@","#","$","%","^","&","*","(",")","_","-","+","=","/","\\","<",">","{","}","[","]",",","?","|","`"};
+        String[] specialCharacter = new String[]{"~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "-", "+", "=", "/", "\\", "<", ">", "{", "}", "[", "]", ",", "?", "|", "`"};
         for (String s : specialCharacter) {
             if (name.contains(s)) {
                 findSpecialChar = true;
                 break;
             }
         }
-        if (findSpecialChar){
-            validator(edtSignUpName,"Please remove special character's from your name");
+        if (findSpecialChar) {
+            validator(edtSignUpName, "Please remove special character's from your name");
             findSpecialChar = false;
             return;
         }
-        if (name.isEmpty()){
-            validator(edtSignUpName,"Please enter your name");
+        if (name.isEmpty()) {
+            validator(edtSignUpName, "Please enter your name");
             return;
         }
         // Checking is email ok or not?
         if (email.isEmpty()) {
-            validator(edtSignUpEmail,"Please enter your email address");
+            validator(edtSignUpEmail, "Please enter your email address");
             return;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            validator(edtSignUpEmail,"Please enter a valid email address");
+            validator(edtSignUpEmail, "Please enter a valid email address");
             return;
         }
         // Checking is phone number ok or not?
         if (phone.isEmpty()) {
-            validator(edtSignUpPhone,"Please enter your phone number");
+            validator(edtSignUpPhone, "Please enter your phone number");
             return;
         }
-        if (!phone.matches("^(?:\\+88|0088)?(01[3-9]\\d{8})$")){
-            validator(edtSignUpPhone,"Please enter a valid phone number");
+        if (!phone.matches("^(?:\\+88|0088)?(01[3-9]\\d{8})$")) {
+            validator(edtSignUpPhone, "Please enter a valid phone number");
             return;
         }
         // Checking is course selected or not
-        if (course.isEmpty()){
+        if (course.isEmpty()) {
             showError.setVisibility(View.VISIBLE);
             showError.setText("Please select your course");
             return;
         }
         // Checking password
-        if (pass.isEmpty()){
+        if (pass.isEmpty()) {
             validator(edtSignUpPass, "Please enter your password");
             return;
         }
-        if (pass.length()<8){
+        if (pass.length() < 8) {
             validator(edtSignUpPass, "Password must be at least 8 characters");
             return;
         }
-        if (!confirmPass.equals(pass)){
+        if (!confirmPass.equals(pass)) {
             validator(edtSignUpConfirmPass, "Password and confirm password is not same");
             return;
         }
@@ -234,7 +235,7 @@ public class SignupActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, confirmPass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     // Getting User UID
                     FirebaseUser user = mAuth.getCurrentUser();
                     assert user != null;
@@ -263,18 +264,19 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
     }
+
     // Set Student's Data to Firebase Database
-    private void setData(String key){
+    private void setData(String key) {
         mReference.child("student").child(key).setValue(sDataModel);
     }
 
     // Load Course list
-    private void loadCourseList(){
+    private void loadCourseList() {
         mReference.child("courseList").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 courseListData.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     courseListData.add(dataSnapshot.getValue(String.class));
                 }
                 courseListData.remove("All");
@@ -283,12 +285,13 @@ public class SignupActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(SignupActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     // Checking input field
-    private void validator(EditText editText, String string){
+    private void validator(EditText editText, String string) {
         showError.setVisibility(View.VISIBLE);
         showError.setText(string);
         editText.requestFocus();

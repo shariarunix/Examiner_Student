@@ -15,16 +15,18 @@ public class PassShowHide {
         this.icPassShowBtn = icPassShowBtn;
         this.passShowToggle = passShowToggle;
     }
-    public void passShow(){
-        if (!passShowToggle){
+
+    public void passShow() {
+        if (!passShowToggle) {
             passInputField.setTransformationMethod(null);
             icPassShowBtn.setImageResource(R.drawable.ic_pass_show);
             passInputField.setSelection(passInputField.length());
             passShowToggle = true;
         }
     }
-    public void passHide(){
-         if (passShowToggle){
+
+    public void passHide() {
+        if (passShowToggle) {
             passInputField.setTransformationMethod(new PasswordTransformationMethod());
             icPassShowBtn.setImageResource(R.drawable.ic_pass_hide);
             passInputField.setSelection(passInputField.length());

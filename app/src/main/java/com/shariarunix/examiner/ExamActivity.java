@@ -43,7 +43,7 @@ public class ExamActivity extends AppCompatActivity {
     List<QuestionModel> questionListThree = new ArrayList<>();
     List<QuestionModel> questionModelList = new ArrayList<>();
 
-    String userID, userEmail, userCourse;
+    String userID, userName, userEmail, userCourse;
     String examID, examName, examDate, examTotalMarksString, examDurationString, correctOption;
     int examTotalMarks, examDuration, questionIndex = 1, result = 0;
 
@@ -61,8 +61,9 @@ public class ExamActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("examinerPref", MODE_PRIVATE);
 
         //Getting User Data From Shared Preferences
-        userID =sharedPreferences.getString("userID","");
-        userEmail =sharedPreferences.getString("userEmail","");
+        userID = sharedPreferences.getString("userID", "");
+        userEmail = sharedPreferences.getString("userEmail", "");
+        userName = sharedPreferences.getString("userName", "");
 
         // Getting Data from previous activity
         examDataModel = (ExamDataModel) getIntent().getSerializableExtra("examDataModel");
@@ -123,6 +124,7 @@ public class ExamActivity extends AppCompatActivity {
 
                 txtShowTimer.setText(newTimeStr);
             }
+
             @Override
             public void onFinish() {
                 onBackPressed();
@@ -171,9 +173,9 @@ public class ExamActivity extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                if (questionModelList.size() > questionIndex){
+                if (questionModelList.size() > questionIndex) {
                     // Checking Correct Answer and Adding Marks
-                    checkingAns(questionModelList, questionIndex-1);
+                    checkingAns(questionModelList, questionIndex - 1);
 
                     setQuestion(questionModelList, questionIndex);
                     questionOptionGroup.clearCheck();
@@ -183,9 +185,9 @@ public class ExamActivity extends AppCompatActivity {
                     tempCountDownTimer.cancel();
                     tempCountDownTimer.start();
 
-                }  else if (questionModelList.size() == questionIndex) {
+                } else if (questionModelList.size() == questionIndex) {
                     // Checking Correct Answer and Adding Marks
-                    checkingAns(questionModelList, questionIndex-1);
+                    checkingAns(questionModelList, questionIndex - 1);
                     Toast.makeText(ExamActivity.this, "Condition 2", Toast.LENGTH_SHORT).show();
 
                     assert txtExamResultShow != null;
@@ -212,18 +214,19 @@ public class ExamActivity extends AppCompatActivity {
 
         if (optionOne.isChecked() || optionTwo.isChecked() || optionThree.isChecked() || optionFour.isChecked()) {
             // Is ans correct or not, If correct adding marks to result variable
-            if (checkedBtn.getText().toString().equals(correctOption)){
+            if (checkedBtn.getText().toString().equals(correctOption)) {
                 result += qmList.get(ansIndex).getQuestionMark();
-                Toast.makeText(ExamActivity.this, ""+result, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ExamActivity.this, "" + result, Toast.LENGTH_SHORT).show();
             }
         }
     }
+
     private List<QuestionModel> questionPattern() {
 
         List<QuestionModel> qmList = new ArrayList<>();
 
-        for (QuestionModel qm : tempQuestionList){
-            if (qm.getQuestionMark() == 1){
+        for (QuestionModel qm : tempQuestionList) {
+            if (qm.getQuestionMark() == 1) {
                 questionListOne.add(qm);
             } else if (qm.getQuestionMark() == 2) {
                 questionListTwo.add(qm);
@@ -261,15 +264,16 @@ public class ExamActivity extends AppCompatActivity {
         int totalMarkTwo = listSizeTwo * 2;
 
         int itemForMarkOne = examTotalMarks - (totalMarkThree + totalMarkTwo);
-        for (int i = 1; i <= itemForMarkOne; i++){
+        for (int i = 1; i <= itemForMarkOne; i++) {
             Collections.shuffle(questionListOne);
             qmList.add(questionListOne.get(i));
         }
 
         Collections.shuffle(qmList);
 
-        return  qmList;
+        return qmList;
     }
+
     private void setQuestion(List<QuestionModel> questionModelList, int index) {
 
         String tempQuestion = index + 1 + ". " + questionModelList.get(index).getQuestion();
@@ -282,10 +286,10 @@ public class ExamActivity extends AppCompatActivity {
         optionThree.setText(questionModelList.get(index).getOptionThree());
         optionFour.setText(questionModelList.get(index).getOptionFour());
     }
-    public void setDataToDatabase(){
-        ExamResultModel examResultModel = new ExamResultModel(examName,
-                examDate, examTotalMarksString, ""+result,
-                userCourse, userEmail, userID);
+
+    public void setDataToDatabase() {
+        ExamResultModel examResultModel = new ExamResultModel(examName, examDate, examTotalMarksString,
+                "" + result, userCourse, userEmail, userName, userID);
 
         String resultKey = mReference.push().getKey();
 
@@ -301,12 +305,12 @@ public class ExamActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        checkingAns(questionModelList, questionIndex-1);
+        checkingAns(questionModelList, questionIndex - 1);
 
         countDownTimer.cancel();
         tempCountDownTimer.cancel();
 
-        Toast.makeText(ExamActivity.this, ""+result, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ExamActivity.this, "" + result, Toast.LENGTH_SHORT).show();
 
         startActivity(new Intent(ExamActivity.this, MainActivity.class));
         finish();
@@ -316,7 +320,7 @@ public class ExamActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Toast.makeText(ExamActivity.this, "Your Result : "+result, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ExamActivity.this, "Your Result : " + result, Toast.LENGTH_SHORT).show();
 
         // Setting result data to firebase database
         setDataToDatabase();

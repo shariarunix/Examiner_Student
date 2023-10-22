@@ -15,16 +15,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.shariarunix.examiner.DataModel.ExamDataModel;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.GregorianCalendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
 public class ExamInfoActivity extends AppCompatActivity {
     TextView txtExamName, txtExamDate, txtExamTime, txtExamSyllabus, txtExamTotalMarks, txtExamDuration;
     AppCompatButton btnSetAlarm, btnGiveExam, btnExamFinished;
     SharedPreferences sharedPreferences;
+
     @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -33,7 +36,7 @@ public class ExamInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exam_info);
 
         sharedPreferences = getSharedPreferences("examinerPref", MODE_PRIVATE);
-        String userID =sharedPreferences.getString("userID","");
+        String userID = sharedPreferences.getString("userID", "");
 
         txtExamName = findViewById(R.id.txt_exam_name);
         txtExamDate = findViewById(R.id.txt_exam_date);
@@ -84,8 +87,8 @@ public class ExamInfoActivity extends AppCompatActivity {
         txtExamDate.setText(examDate);
         txtExamTime.setText(examTime);
 
-        if (examDate.compareTo(getPresentDate()) == 0){
-            if (presentTime.isAfter(examStartTime) && presentTime.isBefore(examEndTime)){
+        if (examDate.compareTo(getPresentDate()) == 0) {
+            if (presentTime.isAfter(examStartTime) && presentTime.isBefore(examEndTime)) {
 
                 btnSetAlarm.setVisibility(View.GONE);
                 btnGiveExam.setVisibility(View.VISIBLE);
@@ -148,7 +151,7 @@ public class ExamInfoActivity extends AppCompatActivity {
                 openCalender.putExtra(CalendarContract.Events.DESCRIPTION, "Exam Syllabus : \n" + newExamData.getExamSyllabus());
 
                 GregorianCalendar calDate = new GregorianCalendar(Integer.parseInt(newExamDate[2]),
-                        Integer.parseInt(newExamDate[1])-1,
+                        Integer.parseInt(newExamDate[1]) - 1,
                         Integer.parseInt(newExamDate[0]),
                         examStartTimeArray[0], examStartTimeArray[1], 0);
 
@@ -165,20 +168,23 @@ public class ExamInfoActivity extends AppCompatActivity {
             }
         });
     }
+
     // Get User's Device Date
-    private String getPresentDate(){
+    private String getPresentDate() {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         sDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
         return sDateFormat.format(new Date());
     }
+
     // Get User's Device Time
-    private String getPresentTime(){
+    private String getPresentTime() {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sTimeFormat = new SimpleDateFormat("hh:mm a");
         sTimeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
         return sTimeFormat.format(new Date());
     }
+
     // Converting Time to 24 hr format
-    private int[] normalToInt(String time){
+    private int[] normalToInt(String time) {
         String[] newTime = time.split(" ");
         String[] hrMin = newTime[0].split(":");
 
@@ -186,7 +192,7 @@ public class ExamInfoActivity extends AppCompatActivity {
 
         if (newTime[1].equals("PM") || newTime[1].equals("Pm") || newTime[1].equals("pm")) {
             hr = Integer.parseInt(hrMin[0]);
-            if (hr < 12){
+            if (hr < 12) {
                 hr += 12;
             }
             min = Integer.parseInt(hrMin[1]);
@@ -201,14 +207,16 @@ public class ExamInfoActivity extends AppCompatActivity {
 
         return new int[]{hr, min};
     }
+
     // Adding 0 in front of the number smaller than 10
-    private String timeValidation(int hr, int min){
+    private String timeValidation(int hr, int min) {
         String newHr = hr < 10 ? "0" + hr : String.valueOf(hr);
         String newMin = min < 10 ? "0" + min : String.valueOf(min);
         return newHr + ":" + newMin;
     }
+
     // Check is user completed the exam already
-    private boolean isUserCompletedExam(List<String> usersList, String userID){
+    private boolean isUserCompletedExam(List<String> usersList, String userID) {
         return usersList.contains(userID);
     }
 

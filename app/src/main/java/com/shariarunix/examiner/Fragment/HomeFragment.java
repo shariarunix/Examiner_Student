@@ -51,11 +51,11 @@ public class HomeFragment extends Fragment {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
-    public HomeFragment(){
+    public HomeFragment() {
         //Default Empty Constructor
     }
 
-    public static HomeFragment getInstance(String uName, String uEmail, String uPhone, String uCourse, int prevExamResult, int prevExamTotalMarks){
+    public static HomeFragment getInstance(String uName, String uEmail, String uPhone, String uCourse, int prevExamResult, int prevExamTotalMarks) {
         HomeFragment homeFragment = new HomeFragment();
         Bundle bundle = new Bundle();
 
@@ -89,7 +89,7 @@ public class HomeFragment extends Fragment {
 
         LinearLayout layoutShowPrevResult = view.findViewById(R.id.layout_show_prev_result);
 
-        if (getArguments() != null){
+        if (getArguments() != null) {
             userName = getArguments().getString(U_NAME);
             userEmail = getArguments().getString(U_EMAIL);
             userPhone = getArguments().getString(U_PHONE);
@@ -117,7 +117,7 @@ public class HomeFragment extends Fragment {
         }
 
         // Setting previous exam data to view
-        txtShowPrevResult.setText(prevExamResult+"/"+prevExamTotalMarks);
+        txtShowPrevResult.setText(prevExamResult + "/" + prevExamTotalMarks);
 
         // Load Exam data in fragment
         loadExamData(examList, userCourse);
@@ -126,38 +126,38 @@ public class HomeFragment extends Fragment {
     }
 
     // Load exam data
-    public void loadExamData(ListView listView, String course){
+    public void loadExamData(ListView listView, String course) {
         mReference
-            .child("examSet")
+                .child("examSet")
                 .orderByChild("course")
                 .equalTo(course)
                 .addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    examDataList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                        ExamDataModel examDataModel = dataSnapshot.getValue(ExamDataModel.class);
+                        examDataList.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            ExamDataModel examDataModel = dataSnapshot.getValue(ExamDataModel.class);
 
-                        examDataList.add(examDataModel);
+                            examDataList.add(examDataModel);
+                        }
+                        CustomAdapter examListAdapter = new CustomAdapter(requireActivity(), R.layout.exam_list_item, examDataList.size());
+                        examListAdapter.setExamDataModelList(examDataList);
+
+                        listView.setAdapter(examListAdapter);
                     }
-                    CustomAdapter examListAdapter = new CustomAdapter(requireActivity(), R.layout.exam_list_item, examDataList.size());
-                    examListAdapter.setExamDataModelList(examDataList);
 
-                    listView.setAdapter(examListAdapter);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(requireActivity(), "Please check your internet", Toast.LENGTH_SHORT).show();
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(requireActivity(), "Please check your internet", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
-    public void showIntroDialog(Dialog dialog){
+    public void showIntroDialog(Dialog dialog) {
         dialog.setContentView(R.layout.user_info_dialog);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setGravity(Gravity.BOTTOM);
         dialog.setCancelable(false);
 
@@ -182,7 +182,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        if (isDialogShown){
+        if (isDialogShown) {
             dialog.show();
         }
     }

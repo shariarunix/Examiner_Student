@@ -28,26 +28,17 @@ public class CustomAdapter extends BaseAdapter {
     List<ExamResultModel> examResultModelList;
     List<ResourceDataModel> resourceDataModelList;
 
-    public List<ResourceDataModel> getResourceDataModelList() {
-        return resourceDataModelList;
-    }
-
+    // Setter for setting resourceDataModelList
     public void setResourceDataModelList(List<ResourceDataModel> resourceDataModelList) {
         this.resourceDataModelList = resourceDataModelList;
     }
 
-    public List<ExamDataModel> getExamDataModelList() {
-        return examDataModelList;
-    }
-
+    // Setter for setting examDataModelList
     public void setExamDataModelList(List<ExamDataModel> examDataModelList) {
         this.examDataModelList = examDataModelList;
     }
 
-    public List<ExamResultModel> getExamResultModelList() {
-        return examResultModelList;
-    }
-
+    // Setter for setting examResultModelList
     public void setExamResultModelList(List<ExamResultModel> examResultModelList) {
         this.examResultModelList = examResultModelList;
     }
@@ -77,60 +68,69 @@ public class CustomAdapter extends BaseAdapter {
     @SuppressLint("SetTextI18n")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view == null){
+        if (view == null) {
             view = LayoutInflater.from(context).inflate(layout, viewGroup, false);
         }
 
-        if (layout == R.layout.exam_list_item){
-            ExamDataModel newModel = examDataModelList.get(i);
-            TextView txtListExamName = view.findViewById(R.id.txt_list_exam_name);
-            TextView txtListExamDate = view.findViewById(R.id.txt_list_exam_date);
-            TextView txtListExamTime = view.findViewById(R.id.txt_list_exam_time);
-
-            AppCompatButton btnExamReadMore = view.findViewById(R.id.btn_exam_read_more);
-
-            txtListExamName.setText(newModel.getExamName());
-            txtListExamDate.setText(newModel.getExamDate());
-            txtListExamTime.setText(newModel.getExamTime());
-
-            btnExamReadMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent nextActivity = new Intent(context, ExamInfoActivity.class);
-                    nextActivity.putExtra("examData", newModel);
-                    context.startActivity(nextActivity);
-                }
-            });
-        }
-
-        if (layout == R.layout.result_list_item){
-            ExamResultModel newErm = examResultModelList.get(i);
-
-            TextView txtShowExamName = view.findViewById(R.id.txt_show_exam_name);
-            TextView txtShowResult = view.findViewById(R.id.txt_show_result);
-            TextView txtShowDate = view.findViewById(R.id.txt_show_date);
-
-            txtShowExamName.setText(newErm.getExamName());
-            txtShowResult.setText(newErm.getExamResult() +" out of "+ newErm.getExamTotalMarks());
-            txtShowDate.setText(newErm.getExamDate());
-        }
-
-        if (layout == R.layout.resource_list_item) {
-            ResourceDataModel resourceDataModel = resourceDataModelList.get(i);
-
-            TextView txtShowMsgDate = view.findViewById(R.id.txt_show_msg_date);
-            TextView txtShowMsgTime = view.findViewById(R.id.txt_show_msg_time);
-            TextView txtMsgBox = view.findViewById(R.id.txt_msg_box);
-            TextView txtShowAdminName = view.findViewById(R.id.txt_show_admin_name);
-
-            txtShowMsgDate.setText(resourceDataModel.getDate());
-            txtShowMsgTime.setText(resourceDataModel.getTime());
-            txtMsgBox.setText(resourceDataModel.getResource());
-            txtShowAdminName.setText("by " + resourceDataModel.getUser());
+        if (layout == R.layout.exam_list_item) {
+            examList(view, i);
+        } else if (layout == R.layout.result_list_item) {
+            resultList(view, i);
+        } else if (layout == R.layout.resource_list_item) {
+            resourceList(view, i);
         }
 
         return view;
     }
 
+    private void examList(View view, int i) {
+        ExamDataModel newModel = examDataModelList.get(i);
+        TextView txtListExamName = view.findViewById(R.id.txt_list_exam_name);
+        TextView txtListExamDate = view.findViewById(R.id.txt_list_exam_date);
+        TextView txtListExamTime = view.findViewById(R.id.txt_list_exam_time);
+
+        AppCompatButton btnExamReadMore = view.findViewById(R.id.btn_exam_read_more);
+
+        txtListExamName.setText(newModel.getExamName());
+        txtListExamDate.setText(newModel.getExamDate());
+        txtListExamTime.setText(newModel.getExamTime());
+
+        btnExamReadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent nextActivity = new Intent(context, ExamInfoActivity.class);
+                nextActivity.putExtra("examData", newModel);
+                context.startActivity(nextActivity);
+            }
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void resourceList(View view, int i) {
+        ResourceDataModel resourceDataModel = resourceDataModelList.get(i);
+
+        TextView txtShowMsgDate = view.findViewById(R.id.txt_show_msg_date);
+        TextView txtShowMsgTime = view.findViewById(R.id.txt_show_msg_time);
+        TextView txtMsgBox = view.findViewById(R.id.txt_msg_box);
+        TextView txtShowAdminName = view.findViewById(R.id.txt_show_admin_name);
+
+        txtShowMsgDate.setText(resourceDataModel.getDate());
+        txtShowMsgTime.setText(resourceDataModel.getTime());
+        txtMsgBox.setText(resourceDataModel.getResource());
+        txtShowAdminName.setText("by " + resourceDataModel.getUser());
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void resultList(View view, int i) {
+        ExamResultModel newErm = examResultModelList.get(i);
+
+        TextView txtShowExamName = view.findViewById(R.id.txt_show_exam_name);
+        TextView txtShowResult = view.findViewById(R.id.txt_show_result);
+        TextView txtShowDate = view.findViewById(R.id.txt_show_date);
+
+        txtShowExamName.setText(newErm.getExamName());
+        txtShowResult.setText(newErm.getExamResult() + " out of " + newErm.getExamTotalMarks());
+        txtShowDate.setText(newErm.getExamDate());
+    }
 }
 

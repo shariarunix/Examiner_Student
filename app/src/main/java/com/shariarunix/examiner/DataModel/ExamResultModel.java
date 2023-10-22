@@ -2,19 +2,28 @@ package com.shariarunix.examiner.DataModel;
 
 public class ExamResultModel {
 
-    private String examName, examDate, examTotalMarks, examResult, userCourse, userEmail, userId;
+    private String examName, examDate, examTotalMarks, examResult, userCourse, userEmail, userName, userId;
 
     public ExamResultModel() {
         // Default Empty Constructor
     }
 
-    public ExamResultModel(String examName, String examDate, String examTotalMarks, String examResult, String userCourse, String userEmail, String userId) {
+    public ExamResultModel(String examName,
+                           String examDate,
+                           String examTotalMarks,
+                           String examResult,
+                           String userCourse,
+                           String userEmail,
+                           String userName,
+                           String userId) {
+
         this.examName = examName;
         this.examDate = examDate;
         this.examTotalMarks = examTotalMarks;
         this.examResult = examResult;
         this.userCourse = userCourse;
         this.userEmail = userEmail;
+        this.userName = userName;
         this.userId = userId;
     }
 
@@ -64,6 +73,14 @@ public class ExamResultModel {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getUserId() {

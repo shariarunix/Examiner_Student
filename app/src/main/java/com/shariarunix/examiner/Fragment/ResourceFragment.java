@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,11 +39,12 @@ public class ResourceFragment extends Fragment {
     List<ResourceDataModel> allCourseResourceDataModelList = new ArrayList<>();
     List<ResourceDataModel> resourceDataModelList = new ArrayList<>();
     DatabaseReference mReference;
-    public  ResourceFragment(){
+
+    public ResourceFragment() {
         // Default Empty Constructor
     }
 
-    public static ResourceFragment getInstance(String userCourse){
+    public static ResourceFragment getInstance(String userCourse) {
         ResourceFragment resourceFragment = new ResourceFragment();
         Bundle bundle = new Bundle();
 
@@ -57,7 +59,7 @@ public class ResourceFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_resource, container, false);
 
-        if (getArguments() != null){
+        if (getArguments() != null) {
             userCourse = getArguments().getString(USER_COURSE);
         }
 
@@ -67,29 +69,29 @@ public class ResourceFragment extends Fragment {
         return view;
     }
 
-    private void loadRes(ListView listView, String specificCourse){
+    private void loadRes(ListView listView, String specificCourse) {
         mReference = FirebaseDatabase.getInstance().getReference();
 
         mReference.child("resource")
                 .orderByChild("course")
                 .equalTo(specificCourse)
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                courseResourceDataModelList.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    ResourceDataModel resourceDataModel = dataSnapshot.getValue(ResourceDataModel.class);
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        courseResourceDataModelList.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            ResourceDataModel resourceDataModel = dataSnapshot.getValue(ResourceDataModel.class);
 
-                    courseResourceDataModelList.add(resourceDataModel);
-                }
-                mergeList(listView);
-            }
+                            courseResourceDataModelList.add(resourceDataModel);
+                        }
+                        mergeList(listView);
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(requireActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         mReference.child("resource")
                 .orderByChild("course")
@@ -98,7 +100,7 @@ public class ResourceFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         allCourseResourceDataModelList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ResourceDataModel resourceDataModel = dataSnapshot.getValue(ResourceDataModel.class);
 
                             allCourseResourceDataModelList.add(resourceDataModel);
@@ -108,12 +110,12 @@ public class ResourceFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(requireActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void mergeList(ListView listView){
+    private void mergeList(ListView listView) {
         resourceDataModelList.clear();
         resourceDataModelList.addAll(courseResourceDataModelList);
         resourceDataModelList.addAll(allCourseResourceDataModelList);
@@ -132,8 +134,8 @@ public class ResourceFragment extends Fragment {
                 LocalTime timeTwo = LocalTime.parse(timeValidation(timeTwoInt[0], timeTwoInt[1]));
 
                 try {
-                    Date dateOne = dateTimeFormat.parse(rDm1.getDate()+" "+timeOne);
-                    Date dateTwo = dateTimeFormat.parse(rDm2.getDate()+" "+timeTwo);
+                    Date dateOne = dateTimeFormat.parse(rDm1.getDate() + " " + timeOne);
+                    Date dateTwo = dateTimeFormat.parse(rDm2.getDate() + " " + timeTwo);
 
                     assert dateOne != null;
                     return dateOne.compareTo(dateTwo);
@@ -148,9 +150,11 @@ public class ResourceFragment extends Fragment {
                 resourceDataModelList.size());
 
         resListAdapter.setResourceDataModelList(resourceDataModelList);
+
         listView.setAdapter(resListAdapter);
     }
-    private int[] normalToInt(String time){
+
+    private int[] normalToInt(String time) {
         String[] newTime = time.split(" ");
         String[] hrMin = newTime[0].split(":");
 
@@ -158,7 +162,7 @@ public class ResourceFragment extends Fragment {
 
         if (newTime[1].equals("PM") || newTime[1].equals("Pm") || newTime[1].equals("pm")) {
             hr = Integer.parseInt(hrMin[0]);
-            if (hr < 12){
+            if (hr < 12) {
                 hr += 12;
             }
             min = Integer.parseInt(hrMin[1]);
@@ -173,7 +177,8 @@ public class ResourceFragment extends Fragment {
 
         return new int[]{hr, min};
     }
-    private String timeValidation(int hr, int min){
+
+    private String timeValidation(int hr, int min) {
         String newHr = hr < 10 ? "0" + hr : String.valueOf(hr);
         String newMin = min < 10 ? "0" + min : String.valueOf(min);
         return newHr + ":" + newMin;

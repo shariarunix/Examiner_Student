@@ -30,7 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity {
     private EditText edtEmail, edtPass;
     ImageView icPassShow, icRememberCheck;
     TextView txtBtnForgotPass, txtBtnCreateOne, showError;
@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity{
     private BottomSheetDialog forgotPassDialog, otpDialog, resetPassDialog;
 
     private String otp = "", otpOne, otpTwo, otpThree, otpFour;
-
 
 
     @Override
@@ -106,12 +105,12 @@ public class LoginActivity extends AppCompatActivity{
 
                         if (email.isEmpty()) {
                             assert forgotDialogShowError != null;
-                            validator(edtEmail, forgotDialogShowError,"Please enter your email address");
+                            validator(edtEmail, forgotDialogShowError, "Please enter your email address");
                             return;
                         }
                         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                             assert forgotDialogShowError != null;
-                            validator(edtEmail, forgotDialogShowError,"Please enter a valid email address");
+                            validator(edtEmail, forgotDialogShowError, "Please enter a valid email address");
                             return;
                         }
 
@@ -162,7 +161,7 @@ public class LoginActivity extends AppCompatActivity{
                                     assert edtOtpThree != null;
                                     edtOtpThree.requestFocus();
                                 }
-                                if (charSequence.toString().isEmpty()){
+                                if (charSequence.toString().isEmpty()) {
                                     edtOtpOne.requestFocus();
                                 }
                             }
@@ -184,7 +183,7 @@ public class LoginActivity extends AppCompatActivity{
                                     assert edtOtpFour != null;
                                     edtOtpFour.requestFocus();
                                 }
-                                if (charSequence.toString().isEmpty()){
+                                if (charSequence.toString().isEmpty()) {
                                     edtOtpTwo.requestFocus();
                                 }
                             }
@@ -202,7 +201,7 @@ public class LoginActivity extends AppCompatActivity{
 
                             @Override
                             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                if (charSequence.toString().isEmpty()){
+                                if (charSequence.toString().isEmpty()) {
                                     edtOtpThree.requestFocus();
                                 }
                             }
@@ -243,7 +242,7 @@ public class LoginActivity extends AppCompatActivity{
 
                                 TextView resetDialogShowError = resetPassDialog.findViewById(R.id.reset_dialog_show_error);
 
-                                ImageView resetPass= resetPassDialog.findViewById(R.id.ic_pass_show);
+                                ImageView resetPass = resetPassDialog.findViewById(R.id.ic_pass_show);
                                 ImageView resetConPass = resetPassDialog.findViewById(R.id.ic_confirm_pass_show);
 
                                 // Password show or hide
@@ -286,19 +285,19 @@ public class LoginActivity extends AppCompatActivity{
                                         String conPassword = setConfirmPassword.getText().toString().trim();
 
                                         // Checking password
-                                        if (password.isEmpty()){
+                                        if (password.isEmpty()) {
                                             assert resetDialogShowError != null;
                                             validator(setPassword, resetDialogShowError, "Please enter your password");
                                             return;
                                         }
-                                        if (password.length()<8){
+                                        if (password.length() < 8) {
                                             assert resetDialogShowError != null;
-                                            validator(setPassword, resetDialogShowError,"Password must be at least 8 characters");
+                                            validator(setPassword, resetDialogShowError, "Password must be at least 8 characters");
                                             return;
                                         }
-                                        if (!conPassword.equals(password)){
+                                        if (!conPassword.equals(password)) {
                                             assert resetDialogShowError != null;
-                                            validator(setConfirmPassword,resetDialogShowError, "Password and confirm password is not same");
+                                            validator(setConfirmPassword, resetDialogShowError, "Password and confirm password is not same");
                                             return;
                                         }
 
@@ -361,11 +360,13 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
     }
-    private void bottomDialog(BottomSheetDialog bottomSheetDialog){
+
+    private void bottomDialog(BottomSheetDialog bottomSheetDialog) {
         Objects.requireNonNull(bottomSheetDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         bottomSheetDialog.getBehavior().setSkipCollapsed(true);
         bottomSheetDialog.getBehavior().setState(STATE_EXPANDED);
     }
+
     @SuppressLint("SetTextI18n")
     private void userSignIn() {
         String email = edtEmail.getText().toString().trim();
@@ -374,53 +375,53 @@ public class LoginActivity extends AppCompatActivity{
         // Checking the validity of email
         // Checking is email ok or not?
         if (email.isEmpty()) {
-            validator(edtEmail, showError,"Please enter your email address");
+            validator(edtEmail, showError, "Please enter your email address");
             return;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            validator(edtEmail, showError,"Please enter a valid email address");
+            validator(edtEmail, showError, "Please enter a valid email address");
             return;
         }
 
         //checking the validity of the password
         // Checking password
-        if (password.isEmpty()){
+        if (password.isEmpty()) {
             validator(edtPass, showError, "Please enter your password");
             return;
         }
-        if (password.length()<8){
-            validator(edtPass, showError,"Password must be at least 8 characters");
+        if (password.length() < 8) {
+            validator(edtPass, showError, "Password must be at least 8 characters");
             return;
         }
 
         // Sign with firebase
-        mAuth.signInWithEmailAndPassword(email,password)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()){
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        assert user != null;
-                        String key = user.getUid();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            assert user != null;
+                            String key = user.getUid();
 
-                        editor.putString("userID", key);
+                            editor.putString("userID", key);
 
-                        editor.apply();
+                            editor.apply();
 
-                        Intent iNext = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent iNext = new Intent(LoginActivity.this, MainActivity.class);
 //                        iNext.putExtra("uID", key);
-                        startActivity(iNext);
-                        finish();
-                    } else {
-                        showError.setVisibility(View.VISIBLE);
-                        showError.setText("Please enter valid email and password");
-                        edtEmail.requestFocus();
+                            startActivity(iNext);
+                            finish();
+                        } else {
+                            showError.setVisibility(View.VISIBLE);
+                            showError.setText("Please enter valid email and password");
+                            edtEmail.requestFocus();
+                        }
                     }
-                }
-            });
+                });
     }
 
-    private void validator(EditText editText,TextView textView, String string){
+    private void validator(EditText editText, TextView textView, String string) {
         textView.setVisibility(View.VISIBLE);
         textView.setText(string);
         editText.requestFocus();
