@@ -47,7 +47,7 @@ public class ExamActivity extends AppCompatActivity {
     String examID, examName, examDate, examTotalMarksString, examDurationString, correctOption;
     int examTotalMarks, examDuration, questionIndex = 1, result = 0;
 
-    TextView txtExamPageName, txtQuestion, txtShowTimer, txtShowMark;
+    TextView txtExamPageName, txtQuestion, txtShowTimer, txtShowMark, txtExamResultShow;
     AppCompatButton btnSubmit, btnNext;
     RadioGroup questionOptionGroup;
     RadioButton optionOne, optionTwo, optionThree, optionFour;
@@ -127,7 +127,8 @@ public class ExamActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                onBackPressed();
+                checkingAns(questionModelList, questionIndex - 1);
+                methodForBackPressed();
             }
         }.start();
 
@@ -141,7 +142,8 @@ public class ExamActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                onBackPressed();
+                checkingAns(questionModelList, questionIndex - 1);
+                methodForBackPressed();
             }
         }.start();
 
@@ -151,9 +153,10 @@ public class ExamActivity extends AppCompatActivity {
         examCompleteDialog.getBehavior().setSkipCollapsed(true);
         examCompleteDialog.getBehavior().setState(STATE_EXPANDED);
         examCompleteDialog.setCancelable(false);
+
         examCompleteDialog.setContentView(R.layout.bottom_dialog_exam_complete);
 
-        TextView txtExamResultShow = examCompleteDialog.findViewById(R.id.txt_show_exam_result);
+        txtExamResultShow = examCompleteDialog.findViewById(R.id.txt_show_exam_result);
         AppCompatButton btnExamCompleteDialogContinue = examCompleteDialog.findViewById(R.id.btn_exam_complete_continue);
 
         assert btnExamCompleteDialogContinue != null;
@@ -161,7 +164,7 @@ public class ExamActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 examCompleteDialog.dismiss();
-                onBackPressed();
+                methodForBackPressed();
             }
         });
 
@@ -188,7 +191,6 @@ public class ExamActivity extends AppCompatActivity {
                 } else if (questionModelList.size() == questionIndex) {
                     // Checking Correct Answer and Adding Marks
                     checkingAns(questionModelList, questionIndex - 1);
-                    Toast.makeText(ExamActivity.this, "Condition 2", Toast.LENGTH_SHORT).show();
 
                     assert txtExamResultShow != null;
                     txtExamResultShow.setText(result + " / " + examTotalMarks);
@@ -200,7 +202,9 @@ public class ExamActivity extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                checkingAns(questionModelList, questionIndex - 1);
+                questionOptionGroup.clearCheck();
+                methodForBackPressed();
             }
         });
     }
@@ -216,7 +220,6 @@ public class ExamActivity extends AppCompatActivity {
             // Is ans correct or not, If correct adding marks to result variable
             if (checkedBtn.getText().toString().equals(correctOption)) {
                 result += qmList.get(ansIndex).getQuestionMark();
-                Toast.makeText(ExamActivity.this, "" + result, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -303,28 +306,30 @@ public class ExamActivity extends AppCompatActivity {
         mReference.child("examSet").child(examID).child("usersList").setValue(usersList);
     }
 
-    @Override
-    public void onBackPressed() {
-        checkingAns(questionModelList, questionIndex - 1);
+    private void methodForBackPressed() {
 
         countDownTimer.cancel();
         tempCountDownTimer.cancel();
 
-        Toast.makeText(ExamActivity.this, "" + result, Toast.LENGTH_SHORT).show();
-
         startActivity(new Intent(ExamActivity.this, MainActivity.class));
         finish();
+    }
 
+    @Override
+    public void onBackPressed() {
+        checkingAns(questionModelList, questionIndex - 1);
+        questionOptionGroup.clearCheck();
+        methodForBackPressed();
         super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
         Toast.makeText(ExamActivity.this, "Your Result : " + result, Toast.LENGTH_SHORT).show();
-
+        questionOptionGroup.clearCheck();
         // Setting result data to firebase database
         setDataToDatabase();
-        onBackPressed();
+        methodForBackPressed();
 
         finish();
         super.onPause();

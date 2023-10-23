@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/res_item_parent"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="15dp"
-    android:background="@drawable/res_msg_bg">
+    android:background="@drawable/res_msg_bg"
+    android:orientation="vertical"
+    android:padding="15dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,19 +17,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:textColor="@color/black_sc"
-            android:textSize="14sp"
             android:fontFamily="@font/barlow_regular"
-            />
+            android:textColor="@color/black_sc"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/txt_show_msg_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:fontFamily="@font/barlow_regular"
             android:textColor="@color/black_sc"
             android:textSize="14sp"
-            android:fontFamily="@font/barlow_regular"
             tools:ignore="RelativeOverlap" />
     </RelativeLayout>
 
@@ -39,15 +38,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:fontFamily="@font/barlow_regular"
+        android:textColor="@color/black_sc"
         android:textIsSelectable="true"
-        android:textSize="22sp"
-        android:textColor="@color/black_sc"/>
+        android:textSize="22sp" />
 
     <TextView
         android:id="@+id/txt_show_admin_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/barlow_regular"
         android:textColor="@color/black_sc"
-        android:textSize="14sp"
-        android:fontFamily="@font/barlow_regular"/>
+        android:textSize="14sp" />
 </LinearLayout>

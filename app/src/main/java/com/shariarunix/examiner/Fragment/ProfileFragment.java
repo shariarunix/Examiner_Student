@@ -4,9 +4,13 @@ import static android.content.Context.MODE_PRIVATE;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,7 +115,6 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 logOutUser();
-                Toast.makeText(requireActivity(), "You've Been Logged Out.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -367,20 +370,42 @@ public class ProfileFragment extends Fragment {
 
     // Method for user logging out
     private void logOutUser() {
-        FirebaseAuth.getInstance().signOut();
+        BottomSheetDialog logOutDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
+        bottomDialog(logOutDialog);
+        logOutDialog.setContentView(R.layout.bottom_dialog_logout);
 
-        editor.putBoolean("userCheck", false);
-        editor.putString("userID", "");
-        editor.putString("userEmail", "");
-        editor.putString("userName", "");
-        editor.putString("prevExamResult", "0");
-        editor.putString("prevExamTotalMarks", "0");
-        editor.putBoolean("introDialog", false);
+        AppCompatButton btnLogOutDialogYes = logOutDialog.findViewById(R.id.btn_logout_dialog_yes);
+        AppCompatButton btnLogOutDialogNo = logOutDialog.findViewById(R.id.btn_logout_dialog_no);
 
-        editor.apply();
+        logOutDialog.show();
+        btnLogOutDialogYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
 
-        startActivity(new Intent(requireActivity(), LoginActivity.class));
-        requireActivity().finish();
+                editor.putBoolean("userCheck", false);
+                editor.putString("userID", "");
+                editor.putString("userEmail", "");
+                editor.putString("userName", "");
+                editor.putString("prevExamResult", "0");
+                editor.putString("prevExamTotalMarks", "0");
+                editor.putBoolean("introDialog", false);
+
+                editor.apply();
+
+                Toast.makeText(requireActivity(), "You've Been Logged Out.", Toast.LENGTH_SHORT).show();
+
+                startActivity(new Intent(requireActivity(), LoginActivity.class));
+                logOutDialog.dismiss();
+                requireActivity().finish();
+            }
+        });
+        btnLogOutDialogNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logOutDialog.dismiss();
+            }
+        });
     }
 
     // Method for loading user result data from database

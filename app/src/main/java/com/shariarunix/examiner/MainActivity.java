@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             fragTrans.replace(R.id.fragment_frame, fragment);
         }
 
-        fragTrans.commit();
+        fragTrans.commitAllowingStateLoss();
     }
 
     // Customizing BackPressed For Fragment
