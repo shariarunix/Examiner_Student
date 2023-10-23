@@ -72,11 +72,11 @@ public class CustomAdapter extends BaseAdapter {
             view = LayoutInflater.from(context).inflate(layout, viewGroup, false);
         }
 
-        if (layout == R.layout.exam_list_item) {
+        if (layout == R.layout.list_item_exam) {
             examList(view, i);
-        } else if (layout == R.layout.result_list_item) {
+        } else if (layout == R.layout.list_item_result) {
             resultList(view, i);
-        } else if (layout == R.layout.resource_list_item) {
+        } else if (layout == R.layout.list_item_resource) {
             resourceList(view, i);
         }
 

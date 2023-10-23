@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,8 @@ public class ProfileFragment extends Fragment {
     DatabaseReference mReference;
     FirebaseUser user;
 
+    ListView resultList;
+    ProgressBar resultProgressBar;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     boolean findSpecialChar = false;
@@ -134,11 +137,14 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 bottomDialog(resultDialog);
-                resultDialog.setContentView(R.layout.result_dialog);
+                resultDialog.setContentView(R.layout.bottom_dialog_result);
                 resultDialog.setCancelable(false);
+                resultDialog.setCanceledOnTouchOutside(true);
 
-                ListView resultList = resultDialog.findViewById(R.id.result_list);
+                resultList = resultDialog.findViewById(R.id.result_list);
+                resultProgressBar = resultDialog.findViewById(R.id.result_progress_bar);
                 ImageButton btnResultDialogHide = resultDialog.findViewById(R.id.img_btn_dialog_close);
+
                 loadResultAndShow(resultList);
                 resultDialog.show();
 
@@ -156,7 +162,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 bottomDialog(personalInfoDialog);
-                personalInfoDialog.setContentView(R.layout.personal_info_dialog);
+                personalInfoDialog.setContentView(R.layout.bottom_dialog_personal_info);
 
                 TextView personalInfoName = personalInfoDialog.findViewById(R.id.personal_info_name);
                 TextView personalInfoEmail = personalInfoDialog.findViewById(R.id.personal_info_email);
@@ -183,7 +189,7 @@ public class ProfileFragment extends Fragment {
                         personalInfoDialog.dismiss();
 
                         bottomDialog(changeInfoDialog);
-                        changeInfoDialog.setContentView(R.layout.change_personal_info_dialog);
+                        changeInfoDialog.setContentView(R.layout.bottom_dialog_change_personal_info);
 
                         EditText edtChangeName = changeInfoDialog.findViewById(R.id.edt_change_name);
                         EditText edtChangePhone = changeInfoDialog.findViewById(R.id.edt_change_phone);
@@ -259,7 +265,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 bottomDialog(changePassDialog);
-                changePassDialog.setContentView(R.layout.change_password_dialog);
+                changePassDialog.setContentView(R.layout.bottom_dialog_change_password);
 
                 EditText edtOldPass = changePassDialog.findViewById(R.id.edt_old_pass);
                 EditText edtNewPass = changePassDialog.findViewById(R.id.edt_new_pass);
@@ -394,7 +400,9 @@ public class ProfileFragment extends Fragment {
 
                         Collections.reverse(examResultModelList);
 
-                        CustomAdapter resListAdapter = new CustomAdapter(requireActivity(), R.layout.result_list_item, examResultModelList.size());
+                        resultProgressBar.setVisibility(View.GONE);
+                        resultList.setVisibility(View.VISIBLE);
+                        CustomAdapter resListAdapter = new CustomAdapter(requireActivity(), R.layout.list_item_result, examResultModelList.size());
                         resListAdapter.setExamResultModelList(examResultModelList);
 
                         resultList.setAdapter(resListAdapter);

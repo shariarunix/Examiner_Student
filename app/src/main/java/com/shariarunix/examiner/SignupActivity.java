@@ -74,7 +74,7 @@ public class SignupActivity extends AppCompatActivity {
 
         loadingDialog = new Dialog(SignupActivity.this);
         Objects.requireNonNull(loadingDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        loadingDialog.setContentView(R.layout.progressbar_dialog);
+        loadingDialog.setContentView(R.layout.dialog_progressbar);
         loadingDialog.setCancelable(false);
         loadingDialog.show();
 
@@ -98,7 +98,7 @@ public class SignupActivity extends AppCompatActivity {
         Objects.requireNonNull(personalInfoDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         personalInfoDialog.getBehavior().setSkipCollapsed(true);
         personalInfoDialog.getBehavior().setState(STATE_EXPANDED);
-        personalInfoDialog.setContentView(R.layout.course_select_dialog);
+        personalInfoDialog.setContentView(R.layout.bottom_dialog_course_select);
 
         // Selecting course from dialog
         courseSelectorLayout.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +112,7 @@ public class SignupActivity extends AppCompatActivity {
         courseList = personalInfoDialog.findViewById(R.id.course_list);
         assert courseList != null;
         courseList.setAdapter(new ArrayAdapter<>(SignupActivity.this,
-                R.layout.course_list_item,
+                R.layout.list_item_course,
                 R.id.txt_list_item, courseListData));
 
         // Firing on item click listener on list item

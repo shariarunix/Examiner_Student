@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 bottomDialog(forgotPassDialog);
-                forgotPassDialog.setContentView(R.layout.forgot_pass_dialog);
+                forgotPassDialog.setContentView(R.layout.bottom_dialog_forgot_pass);
                 forgotPassDialog.show();
 
                 TextView forgotDialogShowError = forgotPassDialog.findViewById(R.id.forgot_dialog_show_error);
@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         forgotPassDialog.dismiss();
                         bottomDialog(otpDialog);
-                        otpDialog.setContentView(R.layout.otp_dialog);
+                        otpDialog.setContentView(R.layout.bottom_dialog_otp);
                         otpDialog.show();
 
                         EditText edtOtpOne = otpDialog.findViewById(R.id.otp_one);
@@ -233,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
                                 //OTP Verification
                                 otpDialog.dismiss();
                                 bottomDialog(resetPassDialog);
-                                resetPassDialog.setContentView(R.layout.new_password_dialog);
+                                resetPassDialog.setContentView(R.layout.bottm_dialog_new_password);
                                 resetPassDialog.show();
 
                                 EditText setPassword = resetPassDialog.findViewById(R.id.edt_reset_pass);

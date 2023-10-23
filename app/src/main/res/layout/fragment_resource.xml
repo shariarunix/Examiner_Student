@@ -9,35 +9,44 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:orientation="vertical"
+        android:background="@drawable/white_radius_bottom_bg"
         android:elevation="3dp"
-        android:background="@drawable/white_radius_bottom_bg">
+        android:orientation="vertical"
+        android:padding="20dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Resources"
-            android:textSize="48sp"
-            android:textColor="@color/blue_pr"
             android:fontFamily="@font/barlow_semibold"
+            android:text="Resources"
+            android:textColor="@color/blue_pr"
+            android:textSize="48sp"
             tools:ignore="HardcodedText" />
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/resource_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="50dp"
+        android:indeterminateDrawable="@drawable/progress_drawable" />
 
     <ListView
         android:id="@+id/res_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:divider="@color/transparent"
+        android:dividerHeight="10dp"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:clipToPadding="false"
-        android:dividerHeight="10dp"
+        android:scrollbars="none"
         android:stackFromBottom="true"
-        android:divider="@color/transparent"
-        android:scrollbars="none"/>
+        android:visibility="gone" />
 
 </LinearLayout>

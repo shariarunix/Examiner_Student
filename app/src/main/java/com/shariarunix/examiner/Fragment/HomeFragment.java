@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +48,7 @@ public class HomeFragment extends Fragment {
     int prevExamResult, prevExamTotalMarks;
     boolean isDialogShown;
     List<ExamDataModel> examDataList = new ArrayList<>();
-
+    ProgressBar homeProgressBar;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -82,6 +83,7 @@ public class HomeFragment extends Fragment {
         isDialogShown = sharedPreferences.getBoolean("introDialog", false);
 
         ListView examList = view.findViewById(R.id.exam_list);
+        homeProgressBar = view.findViewById(R.id.home_progress_bar);
 
         TextView txtShowName = view.findViewById(R.id.txt_show_name_home);
         TextView txtShowPrevResult = view.findViewById(R.id.txt_show_prev_result);
@@ -141,7 +143,11 @@ public class HomeFragment extends Fragment {
 
                             examDataList.add(examDataModel);
                         }
-                        CustomAdapter examListAdapter = new CustomAdapter(requireActivity(), R.layout.exam_list_item, examDataList.size());
+
+                        homeProgressBar.setVisibility(View.GONE);
+                        listView.setVisibility(View.VISIBLE);
+
+                        CustomAdapter examListAdapter = new CustomAdapter(requireActivity(), R.layout.list_item_exam, examDataList.size());
                         examListAdapter.setExamDataModelList(examDataList);
 
                         listView.setAdapter(examListAdapter);
@@ -155,7 +161,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void showIntroDialog(Dialog dialog) {
-        dialog.setContentView(R.layout.user_info_dialog);
+        dialog.setContentView(R.layout.dialog_user_info);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setGravity(Gravity.BOTTOM);

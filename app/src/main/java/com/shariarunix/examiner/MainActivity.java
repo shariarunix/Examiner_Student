@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         loadingDialog = new Dialog(MainActivity.this);
 
         Objects.requireNonNull(loadingDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        loadingDialog.setContentView(R.layout.progressbar_dialog);
+        loadingDialog.setContentView(R.layout.dialog_progressbar);
         loadingDialog.setCancelable(false);
         loadingDialog.show();
 

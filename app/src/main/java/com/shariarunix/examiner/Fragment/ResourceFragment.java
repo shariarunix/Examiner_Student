@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,6 +39,8 @@ public class ResourceFragment extends Fragment {
     List<ResourceDataModel> allCourseResourceDataModelList = new ArrayList<>();
     List<ResourceDataModel> resourceDataModelList = new ArrayList<>();
     DatabaseReference mReference;
+    ListView resList;
+    ProgressBar resourceProgressBar;
 
     public ResourceFragment() {
         // Default Empty Constructor
@@ -63,8 +65,9 @@ public class ResourceFragment extends Fragment {
             userCourse = getArguments().getString(USER_COURSE);
         }
 
-        ListView res_list = view.findViewById(R.id.res_list);
-        loadRes(res_list, userCourse);
+        resourceProgressBar = view.findViewById(R.id.resource_progress_bar);
+        resList = view.findViewById(R.id.res_list);
+        loadRes(resList, userCourse);
 
         return view;
     }
@@ -145,8 +148,11 @@ public class ResourceFragment extends Fragment {
             }
         });
 
+        resList.setVisibility(View.VISIBLE);
+        resourceProgressBar.setVisibility(View.GONE);
+
         CustomAdapter resListAdapter = new CustomAdapter(requireActivity(),
-                R.layout.resource_list_item,
+                R.layout.list_item_resource,
                 resourceDataModelList.size());
 
         resListAdapter.setResourceDataModelList(resourceDataModelList);

@@ -132,7 +132,7 @@ public class ExamActivity extends AppCompatActivity {
         }.start();
 
         // Checking User is Active or Not by this Countdown
-        tempCountDownTime = 2 * 30 * 1000;
+        tempCountDownTime = 2 * 60 * 1000;
         tempCountDownTimer = new CountDownTimer(tempCountDownTime, 1000) {
             @Override
             public void onTick(long l) {
@@ -151,7 +151,7 @@ public class ExamActivity extends AppCompatActivity {
         examCompleteDialog.getBehavior().setSkipCollapsed(true);
         examCompleteDialog.getBehavior().setState(STATE_EXPANDED);
         examCompleteDialog.setCancelable(false);
-        examCompleteDialog.setContentView(R.layout.exam_complete_dialog);
+        examCompleteDialog.setContentView(R.layout.bottom_dialog_exam_complete);
 
         TextView txtExamResultShow = examCompleteDialog.findViewById(R.id.txt_show_exam_result);
         AppCompatButton btnExamCompleteDialogContinue = examCompleteDialog.findViewById(R.id.btn_exam_complete_continue);
