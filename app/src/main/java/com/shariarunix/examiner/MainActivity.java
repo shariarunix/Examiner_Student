@@ -128,33 +128,32 @@ public class MainActivity extends AppCompatActivity {
 
     // Load user Data
     private void loadData(String key) {
-
         mReference.child("student").child(key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    studentDataModel = snapshot.getValue(StudentDataModel.class);
 
-                studentDataModel = snapshot.getValue(StudentDataModel.class);
-                assert studentDataModel != null;
+                    assert studentDataModel != null;
+                    // Setting data to shared pref
+                    editor.putString("userEmail", studentDataModel.getEmail());
+                    editor.putString("userName", studentDataModel.getName());
+                    editor.apply();
 
-                // Setting data to shared pref
-                editor.putString("userEmail", studentDataModel.getEmail());
-                editor.putString("userName", studentDataModel.getName());
-                editor.apply();
+                    // Default Fragment
+                    loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
+                            studentDataModel.getEmail(),
+                            studentDataModel.getPhone(),
+                            studentDataModel.getCourse(),
+                            studentDataModel.getPrevExamResult(),
+                            studentDataModel.getPrevExamTotalMarks()), 0);
 
-                // Default Fragment
-                loadFrag(HomeFragment.getInstance(studentDataModel.getName(),
-                        studentDataModel.getEmail(),
-                        studentDataModel.getPhone(),
-                        studentDataModel.getCourse(),
-                        studentDataModel.getPrevExamResult(),
-                        studentDataModel.getPrevExamTotalMarks()), 0);
-
-                loadingDialog.dismiss();
+                    loadingDialog.dismiss();
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
                 Toast.makeText(MainActivity.this, "Please check your internet", Toast.LENGTH_SHORT).show();
                 loadingDialog.dismiss();
             }

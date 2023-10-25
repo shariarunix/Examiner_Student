@@ -29,6 +29,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.AuthCredential;
@@ -42,9 +43,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.shariarunix.examiner.Adapter.CustomAdapter;
 import com.shariarunix.examiner.DataModel.ExamResultModel;
+import com.shariarunix.examiner.DataModel.StudentDataModel;
 import com.shariarunix.examiner.LoginActivity;
 import com.shariarunix.examiner.PassShowHide;
 import com.shariarunix.examiner.R;
+import com.shariarunix.examiner.SignupActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,6 +73,7 @@ public class ProfileFragment extends Fragment {
     boolean findSpecialChar = false;
     boolean oldPassShowToggle = false;
     boolean newPassShowToggle = false;
+    boolean deleteAcPassShowToggle = false;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -106,17 +110,10 @@ public class ProfileFragment extends Fragment {
         LinearLayout personalInfo = view.findViewById(R.id.personal_info);
         LinearLayout changePass = view.findViewById(R.id.change_password);
         LinearLayout forgotPass = view.findViewById(R.id.forgot_pass);
+        LinearLayout deleteAccount = view.findViewById(R.id.delete_account);
         ImageButton imgBtnLogOut = view.findViewById(R.id.img_btn_logout);
 
         AppCompatButton btnProfileSeeResult = view.findViewById(R.id.btn_profile_see_result);
-
-        // User Logged Out
-        imgBtnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                logOutUser();
-            }
-        });
 
         // Set all info in variable
         if (getArguments() != null) {
@@ -129,6 +126,21 @@ public class ProfileFragment extends Fragment {
             // Set name of user
             txtProfileShowName.setText(userName);
         }
+
+        // User Logged Out
+        imgBtnLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logOutUser();
+            }
+        });
+
+        deleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAccount(userID, userPass);
+            }
+        });
 
         // Personal Info
         personalInfoDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
@@ -368,6 +380,100 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    // Method for deleting user account
+    private void deleteAccount(String uID, String password) {
+        BottomSheetDialog deleteAccountDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
+        bottomDialog(deleteAccountDialog);
+        deleteAccountDialog.setContentView(R.layout.bottom_dialog_delete_account);
+
+        EditText edtDeleteAcPassword = deleteAccountDialog.findViewById(R.id.edt_delete_ac_password);
+
+        TextView deleteAcShowError = deleteAccountDialog.findViewById(R.id.show_error);
+
+        ImageView icPassShow = deleteAccountDialog.findViewById(R.id.ic_pass_show);
+
+        AppCompatButton btnDeleteAcDialogYes = deleteAccountDialog.findViewById(R.id.btn_delete_ac_dialog_yes);
+        AppCompatButton btnDeleteAcDialogNo = deleteAccountDialog.findViewById(R.id.btn_delete_ac_dialog_no);
+
+        deleteAccountDialog.show();
+
+        icPassShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!deleteAcPassShowToggle) {
+                    new PassShowHide(edtDeleteAcPassword, icPassShow, false).passShow();
+                    deleteAcPassShowToggle = true;
+                } else {
+                    new PassShowHide(edtDeleteAcPassword, icPassShow, true).passHide();
+                    deleteAcPassShowToggle = false;
+                }
+            }
+        });
+
+        assert btnDeleteAcDialogYes != null;
+        btnDeleteAcDialogYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                assert edtDeleteAcPassword != null;
+                String edtPassword = edtDeleteAcPassword.getText().toString().trim();
+
+                FirebaseAuth.getInstance().getFirebaseAuthSettings();
+
+                // Checking password
+                if (!edtPassword.isEmpty()) {
+                    if (edtPassword.equals(password)) {
+                        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    removeDataFromSharedPref();
+
+                                    deleteAccountDialog.dismiss();
+
+                                    FirebaseDatabase.getInstance().getReference().child("student").child(uID).removeValue()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    Toast.makeText(requireActivity(), "Your account has been deleted.", Toast.LENGTH_SHORT).show();
+
+                                                    Intent goToSignUp = new Intent(new Intent(requireActivity(), SignupActivity.class));
+
+                                                    startActivity(goToSignUp);
+                                                    requireActivity().finish();
+                                                }
+                                            });
+
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(requireActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        removeDataFromSharedPref();
+
+                    } else {
+                        assert deleteAcShowError != null;
+                        validator(edtDeleteAcPassword, deleteAcShowError, "Please enter valid password.");
+                    }
+                } else {
+                    assert deleteAcShowError != null;
+                    validator(edtDeleteAcPassword, deleteAcShowError, "Please enter your password.");
+                }
+            }
+        });
+
+        assert btnDeleteAcDialogNo != null;
+        btnDeleteAcDialogNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAccountDialog.dismiss();
+            }
+        });
+    }
+
+
     // Method for user logging out
     private void logOutUser() {
         BottomSheetDialog logOutDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
@@ -378,25 +484,19 @@ public class ProfileFragment extends Fragment {
         AppCompatButton btnLogOutDialogNo = logOutDialog.findViewById(R.id.btn_logout_dialog_no);
 
         logOutDialog.show();
+        assert btnLogOutDialogYes != null;
         btnLogOutDialogYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
 
-                editor.putBoolean("userCheck", false);
-                editor.putString("userID", "");
-                editor.putString("userEmail", "");
-                editor.putString("userName", "");
-                editor.putString("prevExamResult", "0");
-                editor.putString("prevExamTotalMarks", "0");
-                editor.putBoolean("introDialog", false);
-
-                editor.apply();
+                removeDataFromSharedPref();
 
                 Toast.makeText(requireActivity(), "You've Been Logged Out.", Toast.LENGTH_SHORT).show();
 
-                startActivity(new Intent(requireActivity(), LoginActivity.class));
                 logOutDialog.dismiss();
+
+                startActivity(new Intent(requireActivity(), LoginActivity.class));
                 requireActivity().finish();
             }
         });
@@ -406,6 +506,18 @@ public class ProfileFragment extends Fragment {
                 logOutDialog.dismiss();
             }
         });
+    }
+
+    private void removeDataFromSharedPref() {
+        editor.putBoolean("userCheck", false);
+        editor.putString("userID", "");
+        editor.putString("userEmail", "");
+        editor.putString("userName", "");
+        editor.putString("prevExamResult", "0");
+        editor.putString("prevExamTotalMarks", "0");
+        editor.putBoolean("introDialog", false);
+
+        editor.apply();
     }
 
     // Method for loading user result data from database

@@ -100,7 +100,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="2"
-                    android:padding="15dp"
+                    android:padding="18dp"
                     android:src="@drawable/ic_next"
                     tools:ignore="ContentDescription" />
             </LinearLayout>
@@ -132,7 +132,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="2"
-                    android:padding="15dp"
+                    android:padding="18dp"
                     android:src="@drawable/ic_next"
                     tools:ignore="ContentDescription" />
             </LinearLayout>
@@ -166,6 +166,32 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="2"
                     android:padding="15dp"
+                    android:src="@drawable/ic_next"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/delete_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/white_ripple"
+                android:orientation="horizontal"
+                android:weightSum="12">
+
+                <TextView
+                    style="@style/profile_bigger_text"
+                    android:layout_weight="10"
+                    android:text="Delete Account" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="2"
+                    android:padding="18dp"
                     android:src="@drawable/ic_next"
                     tools:ignore="ContentDescription" />
             </LinearLayout>

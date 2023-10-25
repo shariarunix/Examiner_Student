@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/white_radius_top_bg"
@@ -15,6 +16,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/barlow_semibold"
         android:text="Are you sure?"
         android:textColor="@color/red_pr"
@@ -25,9 +27,53 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/barlow_regular"
-        android:text="Do you really want to log out?"
+        android:text="Do you really delete your account? This process can not be undone."
         android:textColor="@color/black_sc"
         android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edt_bg">
+
+        <ImageView
+            style="@style/edt_icon_style"
+            android:src="@drawable/ic_pass"
+            tools:ignore="ContentDescription" />
+
+        <EditText
+            android:id="@+id/edt_delete_ac_password"
+            style="@style/edt_txt_style"
+            android:layout_marginEnd="50dp"
+            android:hint="Enter Password"
+            android:importantForAutofill="no"
+            android:inputType="textPassword"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:id="@+id/ic_pass_show"
+            style="@style/edt_icon_style"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="18dp"
+            android:src="@drawable/ic_pass_hide"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/show_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/red_sc_bg"
+        android:fontFamily="@font/barlow_regular"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp"
+        android:textColor="@color/red_pr"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,7 +82,7 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_logout_dialog_yes"
+            android:id="@+id/btn_delete_ac_dialog_yes"
             style="@android:style/Widget.Material.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -52,7 +98,7 @@
             android:textSize="18sp" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_logout_dialog_no"
+            android:id="@+id/btn_delete_ac_dialog_no"
             style="@android:style/Widget.Material.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="match_parent"

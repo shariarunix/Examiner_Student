@@ -19,7 +19,7 @@
             android:layout_alignParentStart="true"
             android:fontFamily="@font/barlow_regular"
             android:textColor="@color/black_sc"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/txt_show_msg_time"
@@ -28,13 +28,13 @@
             android:layout_alignParentEnd="true"
             android:fontFamily="@font/barlow_regular"
             android:textColor="@color/black_sc"
-            android:textSize="14sp"
+            android:textSize="12sp"
             tools:ignore="RelativeOverlap" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/txt_msg_box"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
@@ -45,9 +45,9 @@
 
     <TextView
         android:id="@+id/txt_show_admin_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/barlow_regular"
         android:textColor="@color/black_sc"
-        android:textSize="14sp" />
+        android:textSize="12sp" />
 </LinearLayout>
