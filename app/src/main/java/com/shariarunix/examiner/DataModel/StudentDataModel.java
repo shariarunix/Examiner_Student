@@ -1,6 +1,8 @@
 package com.shariarunix.examiner.DataModel;
 
-public class StudentDataModel{
+import java.io.Serializable;
+
+public class StudentDataModel implements Serializable {
     private String name, email, phone, course, password, userId;
     private int prevExamTotalMarks, prevExamResult;
 

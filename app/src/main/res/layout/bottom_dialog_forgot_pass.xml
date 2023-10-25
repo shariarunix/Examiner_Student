@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/forgot_password"
-        android:textSize="32sp"
+        android:textSize="34sp"
         android:textColor="@color/blue_pr"
         android:fontFamily="@font/barlow_semibold"/>
     <TextView
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/forgot_otp"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textColor="@color/black_sc"
         android:fontFamily="@font/barlow_regular"/>
 

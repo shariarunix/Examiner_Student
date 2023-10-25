@@ -52,9 +52,6 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
-    // Dialogs declaration for forgot password
-    private BottomSheetDialog forgotPassDialog, otpDialog, resetPassDialog;
-
     private String otp = "", otpOne, otpTwo, otpThree, otpFour;
 
 
@@ -79,241 +76,6 @@ public class LoginActivity extends AppCompatActivity {
         btnSignIn = findViewById(R.id.btn_signin);
         rememberCheck = findViewById(R.id.remember_check);
         showError = findViewById(R.id.show_error);
-
-        // Dialogs for Forgot Password
-        forgotPassDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
-        otpDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
-        resetPassDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
-
-        // Forgot Password Activity
-        txtBtnForgotPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomDialog(forgotPassDialog);
-                forgotPassDialog.setContentView(R.layout.bottom_dialog_forgot_pass);
-                forgotPassDialog.show();
-
-                TextView forgotDialogShowError = forgotPassDialog.findViewById(R.id.forgot_dialog_show_error);
-                EditText edtForgotDialogEmail = forgotPassDialog.findViewById(R.id.edt_forgot_dialog_email);
-                AppCompatButton btnForgotDialogEmail = forgotPassDialog.findViewById(R.id.btn_forgot_dialog_continue);
-
-                assert btnForgotDialogEmail != null;
-                btnForgotDialogEmail.setOnClickListener(new View.OnClickListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onClick(View view) {
-
-                        assert edtForgotDialogEmail != null;
-                        String email = edtForgotDialogEmail.getText().toString().trim();
-
-                        if (email.isEmpty()) {
-                            assert forgotDialogShowError != null;
-                            validator(edtEmail, forgotDialogShowError, "Please enter your email address");
-                            return;
-                        }
-                        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                            assert forgotDialogShowError != null;
-                            validator(edtEmail, forgotDialogShowError, "Please enter a valid email address");
-                            return;
-                        }
-
-                        forgotPassDialog.dismiss();
-                        bottomDialog(otpDialog);
-                        otpDialog.setContentView(R.layout.bottom_dialog_otp);
-                        otpDialog.show();
-
-                        EditText edtOtpOne = otpDialog.findViewById(R.id.otp_one);
-                        EditText edtOtpTwo = otpDialog.findViewById(R.id.otp_two);
-                        EditText edtOtpThree = otpDialog.findViewById(R.id.otp_three);
-                        EditText edtOtpFour = otpDialog.findViewById(R.id.otp_four);
-
-                        TextView txtBtnOtpResend = otpDialog.findViewById(R.id.txt_btn_otp_resend);
-                        AppCompatButton enterOtp = otpDialog.findViewById(R.id.btn_enter_otp);
-
-
-                        assert edtOtpOne != null;
-                        edtOtpOne.requestFocus();
-                        edtOtpOne.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                if (!charSequence.toString().trim().isEmpty()) {
-                                    assert edtOtpTwo != null;
-                                    edtOtpTwo.requestFocus();
-                                }
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable editable) {
-                            }
-                        });
-                        assert edtOtpTwo != null;
-                        edtOtpTwo.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                if (!charSequence.toString().trim().isEmpty()) {
-                                    assert edtOtpThree != null;
-                                    edtOtpThree.requestFocus();
-                                }
-                                if (charSequence.toString().isEmpty()) {
-                                    edtOtpOne.requestFocus();
-                                }
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable editable) {
-                            }
-                        });
-                        assert edtOtpThree != null;
-                        edtOtpThree.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                if (!charSequence.toString().trim().isEmpty()) {
-                                    assert edtOtpFour != null;
-                                    edtOtpFour.requestFocus();
-                                }
-                                if (charSequence.toString().isEmpty()) {
-                                    edtOtpTwo.requestFocus();
-                                }
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable editable) {
-                            }
-                        });
-                        assert edtOtpFour != null;
-                        edtOtpFour.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                if (charSequence.toString().isEmpty()) {
-                                    edtOtpThree.requestFocus();
-                                }
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable editable) {
-                            }
-                        });
-
-                        assert txtBtnOtpResend != null;
-                        txtBtnOtpResend.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(LoginActivity.this, "OTP Sent again", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                        assert enterOtp != null;
-                        enterOtp.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                otpOne = edtOtpOne.getText().toString();
-                                otpTwo = edtOtpTwo.getText().toString();
-                                otpThree = edtOtpThree.getText().toString();
-                                otpFour = edtOtpFour.getText().toString();
-
-                                otp = otpOne + otpTwo + otpThree + otpFour;
-
-                                //OTP Verification
-                                otpDialog.dismiss();
-                                bottomDialog(resetPassDialog);
-                                resetPassDialog.setContentView(R.layout.bottm_dialog_new_password);
-                                resetPassDialog.show();
-
-                                EditText setPassword = resetPassDialog.findViewById(R.id.edt_reset_pass);
-                                EditText setConfirmPassword = resetPassDialog.findViewById(R.id.edt_reset_confirm_pass);
-                                AppCompatButton btnResetPass = resetPassDialog.findViewById(R.id.btn_reset_pass);
-
-                                TextView resetDialogShowError = resetPassDialog.findViewById(R.id.reset_dialog_show_error);
-
-                                ImageView resetPass = resetPassDialog.findViewById(R.id.ic_pass_show);
-                                ImageView resetConPass = resetPassDialog.findViewById(R.id.ic_confirm_pass_show);
-
-                                // Password show or hide
-                                assert resetPass != null;
-                                resetPass.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        if (!resetPassToggle) {
-                                            new PassShowHide(setPassword, resetPass, false).passShow();
-                                            resetPassToggle = true;
-                                        } else {
-                                            new PassShowHide(setPassword, resetPass, true).passHide();
-                                            resetPassToggle = false;
-                                        }
-                                    }
-                                });
-
-                                assert resetConPass != null;
-                                resetConPass.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        if (!resetConPassToggle) {
-                                            new PassShowHide(setConfirmPassword, resetConPass, false).passShow();
-                                            resetConPassToggle = true;
-                                        } else {
-                                            new PassShowHide(setConfirmPassword, resetConPass, true).passHide();
-                                            resetConPassToggle = false;
-                                        }
-                                    }
-                                });
-
-                                // Reset Password
-                                assert btnResetPass != null;
-                                btnResetPass.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        assert setPassword != null;
-                                        String password = setPassword.getText().toString().trim();
-                                        assert setConfirmPassword != null;
-                                        String conPassword = setConfirmPassword.getText().toString().trim();
-
-                                        // Checking password
-                                        if (password.isEmpty()) {
-                                            assert resetDialogShowError != null;
-                                            validator(setPassword, resetDialogShowError, "Please enter your password");
-                                            return;
-                                        }
-                                        if (password.length() < 8) {
-                                            assert resetDialogShowError != null;
-                                            validator(setPassword, resetDialogShowError, "Password must be at least 8 characters");
-                                            return;
-                                        }
-                                        if (!conPassword.equals(password)) {
-                                            assert resetDialogShowError != null;
-                                            validator(setConfirmPassword, resetDialogShowError, "Password and confirm password is not same");
-                                            return;
-                                        }
-
-                                        resetPassDialog.dismiss();
-                                        Toast.makeText(LoginActivity.this, "Password changed.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        });
 
         // Password Show or Hide
         icPassShow.setOnClickListener(new View.OnClickListener() {
@@ -360,6 +122,259 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 userSignIn();
+            }
+        });
+
+        // Forgot Password Dialog
+        txtBtnForgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showForgotPassDialog();
+            }
+        });
+    }
+
+    private void showForgotPassDialog() {
+        BottomSheetDialog forgotPassDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
+
+        bottomDialog(forgotPassDialog);
+        forgotPassDialog.setContentView(R.layout.bottom_dialog_forgot_pass);
+        forgotPassDialog.show();
+
+        TextView forgotDialogShowError = forgotPassDialog.findViewById(R.id.forgot_dialog_show_error);
+        EditText edtForgotDialogEmail = forgotPassDialog.findViewById(R.id.edt_forgot_dialog_email);
+        AppCompatButton btnForgotDialogEmail = forgotPassDialog.findViewById(R.id.btn_forgot_dialog_continue);
+
+        assert btnForgotDialogEmail != null;
+        btnForgotDialogEmail.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View view) {
+
+                assert edtForgotDialogEmail != null;
+                String email = edtForgotDialogEmail.getText().toString().trim();
+
+                if (email.isEmpty()) {
+                    assert forgotDialogShowError != null;
+                    validator(edtForgotDialogEmail, forgotDialogShowError, "Please enter your email address");
+                    return;
+                }
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    assert forgotDialogShowError != null;
+                    validator(edtForgotDialogEmail, forgotDialogShowError, "Please enter a valid email address");
+                    return;
+                }
+
+                forgotPassDialog.dismiss();
+
+                showOTPDialog();
+            }
+        });
+    }
+
+    private void showOTPDialog() {
+        BottomSheetDialog otpDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
+
+        bottomDialog(otpDialog);
+        otpDialog.setContentView(R.layout.bottom_dialog_otp);
+        otpDialog.show();
+
+        EditText edtOtpOne = otpDialog.findViewById(R.id.otp_one);
+        EditText edtOtpTwo = otpDialog.findViewById(R.id.otp_two);
+        EditText edtOtpThree = otpDialog.findViewById(R.id.otp_three);
+        EditText edtOtpFour = otpDialog.findViewById(R.id.otp_four);
+
+        TextView txtBtnOtpResend = otpDialog.findViewById(R.id.txt_btn_otp_resend);
+        AppCompatButton enterOtp = otpDialog.findViewById(R.id.btn_enter_otp);
+
+
+        assert edtOtpOne != null;
+        edtOtpOne.requestFocus();
+        edtOtpOne.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().trim().isEmpty()) {
+                    assert edtOtpTwo != null;
+                    edtOtpTwo.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        assert edtOtpTwo != null;
+        edtOtpTwo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().trim().isEmpty()) {
+                    assert edtOtpThree != null;
+                    edtOtpThree.requestFocus();
+                }
+                if (charSequence.toString().isEmpty()) {
+                    edtOtpOne.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        assert edtOtpThree != null;
+        edtOtpThree.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().trim().isEmpty()) {
+                    assert edtOtpFour != null;
+                    edtOtpFour.requestFocus();
+                }
+                if (charSequence.toString().isEmpty()) {
+                    edtOtpTwo.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        assert edtOtpFour != null;
+        edtOtpFour.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.toString().isEmpty()) {
+                    edtOtpThree.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        assert txtBtnOtpResend != null;
+        txtBtnOtpResend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(LoginActivity.this, "OTP Sent again", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        assert enterOtp != null;
+        enterOtp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                otpOne = edtOtpOne.getText().toString();
+                otpTwo = edtOtpTwo.getText().toString();
+                otpThree = edtOtpThree.getText().toString();
+                otpFour = edtOtpFour.getText().toString();
+
+                otp = otpOne + otpTwo + otpThree + otpFour;
+
+                //OTP Verification
+                otpDialog.dismiss();
+
+                resetPassDialog();
+            }
+        });
+    }
+
+    private void resetPassDialog() {
+        BottomSheetDialog resetPassDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
+
+        bottomDialog(resetPassDialog);
+        resetPassDialog.setContentView(R.layout.bottm_dialog_new_password);
+
+        EditText setPassword = resetPassDialog.findViewById(R.id.edt_reset_pass);
+        EditText setConfirmPassword = resetPassDialog.findViewById(R.id.edt_reset_confirm_pass);
+
+        AppCompatButton btnResetPass = resetPassDialog.findViewById(R.id.btn_reset_pass);
+
+        TextView resetDialogShowError = resetPassDialog.findViewById(R.id.reset_dialog_show_error);
+
+        ImageView resetPass = resetPassDialog.findViewById(R.id.ic_pass_show);
+        ImageView resetConPass = resetPassDialog.findViewById(R.id.ic_confirm_pass_show);
+
+        resetPassDialog.show();
+
+        // Password show or hide
+        assert resetPass != null;
+        resetPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!resetPassToggle) {
+                    new PassShowHide(setPassword, resetPass, false).passShow();
+                    resetPassToggle = true;
+                } else {
+                    new PassShowHide(setPassword, resetPass, true).passHide();
+                    resetPassToggle = false;
+                }
+            }
+        });
+
+        assert resetConPass != null;
+        resetConPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!resetConPassToggle) {
+                    new PassShowHide(setConfirmPassword, resetConPass, false).passShow();
+                    resetConPassToggle = true;
+                } else {
+                    new PassShowHide(setConfirmPassword, resetConPass, true).passHide();
+                    resetConPassToggle = false;
+                }
+            }
+        });
+
+        // Reset Password
+        assert btnResetPass != null;
+        btnResetPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                assert setPassword != null;
+                String password = setPassword.getText().toString().trim();
+                assert setConfirmPassword != null;
+                String conPassword = setConfirmPassword.getText().toString().trim();
+
+                // Checking password
+                if (password.isEmpty()) {
+                    assert resetDialogShowError != null;
+                    validator(setPassword, resetDialogShowError, "Please enter your password");
+                    return;
+                }
+                if (password.length() < 8) {
+                    assert resetDialogShowError != null;
+                    validator(setPassword, resetDialogShowError, "Password must be at least 8 characters");
+                    return;
+                }
+                if (!conPassword.equals(password)) {
+                    assert resetDialogShowError != null;
+                    validator(setConfirmPassword, resetDialogShowError, "Password and confirm password is not same");
+                    return;
+                }
+
+                resetPassDialog.dismiss();
+
+                Toast.makeText(LoginActivity.this, "Password changed.", Toast.LENGTH_SHORT).show();
             }
         });
     }

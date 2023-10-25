@@ -68,11 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (item.getItemId() == R.id.profile) {
                     // Loading Profile Fragment
-                    loadFrag(ProfileFragment.getInstance(studentDataModel.getName(),
-                            studentDataModel.getEmail(),
-                            studentDataModel.getPhone(),
-                            studentDataModel.getCourse(),
-                            studentDataModel.getPassword()), 1);
+                    loadFrag(ProfileFragment.getInstance(studentDataModel), 1);
                 }
                 if (item.getItemId() == R.id.home) {
                     // Load Home Fragment
