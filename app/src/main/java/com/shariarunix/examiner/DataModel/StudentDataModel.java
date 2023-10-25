@@ -6,6 +6,8 @@ public class StudentDataModel implements Serializable {
     private String name, email, phone, course, password, userId;
     private int prevExamTotalMarks, prevExamResult;
 
+    private boolean isLoggedIn;
+
     public StudentDataModel(){
         // Default Empty Contractor
     }
@@ -17,7 +19,8 @@ public class StudentDataModel implements Serializable {
                             String password,
                             String userId,
                             int prevExamTotalMarks,
-                            int prevExamResult) {
+                            int prevExamResult,
+                            boolean isLoggedIn) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -26,14 +29,7 @@ public class StudentDataModel implements Serializable {
         this.userId = userId;
         this.prevExamTotalMarks = prevExamTotalMarks;
         this.prevExamResult = prevExamResult;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+        this.isLoggedIn = isLoggedIn;
     }
 
     public String getName() {
@@ -76,6 +72,14 @@ public class StudentDataModel implements Serializable {
         this.password = password;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public int getPrevExamTotalMarks() {
         return prevExamTotalMarks;
     }
@@ -90,5 +94,13 @@ public class StudentDataModel implements Serializable {
 
     public void setPrevExamResult(int prevExamResult) {
         this.prevExamResult = prevExamResult;
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
     }
 }

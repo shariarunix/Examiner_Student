@@ -113,7 +113,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, SignupActivity.class));
-                finish();
             }
         });
 
@@ -422,12 +421,16 @@ public class LoginActivity extends AppCompatActivity {
                             assert user != null;
                             String key = user.getUid();
 
-                            editor.putString("userID", key);
+                            FirebaseDatabase.getInstance().getReference()
+                                    .child("student")
+                                    .child(key)
+                                    .child("isLoggedIn")
+                                    .setValue(true);
 
+                            editor.putString("userID", key);
                             editor.apply();
 
                             Intent iNext = new Intent(LoginActivity.this, MainActivity.class);
-//                        iNext.putExtra("uID", key);
                             startActivity(iNext);
                             finish();
                         } else {

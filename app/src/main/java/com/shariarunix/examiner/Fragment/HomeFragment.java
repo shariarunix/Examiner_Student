@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.shariarunix.examiner.Adapter.CustomAdapter;
 import com.shariarunix.examiner.DataModel.ExamDataModel;
+import com.shariarunix.examiner.DataModel.StudentDataModel;
 import com.shariarunix.examiner.R;
 
 import java.util.ArrayList;
@@ -38,12 +39,7 @@ import java.util.Objects;
 
 public class HomeFragment extends Fragment {
     private DatabaseReference mReference;
-    private static final String U_NAME = "arg1";
-    private static final String U_PREV_EXAM = "arg2";
-    private static final String U_PREV_EXAM_MARKS = "arg3";
-    private static final String U_COURSE = "arg4";
-    private static final String U_EMAIL = "arg5";
-    private static final String U_PHONE = "arg6";
+    private static final String U_DATA = "arg1";
     String userName, userEmail, userPhone, userCourse;
     int prevExamResult, prevExamTotalMarks;
     boolean isDialogShown;
@@ -56,16 +52,11 @@ public class HomeFragment extends Fragment {
         //Default Empty Constructor
     }
 
-    public static HomeFragment getInstance(String uName, String uEmail, String uPhone, String uCourse, int prevExamResult, int prevExamTotalMarks) {
+    public static HomeFragment getInstance(StudentDataModel studentDataModel) {
         HomeFragment homeFragment = new HomeFragment();
         Bundle bundle = new Bundle();
 
-        bundle.putString(U_NAME, uName);
-        bundle.putString(U_EMAIL, uEmail);
-        bundle.putString(U_PHONE, uPhone);
-        bundle.putString(U_COURSE, uCourse);
-        bundle.putInt(U_PREV_EXAM, prevExamResult);
-        bundle.putInt(U_PREV_EXAM_MARKS, prevExamTotalMarks);
+        bundle.putSerializable(U_DATA, studentDataModel);
 
         homeFragment.setArguments(bundle);
         return homeFragment;
@@ -92,12 +83,14 @@ public class HomeFragment extends Fragment {
         LinearLayout layoutShowPrevResult = view.findViewById(R.id.layout_show_prev_result);
 
         if (getArguments() != null) {
-            userName = getArguments().getString(U_NAME);
-            userEmail = getArguments().getString(U_EMAIL);
-            userPhone = getArguments().getString(U_PHONE);
-            userCourse = getArguments().getString(U_COURSE);
-            prevExamResult = getArguments().getInt(U_PREV_EXAM);
-            prevExamTotalMarks = getArguments().getInt(U_PREV_EXAM_MARKS);
+            StudentDataModel studentDataModel = (StudentDataModel) getArguments().getSerializable(U_DATA);
+
+            userName = studentDataModel.getName();
+            userEmail = studentDataModel.getEmail();
+            userPhone = studentDataModel.getPhone();
+            userCourse = studentDataModel.getCourse();
+            prevExamResult = studentDataModel.getPrevExamResult();
+            prevExamTotalMarks = studentDataModel.getPrevExamTotalMarks();
 
             txtShowName.setText(userName);
         }

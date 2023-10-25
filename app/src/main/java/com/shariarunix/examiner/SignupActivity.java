@@ -128,8 +128,7 @@ public class SignupActivity extends AppCompatActivity {
         findViewById(R.id.txt_btn_sign_in).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
-                finish();
+                onBackPressed();
             }
         });
 
@@ -241,7 +240,7 @@ public class SignupActivity extends AppCompatActivity {
                     assert user != null;
                     userID = user.getUid();
 
-                    sDataModel = new StudentDataModel(name, email, phone, course, confirmPass, userID, 0, 0);
+                    sDataModel = new StudentDataModel(name, email, phone, course, confirmPass, userID, 0, 0, true);
 
                     // Setting Data as a Child of UID
                     setData(userID);

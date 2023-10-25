@@ -65,11 +65,6 @@ public class ProfileFragment extends Fragment {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     boolean findSpecialChar = false;
-    boolean oldPassShowToggle = false;
-    boolean newPassShowToggle = false;
-    boolean deleteAcPassShowToggle = false;
-    boolean resetPassToggle = false;
-    boolean resetConPassToggle = false;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -339,6 +334,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void resetPassDialog() {
+        final boolean[] resetPassToggle = {false, false};
+
         BottomSheetDialog resetPassDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
 
         bottomDialog(resetPassDialog);
@@ -361,12 +358,12 @@ public class ProfileFragment extends Fragment {
         resetPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!resetPassToggle) {
+                if (!resetPassToggle[0]) {
                     new PassShowHide(setPassword, resetPass, false).passShow();
-                    resetPassToggle = true;
+                    resetPassToggle[0] = true;
                 } else {
                     new PassShowHide(setPassword, resetPass, true).passHide();
-                    resetPassToggle = false;
+                    resetPassToggle[0] = false;
                 }
             }
         });
@@ -375,12 +372,12 @@ public class ProfileFragment extends Fragment {
         resetConPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!resetConPassToggle) {
+                if (!resetPassToggle[1]) {
                     new PassShowHide(setConfirmPassword, resetConPass, false).passShow();
-                    resetConPassToggle = true;
+                    resetPassToggle[1] = true;
                 } else {
                     new PassShowHide(setConfirmPassword, resetConPass, true).passHide();
-                    resetConPassToggle = false;
+                    resetPassToggle[1] = false;
                 }
             }
         });
@@ -420,6 +417,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showChangePassDialog() {
+        final boolean[] oldPassShowToggle = {false, false};
+
         BottomSheetDialog changePassDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
 
         bottomDialog(changePassDialog);
@@ -439,12 +438,12 @@ public class ProfileFragment extends Fragment {
         oldPassShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!oldPassShowToggle) {
+                if (!oldPassShowToggle[0]) {
                     new PassShowHide(edtOldPass, oldPassShow, false).passShow();
-                    oldPassShowToggle = true;
+                    oldPassShowToggle[0] = true;
                 } else {
                     new PassShowHide(edtOldPass, oldPassShow, true).passHide();
-                    oldPassShowToggle = false;
+                    oldPassShowToggle[0] = false;
                 }
             }
         });
@@ -452,12 +451,12 @@ public class ProfileFragment extends Fragment {
         newPassShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!newPassShowToggle) {
+                if (!oldPassShowToggle[1]) {
                     new PassShowHide(edtNewPass, newPassShow, false).passShow();
-                    newPassShowToggle = true;
+                    oldPassShowToggle[1] = true;
                 } else {
                     new PassShowHide(edtNewPass, newPassShow, true).passHide();
-                    newPassShowToggle = false;
+                    oldPassShowToggle[1] = false;
                 }
             }
         });
@@ -644,6 +643,8 @@ public class ProfileFragment extends Fragment {
 
     // Method for deleting user account
     private void deleteAccount(String uID, String password) {
+        final boolean[] deleteAcPassShowToggle = {false};
+
         BottomSheetDialog deleteAccountDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
         bottomDialog(deleteAccountDialog);
         deleteAccountDialog.setContentView(R.layout.bottom_dialog_delete_account);
@@ -662,12 +663,12 @@ public class ProfileFragment extends Fragment {
         icPassShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!deleteAcPassShowToggle) {
+                if (!deleteAcPassShowToggle[0]) {
                     new PassShowHide(edtDeleteAcPassword, icPassShow, false).passShow();
-                    deleteAcPassShowToggle = true;
+                    deleteAcPassShowToggle[0] = true;
                 } else {
                     new PassShowHide(edtDeleteAcPassword, icPassShow, true).passHide();
-                    deleteAcPassShowToggle = false;
+                    deleteAcPassShowToggle[0] = false;
                 }
             }
         });
@@ -750,6 +751,11 @@ public class ProfileFragment extends Fragment {
                 FirebaseAuth.getInstance().signOut();
 
                 removeDataFromSharedPref();
+
+                mReference.child("student")
+                        .child(userID)
+                        .child("isLoggedIn")
+                        .setValue(false);
 
                 Toast.makeText(requireActivity(), "You've Been Logged Out.", Toast.LENGTH_SHORT).show();
 
