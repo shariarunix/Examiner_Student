@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/barlow_light"
             android:text="@string/hello"
             android:textColor="@color/black_pr"
@@ -105,6 +105,7 @@
         android:clipToPadding="false"
         android:divider="@color/transparent"
         android:dividerHeight="10dp"
+        android:listSelector="@color/blue_sc"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:scrollbars="none"

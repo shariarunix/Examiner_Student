@@ -154,13 +154,15 @@ public class LoginActivity extends AppCompatActivity {
         EditText edtForgotDialogEmail = forgotPassDialog.findViewById(R.id.edt_forgot_dialog_email);
         AppCompatButton btnForgotDialogEmail = forgotPassDialog.findViewById(R.id.btn_forgot_dialog_continue);
 
+        assert edtForgotDialogEmail != null;
+        edtForgotDialogEmail.requestFocus();
+
         assert btnForgotDialogEmail != null;
         btnForgotDialogEmail.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
 
-                assert edtForgotDialogEmail != null;
                 String email = edtForgotDialogEmail.getText().toString().trim();
 
                 if (email.isEmpty()) {
@@ -230,8 +232,9 @@ public class LoginActivity extends AppCompatActivity {
         EditText edtOtpThree = otpDialog.findViewById(R.id.otp_three);
         EditText edtOtpFour = otpDialog.findViewById(R.id.otp_four);
 
-        AppCompatButton enterOtp = otpDialog.findViewById(R.id.btn_enter_otp);
+        TextView otpDialogShowError = otpDialog.findViewById(R.id.otp_dialog_show_error);
 
+        AppCompatButton enterOtp = otpDialog.findViewById(R.id.btn_enter_otp);
 
         assert edtOtpOne != null;
         edtOtpOne.requestFocus();
@@ -332,7 +335,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, "We've sent you a password reset email, Please check your email", Toast.LENGTH_SHORT).show();
+                                showSentMailConfDialog();
                                 otpDialog.dismiss();
                             } else {
                                 Toast.makeText(LoginActivity.this, "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -340,7 +343,28 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     });
+                } else {
+                    assert otpDialogShowError != null;
+                    validator(edtOtpOne, otpDialogShowError, "Please enter correct otp.");
                 }
+            }
+        });
+    }
+
+    private void showSentMailConfDialog() {
+        BottomSheetDialog sentMailConfDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
+        bottomDialog(sentMailConfDialog);
+        sentMailConfDialog.setContentView(R.layout.bottom_dialog_password_reset_link);
+
+        AppCompatButton btnPassResetLinkContinue = sentMailConfDialog.findViewById(R.id.btn_pass_change_link_continue);
+
+        sentMailConfDialog.show();
+
+        assert btnPassResetLinkContinue != null;
+        btnPassResetLinkContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sentMailConfDialog.dismiss();
             }
         });
     }

@@ -25,7 +25,6 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="sign_up">Sign up</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="forgot_otp">Enter your email here for verification process. We will send you an OTP to your email.</string>
     <string name="continue_btn">Continue</string>
@@ -41,5 +40,6 @@
     <string name="congratulation">Congratulation</string>
     <string name="answered_all">You have answered all question.</string>
     <string name="your_score_txt">Your Score is</string>
+    <string name="pass_reset_link">We have sent you a password reset link. Please check your email and reset your password</string>
 
 </resources>

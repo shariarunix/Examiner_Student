@@ -6,96 +6,99 @@
     android:layout_margin="10dp"
     android:background="@drawable/dialog_bg_white"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="30dp"
-        android:paddingVertical="20dp"
         android:layout_marginBottom="30dp"
+        android:background="@drawable/blue_bg_user_info_dialog"
         android:orientation="vertical"
-        android:background="@drawable/blue_bg_user_info_dialog">
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="20dp">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thank You !!!"
-            android:textSize="38sp"
-            android:textColor="@color/white_pr"
-            android:textAlignment="center"
             android:fontFamily="@font/barlow_semibold"
+            android:text="Thank You !!!"
+            android:textAlignment="center"
+            android:textColor="@color/white_pr"
+            android:textSize="38sp"
             tools:ignore="HardcodedText" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="For Joining Us."
-            android:textSize="24sp"
-            android:textColor="@color/white_pr"
-            android:textAlignment="center"
             android:fontFamily="@font/barlow_regular"
-            tools:ignore="HardcodedText"/>
+            android:text="For Joining Us."
+            android:textAlignment="center"
+            android:textColor="@color/white_pr"
+            android:textSize="24sp"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/txt_stNameID"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:paddingHorizontal="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:gravity="center_vertical"
-        android:textSize="22sp"
-        android:fontFamily="@font/barlow_regular"
-        android:textColor="@color/black_sc"
         android:background="@drawable/edt_bg"
-        />
+        android:fontFamily="@font/barlow_regular"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:textColor="@color/black_sc"
+        android:textSize="22sp" />
+
     <TextView
         android:id="@+id/txt_stEmailID"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:paddingHorizontal="20dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:gravity="center_vertical"
-        android:textSize="22sp"
-        android:fontFamily="@font/barlow_regular"
-        android:textColor="@color/black_sc"
         android:background="@drawable/edt_bg"
-        />
+        android:fontFamily="@font/barlow_regular"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:textColor="@color/black_sc"
+        android:textSize="22sp" />
+
     <TextView
         android:id="@+id/txt_stPhoneID"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:paddingHorizontal="20dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:gravity="center_vertical"
-        android:textSize="22sp"
-        android:fontFamily="@font/barlow_regular"
-        android:textColor="@color/black_sc"
         android:background="@drawable/edt_bg"
-        />
+        android:fontFamily="@font/barlow_regular"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:textColor="@color/black_sc"
+        android:textSize="22sp" />
+
     <TextView
         android:id="@+id/txt_stCourseID"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:paddingHorizontal="20dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:gravity="center_vertical"
-        android:textSize="22sp"
-        android:fontFamily="@font/barlow_regular"
-        android:textColor="@color/black_sc"
         android:background="@drawable/edt_bg"
-        />
+        android:fontFamily="@font/barlow_regular"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:textColor="@color/black_sc"
+        android:textSize="22sp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_dialog_ok"
-        android:text="Ok"
-        android:layout_marginTop="30dp"
+        style="@style/blue_btn_style"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        style="@style/blue_btn_style"
+        android:text="Ok"
         tools:ignore="HardcodedText" />
 </LinearLayout>

@@ -8,18 +8,20 @@
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".SplashActivity">
+
     <ImageView
         android:layout_width="260dp"
         android:layout_height="60dp"
         android:src="@drawable/examiner_logo"
         tools:ignore="ContentDescription" />
+
     <ProgressBar
         android:id="@+id/progress_bar"
+        style="@android:style/Widget.Material.ProgressBar.Horizontal"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:progressTint="@color/white_pr"
         android:progressBackgroundTint="@color/white_sc"
-        style="@android:style/Widget.Material.ProgressBar.Horizontal"/>
+        android:progressTint="@color/white_pr" />
 
 </LinearLayout>

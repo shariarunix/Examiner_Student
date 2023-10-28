@@ -105,7 +105,6 @@ public class ProfileFragment extends Fragment {
 
         LinearLayout personalInfo = view.findViewById(R.id.personal_info);
         LinearLayout changePass = view.findViewById(R.id.change_password);
-        LinearLayout forgotPass = view.findViewById(R.id.forgot_pass);
         LinearLayout deleteAccount = view.findViewById(R.id.delete_account);
 
         ImageButton imgBtnLogOut = view.findViewById(R.id.img_btn_logout);
@@ -167,236 +166,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        // Forgot Password
-        forgotPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showForgotPassDialog();
-            }
-        });
-
         return view;
-    }
-
-    BottomSheetDialog forgotPassDialog;
-
-    private void showForgotPassDialog() {
-        forgotPassDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
-
-        bottomDialog(forgotPassDialog);
-        forgotPassDialog.setContentView(R.layout.bottom_dialog_forgot_pass);
-        forgotPassDialog.show();
-
-        TextView forgotDialogShowError = forgotPassDialog.findViewById(R.id.forgot_dialog_show_error);
-        EditText edtForgotDialogEmail = forgotPassDialog.findViewById(R.id.edt_forgot_dialog_email);
-        AppCompatButton btnForgotDialogEmail = forgotPassDialog.findViewById(R.id.btn_forgot_dialog_continue);
-
-        assert btnForgotDialogEmail != null;
-        btnForgotDialogEmail.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View view) {
-
-                assert edtForgotDialogEmail != null;
-                String email = edtForgotDialogEmail.getText().toString().trim();
-
-                if (email.isEmpty()) {
-                    assert forgotDialogShowError != null;
-                    validator(edtForgotDialogEmail, forgotDialogShowError, "Please enter your email address");
-                    return;
-                }
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    assert forgotDialogShowError != null;
-                    validator(edtForgotDialogEmail, forgotDialogShowError, "Please enter a valid email address");
-                    return;
-                }
-
-                sendOtpToEmail(edtForgotDialogEmail, forgotDialogShowError, email);
-            }
-        });
-    }
-
-
-    // List For accessing data of the email we got from forgot password dialog
-    List<StudentDataModel> studentDataModelList = new ArrayList<>();
-
-    private void sendOtpToEmail(EditText edtForgotDialogEmail, TextView forgotDialogShowError, String email) {
-        DatabaseReference mReference = FirebaseDatabase.getInstance().getReference();
-        mReference.child(TB_STUDENT).orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    studentDataModelList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        StudentDataModel studentDataModel = dataSnapshot.getValue(StudentDataModel.class);
-                        studentDataModelList.add(studentDataModel);
-                    }
-
-                    Random random = new Random();
-
-                    int min = 1000;
-                    int max = 9999;
-
-                    int randomNumber = random.nextInt(max - min + 1) + min;
-
-                    new OTPSenderClass(email, studentDataModelList.get(0).getName(), "OTP for Password Reset", randomNumber).sendOtp();
-
-                    forgotPassDialog.dismiss();
-                    showOTPDialog(String.valueOf(randomNumber), studentDataModelList.get(0).getEmail());
-
-                } else {
-                    validator(edtForgotDialogEmail, forgotDialogShowError, "Please enter your email");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void showOTPDialog(String otpNumber, String email) {
-        BottomSheetDialog otpDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
-
-        bottomDialog(otpDialog);
-        otpDialog.setContentView(R.layout.bottom_dialog_otp);
-        otpDialog.show();
-
-        EditText edtOtpOne = otpDialog.findViewById(R.id.otp_one);
-        EditText edtOtpTwo = otpDialog.findViewById(R.id.otp_two);
-        EditText edtOtpThree = otpDialog.findViewById(R.id.otp_three);
-        EditText edtOtpFour = otpDialog.findViewById(R.id.otp_four);
-
-        AppCompatButton enterOtp = otpDialog.findViewById(R.id.btn_enter_otp);
-
-
-        assert edtOtpOne != null;
-        edtOtpOne.requestFocus();
-        edtOtpOne.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().trim().isEmpty()) {
-                    assert edtOtpTwo != null;
-                    edtOtpTwo.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-        assert edtOtpTwo != null;
-        edtOtpTwo.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().trim().isEmpty()) {
-                    assert edtOtpThree != null;
-                    edtOtpThree.requestFocus();
-                }
-                if (charSequence.toString().isEmpty()) {
-                    edtOtpOne.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-        assert edtOtpThree != null;
-        edtOtpThree.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().trim().isEmpty()) {
-                    assert edtOtpFour != null;
-                    edtOtpFour.requestFocus();
-                }
-                if (charSequence.toString().isEmpty()) {
-                    edtOtpTwo.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-        assert edtOtpFour != null;
-        edtOtpFour.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().isEmpty()) {
-                    edtOtpThree.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-
-        assert enterOtp != null;
-        enterOtp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String otpOne = edtOtpOne.getText().toString();
-                String otpTwo = edtOtpTwo.getText().toString();
-                String otpThree = edtOtpThree.getText().toString();
-                String otpFour = edtOtpFour.getText().toString();
-
-                String otp = otpOne + otpTwo + otpThree + otpFour;
-                if (otp.equals(otpNumber)) {
-                    mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(requireActivity(), "We've sent you a password reset email, Please check your email", Toast.LENGTH_SHORT).show();
-
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        FirebaseAuth.getInstance().signOut();
-
-                                        mReference.child("student")
-                                                .child(userID)
-                                                .child("isLoggedIn")
-                                                .setValue(false);
-
-                                        removeDataFromSharedPref();
-                                        otpDialog.dismiss();
-
-                                        startActivity(new Intent(requireActivity(), LoginActivity.class));
-                                        requireActivity().finish();
-                                    }
-                                }, 3000);
-                            } else {
-                                Toast.makeText(requireActivity(), "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                otpDialog.dismiss();
-                            }
-                        }
-                    });
-                }
-            }
-        });
     }
 
     // Password change dialog
@@ -417,6 +187,9 @@ public class ProfileFragment extends Fragment {
 
         ImageView oldPassShow = changePassDialog.findViewById(R.id.ic_pass_show);
         ImageView newPassShow = changePassDialog.findViewById(R.id.ic_new_pass_show);
+
+        assert edtOldPass != null;
+        edtOldPass.requestFocus();
 
         assert oldPassShow != null;
         oldPassShow.setOnClickListener(new View.OnClickListener() {
@@ -449,7 +222,6 @@ public class ProfileFragment extends Fragment {
         btnChangePassContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                assert edtOldPass != null;
                 String oldPass = edtOldPass.getText().toString().trim();
                 assert edtNewPass != null;
                 String newPass = edtNewPass.getText().toString().trim();
@@ -550,6 +322,8 @@ public class ProfileFragment extends Fragment {
 
         assert edtChangeName != null;
         edtChangeName.setHint(userName);
+        edtChangeName.requestFocus();
+
         assert edtChangePhone != null;
         edtChangePhone.setHint(userPhone);
 
@@ -647,6 +421,9 @@ public class ProfileFragment extends Fragment {
 
         deleteAccountDialog.show();
 
+        assert edtDeleteAcPassword != null;
+        edtDeleteAcPassword.requestFocus();
+
         assert icPassShow != null;
         icPassShow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -665,7 +442,6 @@ public class ProfileFragment extends Fragment {
         btnDeleteAcDialogYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                assert edtDeleteAcPassword != null;
                 String edtPassword = edtDeleteAcPassword.getText().toString().trim();
 
                 // Checking password

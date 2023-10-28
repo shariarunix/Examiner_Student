@@ -3,65 +3,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/white_radius_top_bg"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:background="@drawable/white_radius_top_bg">
+    android:padding="20dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:fontFamily="@font/barlow_semibold"
         android:text="@string/forgot_password"
-        android:textSize="34sp"
         android:textColor="@color/blue_pr"
-        android:fontFamily="@font/barlow_semibold"/>
+        android:textSize="34sp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/barlow_regular"
         android:text="@string/forgot_otp"
-        android:textSize="18sp"
         android:textColor="@color/black_sc"
-        android:fontFamily="@font/barlow_regular"/>
+        android:textSize="18sp" />
 
     <!-- Layout for Email -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="30dp"
+        android:background="@drawable/edt_bg"
         android:clickable="true"
-        android:focusable="true"
-        android:background="@drawable/edt_bg">
+        android:focusable="true">
+
         <ImageView
-            android:src="@drawable/ic_email"
             style="@style/edt_icon_style"
+            android:src="@drawable/ic_email"
             tools:ignore="ContentDescription" />
+
         <EditText
             android:id="@+id/edt_forgot_dialog_email"
-            android:inputType="textEmailAddress"
-            android:hint="@string/email"
             style="@style/edt_txt_style"
-            android:importantForAutofill="no" />
+            android:hint="@string/email"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress" />
     </RelativeLayout>
+
     <TextView
         android:id="@+id/forgot_dialog_show_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:paddingTop="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/red_sc_bg"
+        android:fontFamily="@font/barlow_regular"
         android:paddingStart="20dp"
+        android:paddingTop="10dp"
         android:paddingEnd="20dp"
         android:paddingBottom="12dp"
-        android:textSize="16sp"
-        android:fontFamily="@font/barlow_regular"
         android:textColor="@color/red_pr"
-        android:background="@drawable/red_sc_bg"
-        android:visibility="gone"/>
+        android:textSize="16sp"
+        android:visibility="gone" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_forgot_dialog_continue"
+        style="@style/blue_btn_style"
         android:layout_marginTop="70dp"
         android:layout_marginBottom="20dp"
-        android:text="@string/continue_btn"
-        style="@style/blue_btn_style"/>
+        android:text="@string/continue_btn" />
 
 </LinearLayout>

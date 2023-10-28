@@ -145,38 +145,6 @@
                 android:background="@color/black_tr" />
 
             <LinearLayout
-                android:id="@+id/forgot_pass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="@drawable/white_ripple"
-                android:orientation="horizontal"
-                android:weightSum="12">
-
-                <TextView
-                    style="@style/profile_bigger_text"
-                    android:layout_weight="10"
-                    android:text="@string/forgot_password" />
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="2"
-                    android:padding="18dp"
-                    android:src="@drawable/ic_next"
-                    tools:ignore="ContentDescription" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:background="@color/black_tr" />
-
-            <LinearLayout
                 android:id="@+id/delete_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

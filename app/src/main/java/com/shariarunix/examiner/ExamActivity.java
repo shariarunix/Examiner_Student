@@ -136,7 +136,7 @@ public class ExamActivity extends AppCompatActivity {
         }.start();
 
         // Checking User is Active or Not by this Countdown
-        tempCountDownTime = 2 * 60 * 1000;
+        tempCountDownTime = 3 * 60 * 1000;
         tempCountDownTimer = new CountDownTimer(tempCountDownTime, 1000) {
             @Override
             public void onTick(long l) {
@@ -241,38 +241,97 @@ public class ExamActivity extends AppCompatActivity {
             }
         }
 
-        // Adding Question from questionListThree to questionModelList
-        if (questionListThree.size() > 3) {
-            Collections.shuffle(questionListThree);
+        // Shuffle all question lists
+        Collections.shuffle(questionListThree);
+        Collections.shuffle(questionListTwo);
+        Collections.shuffle(questionListOne);
 
-            for (int i = 1; i <= 3; i++) {
-                qmList.add(questionListThree.get(i));
+        if (examTotalMarks <= 15) {
+            // Adding Question from questionListThree to questionModelList
+            if (questionListThree.size() > 1) {
+                qmList.add(questionListThree.get(0));
+            } else {
+                qmList.add(questionListThree.get(0));
+            }
+
+            int listSizeThree = qmList.size();
+            int totalMarkThree = listSizeThree * 3;
+
+            // Adding Question from questionListTwo to questionModelList
+            if (questionListTwo.size() > 2) {
+                for (int i = 1; i <= 2; i++) {
+                    qmList.add(questionListTwo.get(i));
+                }
+            } else {
+                qmList.addAll(questionListTwo);
+            }
+
+            int listSizeTwo = qmList.size() - listSizeThree;
+            int totalMarkTwo = listSizeTwo * 2;
+
+            int itemForMarkOne = examTotalMarks - (totalMarkThree + totalMarkTwo);
+            for (int i = 1; i <= itemForMarkOne; i++) {
+                qmList.add(questionListOne.get(i));
+            }
+
+        } else if (examTotalMarks <= 25) {
+            // Adding Question from questionListThree to questionModelList
+            if (questionListThree.size() > 2) {
+                for (int i = 1; i <= 2; i++) {
+                    qmList.add(questionListThree.get(i));
+                }
+            } else {
+                qmList.addAll(questionListThree);
+            }
+
+            int listSizeThree = qmList.size();
+            int totalMarkThree = listSizeThree * 3;
+
+            // Adding Question from questionListTwo to questionModelList
+            if (questionListTwo.size() > 4) {
+                for (int i = 1; i <= 2; i++) {
+                    qmList.add(questionListTwo.get(i));
+                }
+            } else {
+                qmList.addAll(questionListTwo);
+            }
+
+            int listSizeTwo = qmList.size() - listSizeThree;
+            int totalMarkTwo = listSizeTwo * 2;
+
+            int itemForMarkOne = examTotalMarks - (totalMarkThree + totalMarkTwo);
+            for (int i = 1; i <= itemForMarkOne; i++) {
+                qmList.add(questionListOne.get(i));
             }
         } else {
-            qmList.addAll(questionListThree);
-        }
-
-        int listSizeThree = qmList.size();
-        int totalMarkThree = listSizeThree * 3;
-
-        // Adding Question from questionListTwo to questionModelList
-        if (questionListTwo.size() > 5) {
-            Collections.shuffle(questionListTwo);
-
-            for (int i = 1; i <= 5; i++) {
-                qmList.add(questionListTwo.get(i));
+            // Adding Question from questionListThree to questionModelList
+            if (questionListThree.size() > 3) {
+                for (int i = 1; i <= 3; i++) {
+                    qmList.add(questionListThree.get(i));
+                }
+            } else {
+                qmList.addAll(questionListThree);
             }
-        } else {
-            qmList.addAll(questionListTwo);
-        }
 
-        int listSizeTwo = qmList.size() - listSizeThree;
-        int totalMarkTwo = listSizeTwo * 2;
+            int listSizeThree = qmList.size();
+            int totalMarkThree = listSizeThree * 3;
 
-        int itemForMarkOne = examTotalMarks - (totalMarkThree + totalMarkTwo);
-        for (int i = 1; i <= itemForMarkOne; i++) {
-            Collections.shuffle(questionListOne);
-            qmList.add(questionListOne.get(i));
+            // Adding Question from questionListTwo to questionModelList
+            if (questionListTwo.size() > 5) {
+                for (int i = 1; i <= 5; i++) {
+                    qmList.add(questionListTwo.get(i));
+                }
+            } else {
+                qmList.addAll(questionListTwo);
+            }
+
+            int listSizeTwo = qmList.size() - listSizeThree;
+            int totalMarkTwo = listSizeTwo * 2;
+
+            int itemForMarkOne = examTotalMarks - (totalMarkThree + totalMarkTwo);
+            for (int i = 1; i <= itemForMarkOne; i++) {
+                qmList.add(questionListOne.get(i));
+            }
         }
 
         Collections.shuffle(qmList);
@@ -330,6 +389,7 @@ public class ExamActivity extends AppCompatActivity {
     protected void onPause() {
         Toast.makeText(ExamActivity.this, "Your Result : " + result, Toast.LENGTH_SHORT).show();
         questionOptionGroup.clearCheck();
+
         // Setting result data to firebase database
         setDataToDatabase();
         methodForBackPressed();
@@ -338,4 +398,3 @@ public class ExamActivity extends AppCompatActivity {
         super.onPause();
     }
 }
-
