@@ -81,13 +81,15 @@ public class ResourceFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        courseResourceDataModelList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            ResourceDataModel resourceDataModel = dataSnapshot.getValue(ResourceDataModel.class);
+                        if (isAdded()) {
+                            courseResourceDataModelList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                ResourceDataModel resourceDataModel = dataSnapshot.getValue(ResourceDataModel.class);
 
-                            courseResourceDataModelList.add(resourceDataModel);
+                                courseResourceDataModelList.add(resourceDataModel);
+                            }
+                            mergeList(listView);
                         }
-                        mergeList(listView);
                     }
 
                     @Override
@@ -102,13 +104,15 @@ public class ResourceFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        allCourseResourceDataModelList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            ResourceDataModel resourceDataModel = dataSnapshot.getValue(ResourceDataModel.class);
+                        if (isAdded()){
+                            allCourseResourceDataModelList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                ResourceDataModel resourceDataModel = dataSnapshot.getValue(ResourceDataModel.class);
 
-                            allCourseResourceDataModelList.add(resourceDataModel);
+                                allCourseResourceDataModelList.add(resourceDataModel);
+                            }
+                            mergeList(listView);
                         }
-                        mergeList(listView);
                     }
 
                     @Override

@@ -47,6 +47,7 @@ public class HomeFragment extends Fragment {
     ProgressBar homeProgressBar;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    ListView examList;
 
     public HomeFragment() {
         //Default Empty Constructor
@@ -73,7 +74,7 @@ public class HomeFragment extends Fragment {
         editor = sharedPreferences.edit();
         isDialogShown = sharedPreferences.getBoolean("introDialog", false);
 
-        ListView examList = view.findViewById(R.id.exam_list);
+        examList = view.findViewById(R.id.exam_list);
         homeProgressBar = view.findViewById(R.id.home_progress_bar);
 
         TextView txtShowName = view.findViewById(R.id.txt_show_name_home);
@@ -130,20 +131,23 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        examDataList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            ExamDataModel examDataModel = dataSnapshot.getValue(ExamDataModel.class);
+                        if (isAdded()) {
+                            examDataList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                ExamDataModel examDataModel = dataSnapshot.getValue(ExamDataModel.class);
 
-                            examDataList.add(examDataModel);
+                                examDataList.add(examDataModel);
+                            }
+
+                            homeProgressBar.setVisibility(View.GONE);
+                            listView.setVisibility(View.VISIBLE);
+
+                            CustomAdapter examListAdapter = new CustomAdapter(requireActivity(), R.layout.list_item_exam, examDataList.size());
+                            examListAdapter.setExamDataModelList(examDataList);
+
+                            listView.setAdapter(examListAdapter);
                         }
 
-                        homeProgressBar.setVisibility(View.GONE);
-                        listView.setVisibility(View.VISIBLE);
-
-                        CustomAdapter examListAdapter = new CustomAdapter(requireActivity(), R.layout.list_item_exam, examDataList.size());
-                        examListAdapter.setExamDataModelList(examDataList);
-
-                        listView.setAdapter(examListAdapter);
                     }
 
                     @Override

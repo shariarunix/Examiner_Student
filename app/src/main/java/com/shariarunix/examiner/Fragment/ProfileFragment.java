@@ -169,6 +169,7 @@ public class ProfileFragment extends Fragment {
 
         return view;
     }
+
     private void showForgotPassDialog() {
         BottomSheetDialog forgotPassDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
 
@@ -333,6 +334,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // Pass reset Dialog
     private void resetPassDialog() {
         final boolean[] resetPassToggle = {false, false};
 
@@ -416,6 +418,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // Password change dialog
     private void showChangePassDialog() {
         final boolean[] oldPassShowToggle = {false, false};
 
@@ -511,6 +514,7 @@ public class ProfileFragment extends Fragment {
         changePassDialog.show();
     }
 
+    // Showing personal info
     private void showPersonalInfoDialog() {
         BottomSheetDialog personalInfoDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
 
@@ -549,6 +553,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // Personal info change dialog
     private void showChangeInfoDialog() {
         BottomSheetDialog changeInfoDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
 
@@ -615,7 +620,7 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
-
+    // Result Showing Dialog
     private void showResultDialog() {
         BottomSheetDialog resultDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
         bottomDialog(resultDialog);
@@ -773,6 +778,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // Remove user data from sharedpref
     private void removeDataFromSharedPref() {
         editor.putBoolean("userCheck", false);
         editor.putString("userID", "");
@@ -794,20 +800,22 @@ public class ProfileFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        examResultModelList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            ExamResultModel newERM = dataSnapshot.getValue(ExamResultModel.class);
-                            examResultModelList.add(newERM);
+                        if (isAdded()) {
+                            examResultModelList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                ExamResultModel newERM = dataSnapshot.getValue(ExamResultModel.class);
+                                examResultModelList.add(newERM);
+                            }
+
+                            Collections.reverse(examResultModelList);
+
+                            resultProgressBar.setVisibility(View.GONE);
+                            resultList.setVisibility(View.VISIBLE);
+                            CustomAdapter resListAdapter = new CustomAdapter(requireActivity(), R.layout.list_item_result, examResultModelList.size());
+                            resListAdapter.setExamResultModelList(examResultModelList);
+
+                            resultList.setAdapter(resListAdapter);
                         }
-
-                        Collections.reverse(examResultModelList);
-
-                        resultProgressBar.setVisibility(View.GONE);
-                        resultList.setVisibility(View.VISIBLE);
-                        CustomAdapter resListAdapter = new CustomAdapter(requireActivity(), R.layout.list_item_result, examResultModelList.size());
-                        resListAdapter.setExamResultModelList(examResultModelList);
-
-                        resultList.setAdapter(resListAdapter);
                     }
 
                     @Override
