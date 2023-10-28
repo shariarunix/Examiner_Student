@@ -1,5 +1,7 @@
 package com.shariarunix.examiner;
 
+import static com.shariarunix.examiner.SignupActivity.TB_STUDENT;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Load user Data
     private void loadData(String key) {
-        mReference.child("student").child(key).addValueEventListener(new ValueEventListener() {
+        mReference.child(TB_STUDENT).child(key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {

@@ -87,36 +87,9 @@
             tools:ignore="Autofill,LabelFor" />
         
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Didn't receive the code."
-            android:textSize="16sp"
-            android:textColor="@color/black_sc"
-            android:fontFamily="@font/barlow_regular"
-            tools:ignore="HardcodedText"/>
-        <TextView
-            android:id="@+id/txt_btn_otp_resend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="Resend"
-            android:textSize="16sp"
-            android:textColor="@color/blue_pr"
-            android:fontFamily="@font/barlow_semibold"
-            tools:ignore="HardcodedText" />
-
-    </LinearLayout>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_enter_otp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="50dp"
         android:layout_marginBottom="20dp"
         android:text="@string/continue_btn"
         style="@style/blue_btn_style"/>

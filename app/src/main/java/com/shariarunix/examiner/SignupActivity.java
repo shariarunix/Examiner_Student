@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class SignupActivity extends AppCompatActivity {
+    public static final String TB_STUDENT = "student";
+    private static final String TB_COURSE = "courseList";
     ListView courseList;
     RelativeLayout courseSelectorLayout;
     TextView txtSelectCourse, showError;
@@ -266,12 +268,12 @@ public class SignupActivity extends AppCompatActivity {
 
     // Set Student's Data to Firebase Database
     private void setData(String key) {
-        mReference.child("student").child(key).setValue(sDataModel);
+        mReference.child(TB_STUDENT).child(key).setValue(sDataModel);
     }
 
     // Load Course list
     private void loadCourseList() {
-        mReference.child("courseList").addValueEventListener(new ValueEventListener() {
+        mReference.child(TB_COURSE).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 courseListData.clear();

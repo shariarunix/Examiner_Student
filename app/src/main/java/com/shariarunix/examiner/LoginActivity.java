@@ -1,6 +1,7 @@
 package com.shariarunix.examiner;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+import static com.shariarunix.examiner.SignupActivity.TB_STUDENT;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,13 +26,24 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.shariarunix.examiner.DataModel.StudentDataModel;
+import com.shariarunix.examiner.OTPSender.OTPSenderClass;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText edtEmail, edtPass;
@@ -39,11 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView txtBtnForgotPass, txtBtnCreateOne, showError;
     AppCompatButton btnSignIn;
     LinearLayout rememberCheck;
-    boolean passShowToggle = false;
-    boolean rememberMeToggle = false;
-
-    boolean resetPassToggle = false;
-    boolean resetConPassToggle = false;
+    boolean passShowToggle = false, rememberMeToggle = false, resetPassToggle = false, resetConPassToggle = false;
 
     // Declaring Firebase Auth
     private FirebaseAuth mAuth;
@@ -133,8 +141,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    BottomSheetDialog forgotPassDialog;
+
     private void showForgotPassDialog() {
-        BottomSheetDialog forgotPassDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
+        forgotPassDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
 
         bottomDialog(forgotPassDialog);
         forgotPassDialog.setContentView(R.layout.bottom_dialog_forgot_pass);
@@ -164,14 +174,51 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                forgotPassDialog.dismiss();
-
-                showOTPDialog();
+                sendOtpToEmail(edtForgotDialogEmail, forgotDialogShowError, email);
             }
         });
     }
 
-    private void showOTPDialog() {
+    // List For accessing data of the email we got from forgot password dialog
+    List<StudentDataModel> studentDataModelList = new ArrayList<>();
+
+    private void sendOtpToEmail(EditText edtForgotDialogEmail, TextView forgotDialogShowError, String email) {
+        DatabaseReference mReference = FirebaseDatabase.getInstance().getReference();
+        mReference.child(TB_STUDENT).orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    studentDataModelList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        StudentDataModel studentDataModel = dataSnapshot.getValue(StudentDataModel.class);
+                        studentDataModelList.add(studentDataModel);
+                    }
+
+                    Random random = new Random();
+
+                    int min = 1000;
+                    int max = 9999;
+
+                    int randomNumber = random.nextInt(max - min + 1) + min;
+
+                    new OTPSenderClass(email, studentDataModelList.get(0).getName(), "OTP for Password Reset", randomNumber).sendOtp();
+
+                    forgotPassDialog.dismiss();
+                    showOTPDialog(String.valueOf(randomNumber), studentDataModelList.get(0).getEmail());
+
+                } else {
+                    validator(edtForgotDialogEmail, forgotDialogShowError, "Please enter your email");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(LoginActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showOTPDialog(String otpNumber, String email) {
         BottomSheetDialog otpDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
 
         bottomDialog(otpDialog);
@@ -183,7 +230,6 @@ public class LoginActivity extends AppCompatActivity {
         EditText edtOtpThree = otpDialog.findViewById(R.id.otp_three);
         EditText edtOtpFour = otpDialog.findViewById(R.id.otp_four);
 
-        TextView txtBtnOtpResend = otpDialog.findViewById(R.id.txt_btn_otp_resend);
         AppCompatButton enterOtp = otpDialog.findViewById(R.id.btn_enter_otp);
 
 
@@ -270,14 +316,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        assert txtBtnOtpResend != null;
-        txtBtnOtpResend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(LoginActivity.this, "OTP Sent again", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         assert enterOtp != null;
         enterOtp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -289,91 +327,20 @@ public class LoginActivity extends AppCompatActivity {
 
                 otp = otpOne + otpTwo + otpThree + otpFour;
 
-                //OTP Verification
-                otpDialog.dismiss();
-
-                resetPassDialog();
-            }
-        });
-    }
-
-    private void resetPassDialog() {
-        BottomSheetDialog resetPassDialog = new BottomSheetDialog(LoginActivity.this, R.style.bottom_sheet_dialog);
-
-        bottomDialog(resetPassDialog);
-        resetPassDialog.setContentView(R.layout.bottm_dialog_new_password);
-
-        EditText setPassword = resetPassDialog.findViewById(R.id.edt_reset_pass);
-        EditText setConfirmPassword = resetPassDialog.findViewById(R.id.edt_reset_confirm_pass);
-
-        AppCompatButton btnResetPass = resetPassDialog.findViewById(R.id.btn_reset_pass);
-
-        TextView resetDialogShowError = resetPassDialog.findViewById(R.id.reset_dialog_show_error);
-
-        ImageView resetPass = resetPassDialog.findViewById(R.id.ic_pass_show);
-        ImageView resetConPass = resetPassDialog.findViewById(R.id.ic_confirm_pass_show);
-
-        resetPassDialog.show();
-
-        // Password show or hide
-        assert resetPass != null;
-        resetPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!resetPassToggle) {
-                    new PassShowHide(setPassword, resetPass, false).passShow();
-                    resetPassToggle = true;
-                } else {
-                    new PassShowHide(setPassword, resetPass, true).passHide();
-                    resetPassToggle = false;
+                if (otp.equals(otpNumber)) {
+                    mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(LoginActivity.this, "We've sent you a password reset email, Please check your email", Toast.LENGTH_SHORT).show();
+                                otpDialog.dismiss();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                otpDialog.dismiss();
+                            }
+                        }
+                    });
                 }
-            }
-        });
-
-        assert resetConPass != null;
-        resetConPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!resetConPassToggle) {
-                    new PassShowHide(setConfirmPassword, resetConPass, false).passShow();
-                    resetConPassToggle = true;
-                } else {
-                    new PassShowHide(setConfirmPassword, resetConPass, true).passHide();
-                    resetConPassToggle = false;
-                }
-            }
-        });
-
-        // Reset Password
-        assert btnResetPass != null;
-        btnResetPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                assert setPassword != null;
-                String password = setPassword.getText().toString().trim();
-                assert setConfirmPassword != null;
-                String conPassword = setConfirmPassword.getText().toString().trim();
-
-                // Checking password
-                if (password.isEmpty()) {
-                    assert resetDialogShowError != null;
-                    validator(setPassword, resetDialogShowError, "Please enter your password");
-                    return;
-                }
-                if (password.length() < 8) {
-                    assert resetDialogShowError != null;
-                    validator(setPassword, resetDialogShowError, "Password must be at least 8 characters");
-                    return;
-                }
-                if (!conPassword.equals(password)) {
-                    assert resetDialogShowError != null;
-                    validator(setConfirmPassword, resetDialogShowError, "Password and confirm password is not same");
-                    return;
-                }
-
-                resetPassDialog.dismiss();
-
-                Toast.makeText(LoginActivity.this, "Password changed.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -426,6 +393,12 @@ public class LoginActivity extends AppCompatActivity {
                                     .child(key)
                                     .child("isLoggedIn")
                                     .setValue(true);
+
+                            FirebaseDatabase.getInstance().getReference()
+                                    .child("student")
+                                    .child(key)
+                                    .child("password")
+                                    .setValue(password);
 
                             editor.putString("userID", key);
                             editor.apply();

@@ -3,11 +3,13 @@ package com.shariarunix.examiner.Fragment;
 import static android.content.Context.MODE_PRIVATE;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+import static com.shariarunix.examiner.SignupActivity.TB_STUDENT;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -45,6 +47,7 @@ import com.shariarunix.examiner.Adapter.CustomAdapter;
 import com.shariarunix.examiner.DataModel.ExamResultModel;
 import com.shariarunix.examiner.DataModel.StudentDataModel;
 import com.shariarunix.examiner.LoginActivity;
+import com.shariarunix.examiner.OTPSender.OTPSenderClass;
 import com.shariarunix.examiner.PassShowHide;
 import com.shariarunix.examiner.R;
 import com.shariarunix.examiner.SignupActivity;
@@ -53,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class ProfileFragment extends Fragment {
     private static final String U_DATA = "arg1";
@@ -65,6 +69,7 @@ public class ProfileFragment extends Fragment {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     boolean findSpecialChar = false;
+    FirebaseAuth mAuth;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -91,7 +96,10 @@ public class ProfileFragment extends Fragment {
         userID = sharedPreferences.getString("userID", "");
 
         mReference = FirebaseDatabase.getInstance().getReference();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        mAuth = FirebaseAuth.getInstance();
+
+        user = mAuth.getCurrentUser();
 
         TextView txtProfileShowName = view.findViewById(R.id.txt_profile_show_name);
 
@@ -170,8 +178,10 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    BottomSheetDialog forgotPassDialog;
+
     private void showForgotPassDialog() {
-        BottomSheetDialog forgotPassDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
+        forgotPassDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
 
         bottomDialog(forgotPassDialog);
         forgotPassDialog.setContentView(R.layout.bottom_dialog_forgot_pass);
@@ -201,14 +211,52 @@ public class ProfileFragment extends Fragment {
                     return;
                 }
 
-                forgotPassDialog.dismiss();
-
-                showOTPDialog();
+                sendOtpToEmail(edtForgotDialogEmail, forgotDialogShowError, email);
             }
         });
     }
 
-    private void showOTPDialog() {
+
+    // List For accessing data of the email we got from forgot password dialog
+    List<StudentDataModel> studentDataModelList = new ArrayList<>();
+
+    private void sendOtpToEmail(EditText edtForgotDialogEmail, TextView forgotDialogShowError, String email) {
+        DatabaseReference mReference = FirebaseDatabase.getInstance().getReference();
+        mReference.child(TB_STUDENT).orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    studentDataModelList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        StudentDataModel studentDataModel = dataSnapshot.getValue(StudentDataModel.class);
+                        studentDataModelList.add(studentDataModel);
+                    }
+
+                    Random random = new Random();
+
+                    int min = 1000;
+                    int max = 9999;
+
+                    int randomNumber = random.nextInt(max - min + 1) + min;
+
+                    new OTPSenderClass(email, studentDataModelList.get(0).getName(), "OTP for Password Reset", randomNumber).sendOtp();
+
+                    forgotPassDialog.dismiss();
+                    showOTPDialog(String.valueOf(randomNumber), studentDataModelList.get(0).getEmail());
+
+                } else {
+                    validator(edtForgotDialogEmail, forgotDialogShowError, "Please enter your email");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showOTPDialog(String otpNumber, String email) {
         BottomSheetDialog otpDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
 
         bottomDialog(otpDialog);
@@ -220,7 +268,6 @@ public class ProfileFragment extends Fragment {
         EditText edtOtpThree = otpDialog.findViewById(R.id.otp_three);
         EditText edtOtpFour = otpDialog.findViewById(R.id.otp_four);
 
-        TextView txtBtnOtpResend = otpDialog.findViewById(R.id.txt_btn_otp_resend);
         AppCompatButton enterOtp = otpDialog.findViewById(R.id.btn_enter_otp);
 
 
@@ -307,14 +354,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        assert txtBtnOtpResend != null;
-        txtBtnOtpResend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(requireActivity(), "OTP Sent again", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         assert enterOtp != null;
         enterOtp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -325,95 +364,37 @@ public class ProfileFragment extends Fragment {
                 String otpFour = edtOtpFour.getText().toString();
 
                 String otp = otpOne + otpTwo + otpThree + otpFour;
+                if (otp.equals(otpNumber)) {
+                    mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(requireActivity(), "We've sent you a password reset email, Please check your email", Toast.LENGTH_SHORT).show();
 
-                //OTP Verification
-                otpDialog.dismiss();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        FirebaseAuth.getInstance().signOut();
 
-                resetPassDialog();
-            }
-        });
-    }
+                                        mReference.child("student")
+                                                .child(userID)
+                                                .child("isLoggedIn")
+                                                .setValue(false);
 
-    // Pass reset Dialog
-    private void resetPassDialog() {
-        final boolean[] resetPassToggle = {false, false};
+                                        removeDataFromSharedPref();
+                                        otpDialog.dismiss();
 
-        BottomSheetDialog resetPassDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
-
-        bottomDialog(resetPassDialog);
-        resetPassDialog.setContentView(R.layout.bottm_dialog_new_password);
-
-        EditText setPassword = resetPassDialog.findViewById(R.id.edt_reset_pass);
-        EditText setConfirmPassword = resetPassDialog.findViewById(R.id.edt_reset_confirm_pass);
-
-        AppCompatButton btnResetPass = resetPassDialog.findViewById(R.id.btn_reset_pass);
-
-        TextView resetDialogShowError = resetPassDialog.findViewById(R.id.reset_dialog_show_error);
-
-        ImageView resetPass = resetPassDialog.findViewById(R.id.ic_pass_show);
-        ImageView resetConPass = resetPassDialog.findViewById(R.id.ic_confirm_pass_show);
-
-        resetPassDialog.show();
-
-        // Password show or hide
-        assert resetPass != null;
-        resetPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!resetPassToggle[0]) {
-                    new PassShowHide(setPassword, resetPass, false).passShow();
-                    resetPassToggle[0] = true;
-                } else {
-                    new PassShowHide(setPassword, resetPass, true).passHide();
-                    resetPassToggle[0] = false;
+                                        startActivity(new Intent(requireActivity(), LoginActivity.class));
+                                        requireActivity().finish();
+                                    }
+                                }, 3000);
+                            } else {
+                                Toast.makeText(requireActivity(), "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                otpDialog.dismiss();
+                            }
+                        }
+                    });
                 }
-            }
-        });
-
-        assert resetConPass != null;
-        resetConPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!resetPassToggle[1]) {
-                    new PassShowHide(setConfirmPassword, resetConPass, false).passShow();
-                    resetPassToggle[1] = true;
-                } else {
-                    new PassShowHide(setConfirmPassword, resetConPass, true).passHide();
-                    resetPassToggle[1] = false;
-                }
-            }
-        });
-
-        // Reset Password
-        assert btnResetPass != null;
-        btnResetPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                assert setPassword != null;
-                String password = setPassword.getText().toString().trim();
-                assert setConfirmPassword != null;
-                String conPassword = setConfirmPassword.getText().toString().trim();
-
-                // Checking password
-                if (password.isEmpty()) {
-                    assert resetDialogShowError != null;
-                    validator(setPassword, resetDialogShowError, "Please enter your password");
-                    return;
-                }
-                if (password.length() < 8) {
-                    assert resetDialogShowError != null;
-                    validator(setPassword, resetDialogShowError, "Password must be at least 8 characters");
-                    return;
-                }
-                if (!conPassword.equals(password)) {
-                    assert resetDialogShowError != null;
-                    validator(setConfirmPassword, resetDialogShowError, "Password and confirm password is not same");
-                    return;
-                }
-
-                resetPassDialog.dismiss();
-
-                Toast.makeText(requireActivity(), "Password changed.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -620,6 +601,7 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
     // Result Showing Dialog
     private void showResultDialog() {
         BottomSheetDialog resultDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
@@ -665,6 +647,7 @@ public class ProfileFragment extends Fragment {
 
         deleteAccountDialog.show();
 
+        assert icPassShow != null;
         icPassShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -755,12 +738,12 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
 
-                removeDataFromSharedPref();
-
                 mReference.child("student")
                         .child(userID)
                         .child("isLoggedIn")
                         .setValue(false);
+
+                removeDataFromSharedPref();
 
                 Toast.makeText(requireActivity(), "You've Been Logged Out.", Toast.LENGTH_SHORT).show();
 
@@ -770,6 +753,7 @@ public class ProfileFragment extends Fragment {
                 requireActivity().finish();
             }
         });
+        assert btnLogOutDialogNo != null;
         btnLogOutDialogNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
