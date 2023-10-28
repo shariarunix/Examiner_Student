@@ -138,4 +138,3 @@ public class CustomAdapter extends BaseAdapter {
         txtShowDate.setText(newErm.getExamDate());
     }
 }
-
