@@ -67,11 +67,58 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
+            <!-- layout for username -->
+            <RelativeLayout
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/edt_bg">
+
+                <ImageView
+                    style="@style/edt_icon_style"
+                    android:src="@drawable/ic_user"
+                    tools:ignore="ContentDescription" />
+
+                <EditText
+                    android:id="@+id/edt_username"
+                    style="@style/edt_txt_style"
+                    android:hint="@string/username"
+                    android:importantForAutofill="no"
+                    android:inputType="text" />
+            </RelativeLayout>
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_username_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_ur_special_character"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
             <!-- Layout for Email -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/edt_bg"
                 android:clickable="true"
                 android:focusable="true">
@@ -88,6 +135,35 @@
                     android:importantForAutofill="no"
                     android:inputType="textEmailAddress" />
             </RelativeLayout>
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_email_validate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_email_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
             <!-- Layout for Password -->
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -116,6 +192,90 @@
                     android:src="@drawable/ic_pass_hide"
                     tools:ignore="ContentDescription" />
             </RelativeLayout>
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_pass_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_pass_uppercase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_pass_lowercase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_pass_special_character"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_pass_digits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_pass_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/red_sc_bg"
+                android:fontFamily="@font/barlow_regular"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/red_pr"
+                android:textSize="16sp"
+                android:visibility="gone" />
             <!-- Layout for Checkbox & Forgot Pass -->
             <RelativeLayout
                 android:layout_width="match_parent"

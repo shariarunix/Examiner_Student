@@ -19,7 +19,9 @@
     <string name="to_get_start_now">to get start now.</string>
     <string name="create_account">Create Account</string>
     <string name="full_name">Full Name</string>
+    <string name="username">Username</string>
     <string name="phone_number">Phone Number</string>
+    <string name="grd_phone_number">Guardian Phone Number</string>
     <string name="course">Course</string>
     <string name="select_your_course">Select Your Course</string>
     <string name="confirm_password">Confirm Password</string>

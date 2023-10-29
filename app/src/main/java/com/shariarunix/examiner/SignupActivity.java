@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,13 +48,15 @@ public class SignupActivity extends AppCompatActivity {
     private static final String TB_COURSE = "courseList";
     ListView courseList;
     RelativeLayout courseSelectorLayout;
-    TextView txtSelectCourse, showError;
-    private EditText edtSignUpName, edtSignUpEmail, edtSignUpPhone, edtSignUpPass, edtSignUpConfirmPass;
+    TextView txtSelectCourse, showError,txtNameEmpty,txtNameSpecialCharacter,txtNumericNum,
+            txtEmailValidate,txtEmailEmpty,txtUrNameEmpty,txtUrNameSpCharacter,txtUserNameDot,txtPhoneEmpty,
+            txtPhoneValidate,txtGrdPhoneEmpty, txtGrdPhoneValidate,txtPassEmpty, txtPassDigits,
+            txtPassUpperCase,txtPassLowerCase,txtPassNum,txtPassSpecialCharacter,
+            txtConfirmPassEmpty,txtConfirmPass;
+    private EditText edtSignUpName, edtSignUpEmail,edtSignUpUrName, edtSignUpPhone,edtSignUpGrdPhone, edtSignUpPass, edtSignUpConfirmPass;
     ImageView icPassShow, icConfirmPassShow;
     List<String> courseListData = new ArrayList<>();
-    boolean findSpecialChar = false;
-    boolean passShowToggle = false;
-    boolean conPassShowToggle = false;
+    boolean findSpecialChar = false, passShowToggle = false, conPassShowToggle = false;
 
     // Data Model for Student
     private StudentDataModel sDataModel;
@@ -64,6 +68,8 @@ public class SignupActivity extends AppCompatActivity {
     private DatabaseReference mReference;
     Dialog loadingDialog;
     private String userID;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,13 +93,295 @@ public class SignupActivity extends AppCompatActivity {
         txtSelectCourse = findViewById(R.id.txt_select_course);
         edtSignUpName = findViewById(R.id.edt_sign_up_name);
         edtSignUpEmail = findViewById(R.id.edt_sign_up_email);
+        edtSignUpUrName = findViewById(R.id.edt_sign_up_username);
         edtSignUpPhone = findViewById(R.id.edt_sign_up_phone);
+        edtSignUpGrdPhone = findViewById(R.id.edt_sign_up_grd_phone);
         edtSignUpPass = findViewById(R.id.edt_sign_up_pass);
         edtSignUpConfirmPass = findViewById(R.id.edt_sign_up_confirm_pass);
         showError = findViewById(R.id.show_error);
-
+        //id find for name error
+        txtNameSpecialCharacter = findViewById(R.id.txt_name_special_character);
+        txtNameEmpty = findViewById(R.id.txt_name_empty);
+        txtNumericNum = findViewById(R.id.txt_name_numeric_num);
+        //id find for email error
+        txtEmailValidate = findViewById(R.id.txt_email_validate);
+        txtEmailEmpty = findViewById(R.id.txt_email_empty);
+        //id find for phone error
+        txtPhoneEmpty = findViewById(R.id.txt_phone_empty);
+        txtPhoneValidate = findViewById(R.id.txt_phone_validate);
+        //id find for guardian phone error
+        txtGrdPhoneValidate = findViewById(R.id.txt_grd_phone_validate);
+        txtGrdPhoneEmpty = findViewById(R.id.txt_grd_phone_empty);
+        //id find for username error
+        txtUrNameEmpty = findViewById(R.id.txt_username_empty);
+        txtUrNameSpCharacter = findViewById(R.id.txt_username_special_character);
+        txtUserNameDot = findViewById(R.id.txt_username_dot);
+        //id find for pass error
+        txtPassEmpty =findViewById(R.id.txt_pass_empty);
+        txtPassUpperCase = findViewById(R.id.txt_pass_uppercase);
+        txtPassLowerCase = findViewById(R.id.txt_pass_lowercase);
+        txtPassSpecialCharacter = findViewById(R.id.txt_pass_special_character);
+        txtPassDigits = findViewById(R.id.txt_pass_digits);
+        txtPassNum = findViewById(R.id.txt_pass_num);
+        //id find for confirm pass
+        txtConfirmPass = findViewById(R.id.txt_confirm_pass);
+        txtConfirmPassEmpty = findViewById(R.id.txt_confirm_pass_empty);
         icPassShow = findViewById(R.id.ic_pass_show);
         icConfirmPassShow = findViewById(R.id.ic_confirm_pass_show);
+
+        //show error for name
+        edtSignUpName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String name = edtSignUpName.getText().toString().trim();
+                if (name.isEmpty()) {
+                    txtNameEmpty.setVisibility(View.VISIBLE);
+                    txtNameEmpty.setText("Name can't be empty");
+                }
+                if(name.matches(".*[^a-zA-Z0-9].*")){
+                        txtNameSpecialCharacter.setVisibility(View.VISIBLE);
+                        txtNameSpecialCharacter.setText("Remove special character");
+                }
+                if(name.matches(".*[0-9].*")){
+                        txtNumericNum.setVisibility(View.VISIBLE);
+                        txtNumericNum.setText("Remove numeric value");
+                        return;
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String name = edtSignUpName.getText().toString().trim();
+                if (!name.isEmpty()) {
+                    txtNameEmpty.setVisibility(View.GONE);
+                }
+                if(!name.matches(".*[^a-zA-Z0-9].*")){
+                    txtNameSpecialCharacter.setVisibility(View.GONE);
+                }
+                if(!name.matches(".*[0-9].*")){
+                    txtNumericNum.setVisibility(View.GONE);
+                }
+            }
+        });
+        //show error for email
+        edtSignUpEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String email = edtSignUpEmail.getText().toString().trim();
+                if(email.isEmpty()){
+                    txtEmailEmpty.setVisibility(View.VISIBLE);
+                    txtEmailEmpty.setText("Email can't be empty");
+                    return;
+                }
+                if(!email.matches("^[a-zA-z0-9_\\-]*@gmail\\.com$")){
+                    txtEmailValidate.setVisibility(View.VISIBLE);
+                    txtEmailValidate.setText("Enter valid email");
+                    return;
+                }
+            }
+
+            @Override public void afterTextChanged(Editable editable) {
+                String email = edtSignUpEmail.getText().toString();
+                if(!email.isEmpty()&&email.matches("^[a-zA-z0-9_\\-]*@gmail\\.com$")){
+                    txtEmailValidate.setVisibility(View.GONE);
+                    txtEmailEmpty.setVisibility(View.GONE);
+                }
+            }
+        });
+        //show error for username
+        edtSignUpUrName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String username = edtSignUpUrName.getText().toString().trim();
+                if(username.isEmpty()){
+                    txtUrNameEmpty.setVisibility(View.VISIBLE);
+                    txtUrNameEmpty.setText("Username can't be empty");
+                }
+                if(username.matches(".*[^a-zA-Z0-9].*")){
+                    txtUrNameSpCharacter.setVisibility(View.VISIBLE);
+                    txtUrNameSpCharacter.setText("Remove special character");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String username = edtSignUpUrName.getText().toString().trim();
+                if(!username.isEmpty()){
+                    txtUrNameEmpty.setVisibility(View.GONE);
+                }
+                if(!username.matches(".*[^a-zA-Z0-9].*")){
+                    txtUrNameSpCharacter.setVisibility(View.GONE);
+                }
+            }
+        });
+        //show error for phone num
+        edtSignUpPhone.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String phone = edtSignUpPhone.getText().toString().trim();
+                if(phone.isEmpty()){
+                    txtPhoneEmpty.setVisibility(View.VISIBLE);
+                    txtPhoneEmpty.setText("Phone number can't be empty");
+                    return;
+                }
+                if(!phone.matches("^(?:\\+?88)?01[3-9]\\d{8}$")){
+                    txtPhoneValidate.setVisibility(View.VISIBLE);
+                    txtPhoneValidate.setText("Enter valid phone number");
+                }
+                if(!phone.matches("[01]+[3-9]{8}")){
+                    txtPhoneValidate.setVisibility(View.VISIBLE);
+                    txtPhoneValidate.setText("Enter valid phone number");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String phone = edtSignUpPhone.getText().toString().trim();
+                if(!phone.isEmpty()){
+                    txtPhoneEmpty.setVisibility(View.GONE);
+                }
+                if(phone.matches("^(?:\\+?88|0088)?01[3-9]\\d{8}$")){
+                    txtPhoneValidate.setVisibility(View.GONE);
+                }
+                if(phone.matches("[01]+[3-9]{8}")){
+                    txtPhoneValidate.setVisibility(View.GONE);
+                }
+            }
+        });
+        //show error for guardian phone num
+        edtSignUpGrdPhone.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String grdphone = edtSignUpGrdPhone.getText().toString().trim();
+                if(grdphone.isEmpty()){
+                    txtGrdPhoneEmpty.setVisibility(View.VISIBLE);
+                    txtGrdPhoneEmpty.setText("Phone number can't be empty");
+                    return;
+                }
+                if(!grdphone.matches("^(?:\\+?88)?01[3-9]\\d{8}$")){
+                    txtGrdPhoneValidate.setVisibility(View.VISIBLE);
+                    txtGrdPhoneValidate.setText("Enter valid phone number");
+                }
+                if(!grdphone.matches("[01]+[3-9]{8}")){
+                    txtGrdPhoneValidate.setVisibility(View.VISIBLE);
+                    txtGrdPhoneValidate.setText("Enter valid phone number");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String grdphone = edtSignUpGrdPhone.getText().toString().trim();
+                if(!grdphone.isEmpty()){
+                    txtGrdPhoneEmpty.setVisibility(View.GONE);
+                }
+                if(grdphone.matches("^(?:\\+?88|0088)?01[3-9]\\d{8}$")){
+                    txtGrdPhoneValidate.setVisibility(View.GONE);
+                }
+                if(grdphone.matches("[01]+[3-9]{8}")){
+                    txtGrdPhoneValidate.setVisibility(View.GONE);
+                }
+            }
+        });
+        //show error foe pass
+        edtSignUpPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String pass = edtSignUpPass.getText().toString().trim();
+                if (pass.isEmpty()) {
+                    txtPassEmpty.setVisibility(View.VISIBLE);
+                    txtPassEmpty.setText("Password can't be empty");
+                    return;
+                }
+                if(pass.length()<8){
+                    txtPassDigits.setVisibility(View.VISIBLE);
+                    txtPassDigits.setText("Password must be contains 8 characters");
+                }
+                if(!pass.matches(".*[^a-zA-Z0-9].*")){
+                    txtPassSpecialCharacter.setVisibility(View.VISIBLE);
+                    txtPassSpecialCharacter.setText("At least one special character");
+                }
+                if(!pass.matches(".*[a-z].*")){
+                    txtPassLowerCase.setVisibility(View.VISIBLE);
+                    txtPassLowerCase.setText("At least one lowercase");
+                }
+                if(!pass.matches(".*[A-Z].*")){
+                    txtPassUpperCase.setVisibility(View.VISIBLE);
+                    txtPassUpperCase.setText("At least one uppercase");
+                }
+                if(!pass.matches(".*[0-9].*")){
+                    txtPassNum.setVisibility(View.VISIBLE);
+                    txtPassNum.setText("At least one numeric value");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String pass = edtSignUpPass.getText().toString().trim();
+                if(!pass.isEmpty()){
+                    txtPassEmpty.setVisibility(View.GONE);
+                }
+                if(pass.matches(".*[^a-zA-Z0-9].*")){
+                    txtPassSpecialCharacter.setVisibility(View.GONE);
+                }
+                if(pass.length()>=8){
+                    txtPassDigits.setVisibility(View.GONE);
+                }
+                if(pass.matches(".*[a-z].*")){
+                    txtPassLowerCase.setVisibility(View.GONE);
+                }
+                if(pass.matches(".*[A-Z].*")){
+                    txtPassUpperCase.setVisibility(View.GONE);
+                }
+                if(pass.matches(".*[0-9].*")){
+                    txtPassNum.setVisibility(View.GONE);
+                }
+            }
+        });
+        //show error for confirm pass
+        edtSignUpConfirmPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String pass = edtSignUpPass.getText().toString().trim();
+                String confirmPass = edtSignUpConfirmPass.getText().toString().trim();
+                if(confirmPass.isEmpty()){
+                    txtConfirmPassEmpty.setVisibility(View.VISIBLE);
+                    txtConfirmPassEmpty.setText("Confirm password can't be empty");
+                }
+                if(!confirmPass.contains(pass)){
+                    txtConfirmPass.setVisibility(View.VISIBLE);
+                    txtConfirmPass.setText("Password doesn't match");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String pass = edtSignUpPass.getText().toString().trim();
+                String confirmPass = edtSignUpConfirmPass.getText().toString().trim();
+                if(!confirmPass.isEmpty()){
+                    txtConfirmPassEmpty.setVisibility(View.GONE);
+                }
+                if(confirmPass.contains(pass)){
+                    txtConfirmPass.setVisibility(View.GONE);
+                }
+            }
+        });
 
         // Making The Dialog
         BottomSheetDialog personalInfoDialog = new BottomSheetDialog(SignupActivity.this, R.style.bottom_sheet_dialog);
