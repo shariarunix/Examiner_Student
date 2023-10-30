@@ -42,15 +42,13 @@ import java.util.Objects;
 import java.util.Random;
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText edtEmail, edtPass,edtUrName;
-    ImageView icPassShow, icRememberCheck;
-    TextView txtBtnForgotPass, txtBtnCreateOne,showError,txtUrNameEmpty,txtUrNameSpCharacter,txtPassEmpty,
-            txtEmailValidate,txtEmailEmpty,txtPassDigits,txtPassUpperCase,txtPassLowerCase,txtPassNum,
-            txtPassSpecialCharacter;
+    private EditText edtEmail, edtPass;
+    private ImageView icPassShow, icRememberCheck;
+    TextView txtBtnForgotPass, txtBtnCreateOne, showError;
 
     AppCompatButton btnSignIn;
     LinearLayout rememberCheck;
-    boolean passShowToggle = false, rememberMeToggle = false, resetPassToggle = false, resetConPassToggle = false;
+    private boolean passShowToggle = false, rememberMeToggle = false;
 
     // Declaring Firebase Auth
     private FirebaseAuth mAuth;
@@ -60,8 +58,6 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
 
     private String otp = "", otpOne, otpTwo, otpThree, otpFour;
-
-
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -78,144 +74,17 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize All View
         edtEmail = findViewById(R.id.edt_email);
         edtPass = findViewById(R.id.edt_pass);
-        edtUrName = findViewById(R.id.edt_username);
+
         icPassShow = findViewById(R.id.ic_pass_show);
         icRememberCheck = findViewById(R.id.ic_remember_check);
+
         txtBtnForgotPass = findViewById(R.id.txt_btn_forgot_pass);
         txtBtnCreateOne = findViewById(R.id.txt_btn_create_one);
+
         btnSignIn = findViewById(R.id.btn_signin);
+
         rememberCheck = findViewById(R.id.remember_check);
         showError = findViewById(R.id.show_error);
-
-        //id find for email error
-        txtEmailValidate = findViewById(R.id.txt_email_validate);
-        txtEmailEmpty = findViewById(R.id.txt_email_empty);
-        //id find for username error
-        txtUrNameEmpty = findViewById(R.id.txt_username_empty);
-        txtUrNameSpCharacter = findViewById(R.id.txt_ur_special_character);
-        //id find for pass error
-        txtPassEmpty =findViewById(R.id.txt_pass_empty);
-        txtPassUpperCase = findViewById(R.id.txt_pass_uppercase);
-        txtPassLowerCase = findViewById(R.id.txt_pass_lowercase);
-        txtPassSpecialCharacter = findViewById(R.id.txt_pass_special_character);
-        txtPassDigits = findViewById(R.id.txt_pass_digits);
-        txtPassNum = findViewById(R.id.txt_pass_num);
-
-
-        //show error for username
-        edtUrName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String username = edtUrName.getText().toString().trim();
-                if(username.isEmpty()){
-                    txtUrNameEmpty.setVisibility(View.VISIBLE);
-                    txtUrNameEmpty.setText("Username can't be empty");
-                    return;
-                }
-                if(username.matches(".*[^a-zA-Z0-9].*")){
-                    txtUrNameSpCharacter.setVisibility(View.VISIBLE);
-                    txtUrNameSpCharacter.setText("Remove special character");
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String username = edtUrName.getText().toString().trim();
-                if(!username.isEmpty()){
-                    txtUrNameEmpty.setVisibility(View.GONE);
-                }
-                if(!username.matches(".*[^a-zA-Z0-9].*")){
-                    txtUrNameSpCharacter.setVisibility(View.GONE);
-                }
-            }
-        });
-        //show error for email
-        edtEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String email = edtEmail.getText().toString().trim();
-                if(email.isEmpty()){
-                    txtEmailEmpty.setVisibility(View.VISIBLE);
-                    txtEmailEmpty.setText("Email can't be empty");
-                    return;
-                }
-                if(!email.matches("^[a-zA-z0-9_\\-]*@gmail\\.com$")){
-                    txtEmailValidate.setVisibility(View.VISIBLE);
-                    txtEmailValidate.setText("Enter valid email");
-                    return;
-                }
-            }
-
-            @Override public void afterTextChanged(Editable editable) {
-                String email = edtEmail.getText().toString();
-                if(!email.isEmpty()&&email.matches("^[a-zA-z0-9_\\-]*@gmail\\.com$")){
-                    txtEmailValidate.setVisibility(View.GONE);
-                    txtEmailEmpty.setVisibility(View.GONE);
-                }
-            }
-        });
-        //show error foe pass
-        edtPass.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String pass = edtPass.getText().toString().trim();
-                if (pass.isEmpty()) {
-                    txtPassEmpty.setVisibility(View.VISIBLE);
-                    txtPassEmpty.setText("Password can't be empty");
-                    return;
-                }
-                if(pass.length()<8){
-                    txtPassDigits.setVisibility(View.VISIBLE);
-                    txtPassDigits.setText("Password must be contains 8 characters");
-                }
-                if(!pass.matches(".*[^a-zA-Z0-9].*")){
-                    txtPassSpecialCharacter.setVisibility(View.VISIBLE);
-                    txtPassSpecialCharacter.setText("At least one special character");
-                }
-                if(!pass.matches(".*[a-z].*")){
-                    txtPassLowerCase.setVisibility(View.VISIBLE);
-                    txtPassLowerCase.setText("At least one lowercase");
-                }
-                if(!pass.matches(".*[A-Z].*")){
-                    txtPassUpperCase.setVisibility(View.VISIBLE);
-                    txtPassUpperCase.setText("At least one uppercase");
-                }
-                if(!pass.matches(".*[0-9].*")){
-                    txtPassNum.setVisibility(View.VISIBLE);
-                    txtPassNum.setText("At least one numeric value");
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String pass = edtPass.getText().toString().trim();
-                if(!pass.isEmpty()){
-                    txtPassEmpty.setVisibility(View.GONE);
-                }
-                if(pass.matches(".*[^a-zA-Z0-9].*")){
-                    txtPassSpecialCharacter.setVisibility(View.GONE);
-                }
-                if(pass.length()>=8){
-                    txtPassDigits.setVisibility(View.GONE);
-                }
-                if(pass.matches(".*[a-z].*")){
-                    txtPassLowerCase.setVisibility(View.GONE);
-                }
-                if(pass.matches(".*[A-Z].*")){
-                    txtPassUpperCase.setVisibility(View.GONE);
-                }
-                if(pass.matches(".*[0-9].*")){
-                    txtPassNum.setVisibility(View.GONE);
-                }
-            }
-        });
 
         // Password Show or Hide
         icPassShow.setOnClickListener(new View.OnClickListener() {

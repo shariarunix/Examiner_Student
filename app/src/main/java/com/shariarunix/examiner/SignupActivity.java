@@ -574,9 +574,36 @@ public class SignupActivity extends AppCompatActivity {
             }
         }
 
-        if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || guardianPhone.isEmpty() || course.isEmpty() || pass.isEmpty()) {
+        if (name.isEmpty()) {
+            edtSignUpName.requestFocus();
             return;
         }
+        if (email.isEmpty()) {
+            edtSignUpEmail.requestFocus();
+            return;
+        }
+        if (phone.isEmpty()) {
+            edtSignUpPhone.requestFocus();
+            return;
+        }
+        if (guardianPhone.isEmpty()) {
+            edtSignUpGrdPhone.requestFocus();
+            return;
+        }
+        if (course.isEmpty()) {
+            txtSelectCourse.requestFocus();
+            return;
+        }
+        if (pass.isEmpty()) {
+            edtSignUpPass.requestFocus();
+            return;
+        }
+        if (confirmPass.isEmpty()) {
+            edtSignUpConfirmPass.requestFocus();
+            return;
+        }
+
+
 
         // Create new user in Firebase
         mAuth.createUserWithEmailAndPassword(email, confirmPass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

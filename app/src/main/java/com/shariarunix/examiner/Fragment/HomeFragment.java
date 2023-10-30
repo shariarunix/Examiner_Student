@@ -40,7 +40,7 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
     private DatabaseReference mReference;
     private static final String U_DATA = "arg1";
-    String userName, userEmail, userPhone, userCourse;
+    String userName, userEmail, userPhone, userGrdPhone, userCourse;
     int prevExamResult, prevExamTotalMarks;
     boolean isDialogShown;
     List<ExamDataModel> examDataList = new ArrayList<>();
@@ -86,9 +86,11 @@ public class HomeFragment extends Fragment {
         if (getArguments() != null) {
             StudentDataModel studentDataModel = (StudentDataModel) getArguments().getSerializable(U_DATA);
 
+            assert studentDataModel != null;
             userName = studentDataModel.getName();
             userEmail = studentDataModel.getEmail();
             userPhone = studentDataModel.getPhone();
+            userGrdPhone = studentDataModel.getGuardianPhone();
             userCourse = studentDataModel.getCourse();
             prevExamResult = studentDataModel.getPrevExamResult();
             prevExamTotalMarks = studentDataModel.getPrevExamTotalMarks();
@@ -167,6 +169,7 @@ public class HomeFragment extends Fragment {
         TextView txtName = dialog.findViewById(R.id.txt_stNameID);
         TextView txtEmail = dialog.findViewById(R.id.txt_stEmailID);
         TextView txtPhone = dialog.findViewById(R.id.txt_stPhoneID);
+        TextView txtGrdPhone = dialog.findViewById(R.id.txt_stGrdPhoneID);
         TextView txtCourse = dialog.findViewById(R.id.txt_stCourseID);
 
         AppCompatButton btnDialogHide = dialog.findViewById(R.id.btn_dialog_ok);
@@ -174,6 +177,7 @@ public class HomeFragment extends Fragment {
         txtName.setText(userName);
         txtEmail.setText(userEmail);
         txtPhone.setText(userPhone);
+        txtGrdPhone.setText(userGrdPhone);
         txtCourse.setText(userCourse);
 
         btnDialogHide.setOnClickListener(new View.OnClickListener() {

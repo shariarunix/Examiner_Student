@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // Default Fragment
                     loadFrag(HomeFragment.getInstance(studentDataModel), 0);
+                    navBottom.getMenu().findItem(R.id.home).setChecked(true);
 
                     loadingDialog.dismiss();
                 }
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
                 loadingDialog.dismiss();
             }
         });
