@@ -14,6 +14,8 @@ import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -48,12 +50,12 @@ public class SignupActivity extends AppCompatActivity {
     private static final String TB_COURSE = "courseList";
     ListView courseList;
     RelativeLayout courseSelectorLayout;
-    TextView txtSelectCourse, showError,txtNameEmpty,txtNameSpecialCharacter,txtNumericNum,
-            txtEmailValidate,txtEmailEmpty,txtUrNameEmpty,txtUrNameSpCharacter,txtUserNameDot,txtPhoneEmpty,
-            txtPhoneValidate,txtGrdPhoneEmpty, txtGrdPhoneValidate,txtPassEmpty, txtPassDigits,
-            txtPassUpperCase,txtPassLowerCase,txtPassNum,txtPassSpecialCharacter,
-            txtConfirmPassEmpty,txtConfirmPass;
-    private EditText edtSignUpName, edtSignUpEmail,edtSignUpUrName, edtSignUpPhone,edtSignUpGrdPhone, edtSignUpPass, edtSignUpConfirmPass;
+    TextView txtSelectCourse, txtCourseEmpty, txtNameEmpty, txtNameSpecialCharacter, txtNameNumber,
+            txtEmailValidate, txtEmailEmpty, txtUrNameEmpty, txtUrNameSpCharacter, txtUserNameDot, txtPhoneEmpty,
+            txtPhoneValidate, txtGrdPhoneEmpty, txtGrdPhoneValidate, txtPassEmpty, txtPassDigits,
+            txtPassUpperCase, txtPassLowerCase, txtPassNum, txtPassSpecialCharacter,
+            txtConfirmPassEmpty, txtConfirmPass;
+    private EditText edtSignUpName, edtSignUpEmail, edtSignUpPhone, edtSignUpGrdPhone, edtSignUpPass, edtSignUpConfirmPass;
     ImageView icPassShow, icConfirmPassShow;
     List<String> courseListData = new ArrayList<>();
     boolean findSpecialChar = false, passShowToggle = false, conPassShowToggle = false;
@@ -69,8 +71,7 @@ public class SignupActivity extends AppCompatActivity {
     Dialog loadingDialog;
     private String userID;
 
-
-
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,39 +94,41 @@ public class SignupActivity extends AppCompatActivity {
         txtSelectCourse = findViewById(R.id.txt_select_course);
         edtSignUpName = findViewById(R.id.edt_sign_up_name);
         edtSignUpEmail = findViewById(R.id.edt_sign_up_email);
-        edtSignUpUrName = findViewById(R.id.edt_sign_up_username);
         edtSignUpPhone = findViewById(R.id.edt_sign_up_phone);
         edtSignUpGrdPhone = findViewById(R.id.edt_sign_up_grd_phone);
         edtSignUpPass = findViewById(R.id.edt_sign_up_pass);
         edtSignUpConfirmPass = findViewById(R.id.edt_sign_up_confirm_pass);
-        showError = findViewById(R.id.show_error);
+        txtCourseEmpty = findViewById(R.id.txt_course_empty);
+
         //id find for name error
-        txtNameSpecialCharacter = findViewById(R.id.txt_name_special_character);
         txtNameEmpty = findViewById(R.id.txt_name_empty);
-        txtNumericNum = findViewById(R.id.txt_name_numeric_num);
+        txtNameNumber = findViewById(R.id.txt_name_numeric_num);
+        txtNameSpecialCharacter = findViewById(R.id.txt_name_special_character);
+
         //id find for email error
         txtEmailValidate = findViewById(R.id.txt_email_validate);
         txtEmailEmpty = findViewById(R.id.txt_email_empty);
+
         //id find for phone error
         txtPhoneEmpty = findViewById(R.id.txt_phone_empty);
         txtPhoneValidate = findViewById(R.id.txt_phone_validate);
+
         //id find for guardian phone error
         txtGrdPhoneValidate = findViewById(R.id.txt_grd_phone_validate);
         txtGrdPhoneEmpty = findViewById(R.id.txt_grd_phone_empty);
-        //id find for username error
-        txtUrNameEmpty = findViewById(R.id.txt_username_empty);
-        txtUrNameSpCharacter = findViewById(R.id.txt_username_special_character);
-        txtUserNameDot = findViewById(R.id.txt_username_dot);
+
         //id find for pass error
-        txtPassEmpty =findViewById(R.id.txt_pass_empty);
+        txtPassEmpty = findViewById(R.id.txt_pass_empty);
         txtPassUpperCase = findViewById(R.id.txt_pass_uppercase);
         txtPassLowerCase = findViewById(R.id.txt_pass_lowercase);
         txtPassSpecialCharacter = findViewById(R.id.txt_pass_special_character);
         txtPassDigits = findViewById(R.id.txt_pass_digits);
         txtPassNum = findViewById(R.id.txt_pass_num);
+
         //id find for confirm pass
         txtConfirmPass = findViewById(R.id.txt_confirm_pass);
         txtConfirmPassEmpty = findViewById(R.id.txt_confirm_pass_empty);
+
         icPassShow = findViewById(R.id.ic_pass_show);
         icConfirmPassShow = findViewById(R.id.ic_confirm_pass_show);
 
@@ -134,34 +137,41 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String name = edtSignUpName.getText().toString().trim();
-                if (name.isEmpty()) {
-                    txtNameEmpty.setVisibility(View.VISIBLE);
-                    txtNameEmpty.setText("Name can't be empty");
-                }
-                if(name.matches(".*[^a-zA-Z0-9].*")){
+
+                if (!name.isEmpty()) {
+                    if (name.matches(".*[^a-zA-Z 0-9].*")) {
                         txtNameSpecialCharacter.setVisibility(View.VISIBLE);
                         txtNameSpecialCharacter.setText("Remove special character");
-                }
-                if(name.matches(".*[0-9].*")){
-                        txtNumericNum.setVisibility(View.VISIBLE);
-                        txtNumericNum.setText("Remove numeric value");
-                        return;
+                    }
+                    if (name.matches(".*[0-9].*")) {
+                        txtNameNumber.setVisibility(View.VISIBLE);
+                        txtNameNumber.setText("Remove numeric value");
+                    }
+                } else {
+                    txtNameEmpty.setVisibility(View.VISIBLE);
+                    txtNameEmpty.setText("Enter your name");
                 }
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
                 String name = edtSignUpName.getText().toString().trim();
                 if (!name.isEmpty()) {
                     txtNameEmpty.setVisibility(View.GONE);
-                }
-                if(!name.matches(".*[^a-zA-Z0-9].*")){
+
+                    if (!name.matches(".*[^a-zA-Z 0-9].*")) {
+                        txtNameSpecialCharacter.setVisibility(View.GONE);
+                    }
+                    if (!name.matches(".*[0-9].*")) {
+                        txtNameNumber.setVisibility(View.GONE);
+                    }
+                } else {
+                    txtNameNumber.setVisibility(View.GONE);
                     txtNameSpecialCharacter.setVisibility(View.GONE);
-                }
-                if(!name.matches(".*[0-9].*")){
-                    txtNumericNum.setVisibility(View.GONE);
                 }
             }
         });
@@ -170,125 +180,106 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String email = edtSignUpEmail.getText().toString().trim();
-                if(email.isEmpty()){
+
+                if (!email.isEmpty()) {
+                    if (!email.matches("^[a-zA-z0-9_\\-]*@gmail\\.com$")) {
+                        txtEmailValidate.setVisibility(View.VISIBLE);
+                        txtEmailValidate.setText("Enter a valid email address");
+                    }
+                } else {
                     txtEmailEmpty.setVisibility(View.VISIBLE);
-                    txtEmailEmpty.setText("Email can't be empty");
-                    return;
-                }
-                if(!email.matches("^[a-zA-z0-9_\\-]*@gmail\\.com$")){
-                    txtEmailValidate.setVisibility(View.VISIBLE);
-                    txtEmailValidate.setText("Enter valid email");
-                    return;
+                    txtEmailEmpty.setText("Enter your email address");
                 }
             }
 
-            @Override public void afterTextChanged(Editable editable) {
-                String email = edtSignUpEmail.getText().toString();
-                if(!email.isEmpty()&&email.matches("^[a-zA-z0-9_\\-]*@gmail\\.com$")){
-                    txtEmailValidate.setVisibility(View.GONE);
-                    txtEmailEmpty.setVisibility(View.GONE);
-                }
-            }
-        });
-        //show error for username
-        edtSignUpUrName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String username = edtSignUpUrName.getText().toString().trim();
-                if(username.isEmpty()){
-                    txtUrNameEmpty.setVisibility(View.VISIBLE);
-                    txtUrNameEmpty.setText("Username can't be empty");
-                }
-                if(username.matches(".*[^a-zA-Z0-9].*")){
-                    txtUrNameSpCharacter.setVisibility(View.VISIBLE);
-                    txtUrNameSpCharacter.setText("Remove special character");
-                }
-            }
             @Override
             public void afterTextChanged(Editable editable) {
-                String username = edtSignUpUrName.getText().toString().trim();
-                if(!username.isEmpty()){
-                    txtUrNameEmpty.setVisibility(View.GONE);
-                }
-                if(!username.matches(".*[^a-zA-Z0-9].*")){
-                    txtUrNameSpCharacter.setVisibility(View.GONE);
+                String email = edtSignUpEmail.getText().toString();
+
+                if (!email.isEmpty()) {
+                    txtEmailEmpty.setVisibility(View.GONE);
+
+                    if (email.matches("^[a-zA-z0-9_\\-]*@gmail\\.com$")) {
+                        txtEmailValidate.setVisibility(View.GONE);
+                    }
+                } else {
+                    txtEmailValidate.setVisibility(View.GONE);
                 }
             }
         });
         //show error for phone num
-        edtSignUpPhone.addTextChangedListener(new TextWatcher(){
+        edtSignUpPhone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String phone = edtSignUpPhone.getText().toString().trim();
-                if(phone.isEmpty()){
+
+                if (!phone.isEmpty()) {
+                    if (!phone.matches("^(?:\\+?88)?01[3-9]\\d{8}$")) {
+                        txtPhoneValidate.setVisibility(View.VISIBLE);
+                        txtPhoneValidate.setText("Enter a valid phone number");
+                    }
+                } else {
                     txtPhoneEmpty.setVisibility(View.VISIBLE);
-                    txtPhoneEmpty.setText("Phone number can't be empty");
-                    return;
-                }
-                if(!phone.matches("^(?:\\+?88)?01[3-9]\\d{8}$")){
-                    txtPhoneValidate.setVisibility(View.VISIBLE);
-                    txtPhoneValidate.setText("Enter valid phone number");
-                }
-                if(!phone.matches("[01]+[3-9]{8}")){
-                    txtPhoneValidate.setVisibility(View.VISIBLE);
-                    txtPhoneValidate.setText("Enter valid phone number");
+                    txtPhoneEmpty.setText("Enter your phone number");
                 }
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
                 String phone = edtSignUpPhone.getText().toString().trim();
-                if(!phone.isEmpty()){
+
+                if (!phone.isEmpty()) {
                     txtPhoneEmpty.setVisibility(View.GONE);
-                }
-                if(phone.matches("^(?:\\+?88|0088)?01[3-9]\\d{8}$")){
-                    txtPhoneValidate.setVisibility(View.GONE);
-                }
-                if(phone.matches("[01]+[3-9]{8}")){
+
+                    if (phone.matches("^(?:\\+?88|0088)?01[3-9]\\d{8}$")) {
+                        txtPhoneValidate.setVisibility(View.GONE);
+                    }
+                } else {
                     txtPhoneValidate.setVisibility(View.GONE);
                 }
             }
         });
         //show error for guardian phone num
-        edtSignUpGrdPhone.addTextChangedListener(new TextWatcher(){
+        edtSignUpGrdPhone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String grdphone = edtSignUpGrdPhone.getText().toString().trim();
-                if(grdphone.isEmpty()){
+                String grdPhone = edtSignUpGrdPhone.getText().toString().trim();
+
+                if (!grdPhone.isEmpty()) {
+                    if (!grdPhone.matches("^(?:\\+?88)?01[3-9]\\d{8}$")) {
+                        txtGrdPhoneValidate.setVisibility(View.VISIBLE);
+                        txtGrdPhoneValidate.setText("Enter a valid phone number");
+                    }
+                } else {
                     txtGrdPhoneEmpty.setVisibility(View.VISIBLE);
-                    txtGrdPhoneEmpty.setText("Phone number can't be empty");
-                    return;
+                    txtGrdPhoneEmpty.setText("Enter your guardian phone number");
                 }
-                if(!grdphone.matches("^(?:\\+?88)?01[3-9]\\d{8}$")){
-                    txtGrdPhoneValidate.setVisibility(View.VISIBLE);
-                    txtGrdPhoneValidate.setText("Enter valid phone number");
-                }
-                if(!grdphone.matches("[01]+[3-9]{8}")){
-                    txtGrdPhoneValidate.setVisibility(View.VISIBLE);
-                    txtGrdPhoneValidate.setText("Enter valid phone number");
-                }
+
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
-                String grdphone = edtSignUpGrdPhone.getText().toString().trim();
-                if(!grdphone.isEmpty()){
+                String grdPhone = edtSignUpGrdPhone.getText().toString().trim();
+
+                if (!grdPhone.isEmpty()) {
                     txtGrdPhoneEmpty.setVisibility(View.GONE);
-                }
-                if(grdphone.matches("^(?:\\+?88|0088)?01[3-9]\\d{8}$")){
-                    txtGrdPhoneValidate.setVisibility(View.GONE);
-                }
-                if(grdphone.matches("[01]+[3-9]{8}")){
+
+                    if (grdPhone.matches("^(?:\\+?88|0088)?01[3-9]\\d{8}$")) {
+                        txtGrdPhoneValidate.setVisibility(View.GONE);
+                    }
+                } else {
                     txtGrdPhoneValidate.setVisibility(View.GONE);
                 }
             }
@@ -298,54 +289,66 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String pass = edtSignUpPass.getText().toString().trim();
-                if (pass.isEmpty()) {
+
+                if (!pass.isEmpty()) {
+                    if (pass.length() < 8) {
+                        txtPassDigits.setVisibility(View.VISIBLE);
+                        txtPassDigits.setText("Password must be contains 8 characters");
+                    }
+                    if (!pass.matches(".*[^a-zA-Z0-9].*")) {
+                        txtPassSpecialCharacter.setVisibility(View.VISIBLE);
+                        txtPassSpecialCharacter.setText("At least one special character");
+                    }
+                    if (!pass.matches(".*[a-z].*")) {
+                        txtPassLowerCase.setVisibility(View.VISIBLE);
+                        txtPassLowerCase.setText("At least one lowercase");
+                    }
+                    if (!pass.matches(".*[A-Z].*")) {
+                        txtPassUpperCase.setVisibility(View.VISIBLE);
+                        txtPassUpperCase.setText("At least one uppercase");
+                    }
+                    if (!pass.matches(".*[0-9].*")) {
+                        txtPassNum.setVisibility(View.VISIBLE);
+                        txtPassNum.setText("At least one numeric value");
+                    }
+                } else {
                     txtPassEmpty.setVisibility(View.VISIBLE);
-                    txtPassEmpty.setText("Password can't be empty");
-                    return;
+                    txtPassEmpty.setText("Enter your password");
                 }
-                if(pass.length()<8){
-                    txtPassDigits.setVisibility(View.VISIBLE);
-                    txtPassDigits.setText("Password must be contains 8 characters");
-                }
-                if(!pass.matches(".*[^a-zA-Z0-9].*")){
-                    txtPassSpecialCharacter.setVisibility(View.VISIBLE);
-                    txtPassSpecialCharacter.setText("At least one special character");
-                }
-                if(!pass.matches(".*[a-z].*")){
-                    txtPassLowerCase.setVisibility(View.VISIBLE);
-                    txtPassLowerCase.setText("At least one lowercase");
-                }
-                if(!pass.matches(".*[A-Z].*")){
-                    txtPassUpperCase.setVisibility(View.VISIBLE);
-                    txtPassUpperCase.setText("At least one uppercase");
-                }
-                if(!pass.matches(".*[0-9].*")){
-                    txtPassNum.setVisibility(View.VISIBLE);
-                    txtPassNum.setText("At least one numeric value");
-                }
+
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
                 String pass = edtSignUpPass.getText().toString().trim();
-                if(!pass.isEmpty()){
+
+                if (!pass.isEmpty()) {
                     txtPassEmpty.setVisibility(View.GONE);
-                }
-                if(pass.matches(".*[^a-zA-Z0-9].*")){
+
+                    if (pass.matches(".*[^a-zA-Z0-9].*")) {
+                        txtPassSpecialCharacter.setVisibility(View.GONE);
+                    }
+                    if (pass.length() >= 8) {
+                        txtPassDigits.setVisibility(View.GONE);
+                    }
+                    if (pass.matches(".*[a-z].*")) {
+                        txtPassLowerCase.setVisibility(View.GONE);
+                    }
+                    if (pass.matches(".*[A-Z].*")) {
+                        txtPassUpperCase.setVisibility(View.GONE);
+                    }
+                    if (pass.matches(".*[0-9].*")) {
+                        txtPassNum.setVisibility(View.GONE);
+                    }
+                } else {
                     txtPassSpecialCharacter.setVisibility(View.GONE);
-                }
-                if(pass.length()>=8){
                     txtPassDigits.setVisibility(View.GONE);
-                }
-                if(pass.matches(".*[a-z].*")){
-                    txtPassLowerCase.setVisibility(View.GONE);
-                }
-                if(pass.matches(".*[A-Z].*")){
                     txtPassUpperCase.setVisibility(View.GONE);
-                }
-                if(pass.matches(".*[0-9].*")){
+                    txtPassLowerCase.setVisibility(View.GONE);
                     txtPassNum.setVisibility(View.GONE);
                 }
             }
@@ -360,13 +363,15 @@ public class SignupActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String pass = edtSignUpPass.getText().toString().trim();
                 String confirmPass = edtSignUpConfirmPass.getText().toString().trim();
-                if(confirmPass.isEmpty()){
+
+                if (!confirmPass.isEmpty()) {
+                    if (!confirmPass.equals(pass)) {
+                        txtConfirmPass.setVisibility(View.VISIBLE);
+                        txtConfirmPass.setText("Confirmed password does not match the password");
+                    }
+                } else {
                     txtConfirmPassEmpty.setVisibility(View.VISIBLE);
-                    txtConfirmPassEmpty.setText("Confirm password can't be empty");
-                }
-                if(!confirmPass.contains(pass)){
-                    txtConfirmPass.setVisibility(View.VISIBLE);
-                    txtConfirmPass.setText("Password doesn't match");
+                    txtConfirmPassEmpty.setText("Enter your password again");
                 }
             }
 
@@ -374,11 +379,15 @@ public class SignupActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 String pass = edtSignUpPass.getText().toString().trim();
                 String confirmPass = edtSignUpConfirmPass.getText().toString().trim();
-                if(!confirmPass.isEmpty()){
-                    txtConfirmPassEmpty.setVisibility(View.GONE);
-                }
-                if(confirmPass.contains(pass)){
+
+                if (!confirmPass.isEmpty()) {
                     txtConfirmPass.setVisibility(View.GONE);
+
+                    if (!confirmPass.equals(pass)) {
+                        txtConfirmPassEmpty.setVisibility(View.GONE);
+                    }
+                } else {
+                    txtConfirmPassEmpty.setVisibility(View.GONE);
                 }
             }
         });
@@ -411,6 +420,7 @@ public class SignupActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 txtSelectCourse.setText(courseListData.get(i));
                 personalInfoDialog.dismiss();
+                txtCourseEmpty.setVisibility(View.GONE);
             }
         });
 
@@ -462,61 +472,109 @@ public class SignupActivity extends AppCompatActivity {
         String name = edtSignUpName.getText().toString().trim();
         String email = edtSignUpEmail.getText().toString().trim();
         String phone = edtSignUpPhone.getText().toString().trim();
+        String guardianPhone = edtSignUpGrdPhone.getText().toString().trim();
         String course = txtSelectCourse.getText().toString().trim();
         String pass = edtSignUpPass.getText().toString().trim();
         String confirmPass = edtSignUpConfirmPass.getText().toString().trim();
-        // Checking is name ok or not?
-        String[] specialCharacter = new String[]{"~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "-", "+", "=", "/", "\\", "<", ">", "{", "}", "[", "]", ",", "?", "|", "`"};
-        for (String s : specialCharacter) {
-            if (name.contains(s)) {
-                findSpecialChar = true;
-                break;
+
+        if (name.isEmpty()) {
+            txtNameEmpty.setVisibility(View.VISIBLE);
+            txtNameEmpty.setText("Enter your name");
+            edtSignUpName.requestFocus();
+        } else {
+            if (txtNameSpecialCharacter.getVisibility() == View.VISIBLE) {
+                edtSignUpName.requestFocus();
+                return;
+            }
+            if (txtNameNumber.getVisibility() == View.VISIBLE) {
+                edtSignUpName.requestFocus();
+                return;
             }
         }
-        if (findSpecialChar) {
-            validator(edtSignUpName, "Please remove special character's from your name");
-            findSpecialChar = false;
-            return;
-        }
-        if (name.isEmpty()) {
-            validator(edtSignUpName, "Please enter your name");
-            return;
-        }
-        // Checking is email ok or not?
+
         if (email.isEmpty()) {
-            validator(edtSignUpEmail, "Please enter your email address");
-            return;
+            txtEmailEmpty.setVisibility(View.VISIBLE);
+            txtEmailEmpty.setText("Enter your email address");
+            edtSignUpEmail.requestFocus();
+        } else {
+            if (txtEmailValidate.getVisibility() == View.VISIBLE) {
+                edtSignUpEmail.requestFocus();
+                return;
+            }
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            validator(edtSignUpEmail, "Please enter a valid email address");
-            return;
-        }
-        // Checking is phone number ok or not?
+
         if (phone.isEmpty()) {
-            validator(edtSignUpPhone, "Please enter your phone number");
-            return;
+            txtPhoneEmpty.setVisibility(View.VISIBLE);
+            txtPhoneEmpty.setText("Enter your phone number");
+            edtSignUpPhone.requestFocus();
+        } else {
+            if (txtPhoneValidate.getVisibility() == View.VISIBLE) {
+                edtSignUpPhone.requestFocus();
+                return;
+            }
         }
-        if (!phone.matches("^(?:\\+88|0088)?(01[3-9]\\d{8})$")) {
-            validator(edtSignUpPhone, "Please enter a valid phone number");
-            return;
+
+        if (guardianPhone.isEmpty()) {
+            txtGrdPhoneEmpty.setVisibility(View.VISIBLE);
+            txtGrdPhoneEmpty.setText("Enter your guardian phone number");
+            edtSignUpGrdPhone.requestFocus();
+        } else {
+            if (txtGrdPhoneValidate.getVisibility() == View.VISIBLE) {
+                edtSignUpGrdPhone.requestFocus();
+                return;
+            }
         }
-        // Checking is course selected or not
+
         if (course.isEmpty()) {
-            showError.setVisibility(View.VISIBLE);
-            showError.setText("Please select your course");
-            return;
+            txtCourseEmpty.setVisibility(View.VISIBLE);
+            txtCourseEmpty.setText("Select your course");
+            txtSelectCourse.requestFocus();
+        } else {
+            if (txtCourseEmpty.getVisibility() == View.VISIBLE) {
+                txtSelectCourse.requestFocus();
+                return;
+            }
         }
-        // Checking password
+
         if (pass.isEmpty()) {
-            validator(edtSignUpPass, "Please enter your password");
-            return;
+            txtPassEmpty.setVisibility(View.VISIBLE);
+            txtPassEmpty.setText("Enter your password");
+            edtSignUpPass.requestFocus();
+        } else {
+            if (txtPassUpperCase.getVisibility() == View.VISIBLE) {
+                edtSignUpPass.requestFocus();
+                return;
+            }
+            if (txtPassLowerCase.getVisibility() == View.VISIBLE) {
+                edtSignUpPass.requestFocus();
+                return;
+            }
+            if (txtPassDigits.getVisibility() == View.VISIBLE) {
+                edtSignUpPass.requestFocus();
+                return;
+            }
+            if (txtPassSpecialCharacter.getVisibility() == View.VISIBLE) {
+                edtSignUpPass.requestFocus();
+                return;
+            }
+            if (txtPassNum.getVisibility() == View.VISIBLE) {
+                edtSignUpPass.requestFocus();
+                return;
+            }
         }
-        if (pass.length() < 8) {
-            validator(edtSignUpPass, "Password must be at least 8 characters");
-            return;
+
+        if (confirmPass.isEmpty()) {
+            txtConfirmPassEmpty.setVisibility(View.VISIBLE);
+            txtConfirmPassEmpty.setText("Enter your password again");
+            edtSignUpConfirmPass.requestFocus();
+        } else {
+            if (txtConfirmPass.getVisibility() == View.VISIBLE) {
+                edtSignUpConfirmPass.requestFocus();
+                return;
+            }
         }
-        if (!confirmPass.equals(pass)) {
-            validator(edtSignUpConfirmPass, "Password and confirm password is not same");
+
+        if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || guardianPhone.isEmpty() || course.isEmpty() || pass.isEmpty()) {
             return;
         }
 
@@ -530,7 +588,7 @@ public class SignupActivity extends AppCompatActivity {
                     assert user != null;
                     userID = user.getUid();
 
-                    sDataModel = new StudentDataModel(name, email, phone, course, confirmPass, userID, 0, 0, true);
+                    sDataModel = new StudentDataModel(userID, "", name, email, phone, guardianPhone, course, confirmPass, "", 0, 0, true);
 
                     // Setting Data as a Child of UID
                     setData(userID);
@@ -548,7 +606,9 @@ public class SignupActivity extends AppCompatActivity {
                     startActivity(iNext);
                     finish();
                 } else {
-                    validator(edtSignUpEmail, "Please use different email");
+                    txtEmailValidate.setVisibility(View.VISIBLE);
+                    txtEmailValidate.setText("Please Enter a different email address");
+                    edtSignUpEmail.requestFocus();
                 }
             }
         });
@@ -556,7 +616,12 @@ public class SignupActivity extends AppCompatActivity {
 
     // Set Student's Data to Firebase Database
     private void setData(String key) {
-        mReference.child(TB_STUDENT).child(key).setValue(sDataModel);
+        mReference.child(TB_STUDENT).child(key).setValue(sDataModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(SignupActivity.this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Load Course list
@@ -577,12 +642,5 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(SignupActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    // Checking input field
-    private void validator(EditText editText, String string) {
-        showError.setVisibility(View.VISIBLE);
-        showError.setText(string);
-        editText.requestFocus();
     }
 }

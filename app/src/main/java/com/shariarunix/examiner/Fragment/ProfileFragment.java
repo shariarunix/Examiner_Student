@@ -60,7 +60,7 @@ import java.util.Random;
 
 public class ProfileFragment extends Fragment {
     private static final String U_DATA = "arg1";
-    String userName, userEmail, userPhone, userCourse, userPass, userID;
+    String userName, userEmail, userPhone, userGuardianPhone, userCourse, userPass, userID;
     List<ExamResultModel> examResultModelList = new ArrayList<>();
     DatabaseReference mReference;
     FirebaseUser user;
@@ -119,6 +119,7 @@ public class ProfileFragment extends Fragment {
             userName = studentDataModel.getName();
             userEmail = studentDataModel.getEmail();
             userPhone = studentDataModel.getPhone();
+            userGuardianPhone = studentDataModel.getGuardianPhone();
             userCourse = studentDataModel.getCourse();
             userPass = studentDataModel.getPassword();
 
@@ -187,9 +188,6 @@ public class ProfileFragment extends Fragment {
 
         ImageView oldPassShow = changePassDialog.findViewById(R.id.ic_pass_show);
         ImageView newPassShow = changePassDialog.findViewById(R.id.ic_new_pass_show);
-
-        assert edtOldPass != null;
-        edtOldPass.requestFocus();
 
         assert oldPassShow != null;
         oldPassShow.setOnClickListener(new View.OnClickListener() {
@@ -277,6 +275,7 @@ public class ProfileFragment extends Fragment {
         TextView personalInfoName = personalInfoDialog.findViewById(R.id.personal_info_name);
         TextView personalInfoEmail = personalInfoDialog.findViewById(R.id.personal_info_email);
         TextView personalInfoPhone = personalInfoDialog.findViewById(R.id.personal_info_phone);
+        TextView personalInfoGuardianPhone = personalInfoDialog.findViewById(R.id.personal_info_guardian_phone);
         TextView personalInfoCourse = personalInfoDialog.findViewById(R.id.personal_info_course);
 
         AppCompatButton btnChangeInformation = personalInfoDialog.findViewById(R.id.btn_change_information);
@@ -289,6 +288,9 @@ public class ProfileFragment extends Fragment {
 
         assert personalInfoPhone != null;
         personalInfoPhone.setText(userPhone);
+
+        assert personalInfoGuardianPhone != null;
+        personalInfoGuardianPhone.setText(userGuardianPhone);
 
         assert personalInfoCourse != null;
         personalInfoCourse.setText(userCourse);
@@ -315,6 +317,7 @@ public class ProfileFragment extends Fragment {
 
         EditText edtChangeName = changeInfoDialog.findViewById(R.id.edt_change_name);
         EditText edtChangePhone = changeInfoDialog.findViewById(R.id.edt_change_phone);
+        EditText edtChangeGuardianPhone = changeInfoDialog.findViewById(R.id.edt_change_guardian_phone);
 
         TextView showErrorChangeInfo = changeInfoDialog.findViewById(R.id.show_error);
 
@@ -322,10 +325,12 @@ public class ProfileFragment extends Fragment {
 
         assert edtChangeName != null;
         edtChangeName.setHint(userName);
-        edtChangeName.requestFocus();
 
         assert edtChangePhone != null;
         edtChangePhone.setHint(userPhone);
+
+        assert edtChangeGuardianPhone != null;
+        edtChangeGuardianPhone.setHint(userGuardianPhone);
 
         changeInfoDialog.show();
 
@@ -336,40 +341,40 @@ public class ProfileFragment extends Fragment {
                 // Do change operation
                 String changeName = edtChangeName.getText().toString().trim();
                 String changePhone = edtChangePhone.getText().toString().trim();
+                String changeGuardianPhone = edtChangeGuardianPhone.getText().toString().trim();
+
+                assert showErrorChangeInfo != null;
 
                 // Checking is name ok or not?
-                String[] specialCharacter = new String[]{"~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "-", "+", "=", "/", "\\", "<", ">", "{", "}", "[", "]", ",", "?", "|", "`"};
-                for (String s : specialCharacter) {
-                    if (changeName.contains(s)) {
-                        findSpecialChar = true;
-                        break;
+                if (!changeName.isEmpty() && !edtChangeName.getHint().equals(changeName)) {
+                    if (changeName.matches(".*[^a-zA-Z 0-9].*")) {
+                        validator(edtChangeName, showErrorChangeInfo, "Special character and number isn't allowed");
+                        return;
                     }
-                }
-                if (findSpecialChar) {
-                    assert showErrorChangeInfo != null;
-                    validator(edtChangeName, showErrorChangeInfo, "Please remove special character's from your name");
-                    findSpecialChar = false;
-                    return;
-                }
-                if (changeName.isEmpty()) {
-                    assert showErrorChangeInfo != null;
-                    validator(edtChangeName, showErrorChangeInfo, "Please enter your name");
-                    return;
-                }
-                // Checking is phone number ok or not?
-                if (changePhone.isEmpty()) {
-                    assert showErrorChangeInfo != null;
-                    validator(edtChangePhone, showErrorChangeInfo, "Please enter your phone number");
-                    return;
-                }
-                if (!changePhone.matches("^(?:\\+88|0088)?(01[3-9]\\d{8})$")) {
-                    assert showErrorChangeInfo != null;
-                    validator(edtChangePhone, showErrorChangeInfo, "Please enter a valid phone number");
-                    return;
+                    if (changeName.matches(".*[0-9].*")) {
+                        validator(edtChangeName, showErrorChangeInfo, "Special character and number isn't allowed");
+                        return;
+                    }
+                    mReference.child("student").child(userID).child("name").setValue(changeName);
                 }
 
-                mReference.child("student").child(userID).child("name").setValue(changeName);
-                mReference.child("student").child(userID).child("phone").setValue(changePhone);
+                // Checking is phone number ok or not?
+                if (!changePhone.isEmpty() && !edtChangePhone.getHint().equals(changePhone)) {
+                    if (!changePhone.matches("^(?:\\+88|0088)?(01[3-9]\\d{8})$")) {
+                        validator(edtChangePhone, showErrorChangeInfo, "Please enter a valid phone number");
+                        return;
+                    }
+                    mReference.child("student").child(userID).child("phone").setValue(changePhone);
+                }
+
+                // Checking is guardian phone number ok or not?
+                if (!changePhone.isEmpty() && !edtChangePhone.getHint().equals(changePhone)) {
+                    if (!changePhone.matches("^(?:\\+88|0088)?(01[3-9]\\d{8})$")) {
+                        validator(edtChangeGuardianPhone, showErrorChangeInfo, "Please enter a valid phone number");
+                        return;
+                    }
+                    mReference.child("student").child(userID).child("guardianPhone").setValue(changeGuardianPhone);
+                }
 
                 changeInfoDialog.dismiss();
             }
@@ -420,9 +425,6 @@ public class ProfileFragment extends Fragment {
         AppCompatButton btnDeleteAcDialogNo = deleteAccountDialog.findViewById(R.id.btn_delete_ac_dialog_no);
 
         deleteAccountDialog.show();
-
-        assert edtDeleteAcPassword != null;
-        edtDeleteAcPassword.requestFocus();
 
         assert icPassShow != null;
         icPassShow.setOnClickListener(new View.OnClickListener() {

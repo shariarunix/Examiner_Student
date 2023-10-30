@@ -47,6 +47,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="0.1"
             android:text=":"
@@ -105,6 +106,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="0.1"
             android:text=":"
@@ -163,6 +165,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="0.1"
             android:text=":"
@@ -213,6 +216,65 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
+            android:text="Guardian"
+            android:textColor="@color/black_sc"
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="0.1"
+            android:text=":"
+            android:textColor="@color/black_sc"
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.1">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none">
+
+                <TextView
+                    android:id="@+id/personal_info_guardian_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/black_sc"
+                    android:textSize="20sp" />
+            </HorizontalScrollView>
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/gradient_bg" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edt_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:weightSum="3">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
             android:text="Course"
             android:textColor="@color/black_sc"
             android:textSize="20sp"
@@ -221,6 +283,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="0.1"
             android:text=":"

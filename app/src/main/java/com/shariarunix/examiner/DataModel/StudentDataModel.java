@@ -3,33 +3,47 @@ package com.shariarunix.examiner.DataModel;
 import java.io.Serializable;
 
 public class StudentDataModel implements Serializable {
-    private String name, email, phone, course, password, userId;
+    private String userName, name, email, phone, guardianPhone, course, password, userId, profileUri;
     private int prevExamTotalMarks, prevExamResult;
-
     private boolean isLoggedIn;
 
     public StudentDataModel(){
         // Default Empty Contractor
     }
 
-    public StudentDataModel(String name,
+    public StudentDataModel(String userId,
+                            String userName,
+                            String name,
                             String email,
                             String phone,
+                            String guardianPhone,
                             String course,
                             String password,
-                            String userId,
+                            String profileUri,
                             int prevExamTotalMarks,
                             int prevExamResult,
                             boolean isLoggedIn) {
+
+        this.userName = userName;
         this.name = name;
         this.email = email;
         this.phone = phone;
+        this.guardianPhone = guardianPhone;
         this.course = course;
         this.password = password;
         this.userId = userId;
+        this.profileUri = profileUri;
         this.prevExamTotalMarks = prevExamTotalMarks;
         this.prevExamResult = prevExamResult;
         this.isLoggedIn = isLoggedIn;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getName() {
@@ -56,6 +70,14 @@ public class StudentDataModel implements Serializable {
         this.phone = phone;
     }
 
+    public String getGuardianPhone() {
+        return guardianPhone;
+    }
+
+    public void setGuardianPhone(String guardianPhone) {
+        this.guardianPhone = guardianPhone;
+    }
+
     public String getCourse() {
         return course;
     }
@@ -78,6 +100,14 @@ public class StudentDataModel implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getProfileUri() {
+        return profileUri;
+    }
+
+    public void setProfileUri(String profileUri) {
+        this.profileUri = profileUri;
     }
 
     public int getPrevExamTotalMarks() {

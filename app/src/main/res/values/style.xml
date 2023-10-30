@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="splash_theme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/blue_pr</item>
     </style>
+
     <style name="white_theme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/white_pr</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
     <!-- Bottom Dialog Main Theme -->
     <style name="bottom_sheet_dialog" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/bottom_sheet_dialog_theme</item>
     </style>
+
     <style name="bottom_sheet_dialog_theme" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@color/transparent</item>
     </style>
@@ -20,11 +24,13 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white_pr</item>
     </style>
+
     <style name="exam_no_txt">
         <item name="android:textSize">24sp</item>
         <item name="android:textColor">@color/black_pr</item>
         <item name="android:fontFamily">@font/barlow_regular</item>
     </style>
+
     <style name="blue_btn_style" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">60dp</item>
@@ -62,6 +68,7 @@
         <item name="android:fontFamily">@font/barlow_regular</item>
         <item name="android:textSize">20sp</item>
     </style>
+
     <style name="edt_txt_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">60dp</item>
@@ -72,10 +79,26 @@
         <item name="android:textColorHint">@color/black_sc</item>
         <item name="android:background">@color/transparent</item>
     </style>
+
     <style name="edt_icon_style">
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">24dp</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginStart">18dp</item>
+    </style>
+
+    <style name="txt_error_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:background">@drawable/red_sc_bg</item>
+        <item name="android:fontFamily">@font/barlow_regular</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingBottom">9dp</item>
+        <item name="android:textColor">@color/red_pr</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:visibility">gone</item>
     </style>
 </resources>

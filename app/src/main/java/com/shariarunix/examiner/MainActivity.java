@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     loadFrag(HomeFragment.getInstance(studentDataModel), 1);
                 }
                 if (item.getItemId() == R.id.resource) {
+                    // Load Resource Fragment
                     loadFrag(ResourceFragment.getInstance(studentDataModel.getCourse()), 1);
                 }
                 return true;
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, "Please check your internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
                 loadingDialog.dismiss();
             }
         });
