@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.shariarunix.examiner.DataModel.CourseDataModel;
 import com.shariarunix.examiner.DataModel.ExamDataModel;
 import com.shariarunix.examiner.DataModel.ExamResultModel;
 import com.shariarunix.examiner.DataModel.ResourceDataModel;
@@ -29,6 +30,11 @@ public class CustomAdapter extends BaseAdapter {
     List<ExamDataModel> examDataModelList;
     List<ExamResultModel> examResultModelList;
     List<ResourceDataModel> resourceDataModelList;
+    List<CourseDataModel> courseDataModelList;
+
+    public void setCourseDataModelList(List<CourseDataModel> courseDataModelList) {
+        this.courseDataModelList = courseDataModelList;
+    }
 
     // Setter for setting resourceDataModelList
     public void setResourceDataModelList(List<ResourceDataModel> resourceDataModelList) {
@@ -80,6 +86,11 @@ public class CustomAdapter extends BaseAdapter {
             resultList(view, i);
         } else if (layout == R.layout.list_item_resource) {
             resourceList(view, i);
+        } else if (layout == R.layout.list_item_course) {
+            CourseDataModel courseDataModel = courseDataModelList.get(i);
+
+            TextView txtListItem = view.findViewById(R.id.txt_list_item);
+            txtListItem.setText(courseDataModel.getCourseName());
         }
 
         Animation examListAnimation = AnimationUtils.loadAnimation(context, R.anim.fade_in);

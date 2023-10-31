@@ -39,6 +39,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shariarunix.examiner.Adapter.CustomAdapter;
+import com.shariarunix.examiner.DataModel.CourseDataModel;
 import com.shariarunix.examiner.DataModel.StudentDataModel;
 
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class SignupActivity extends AppCompatActivity {
             txtConfirmPassEmpty, txtConfirmPass;
     private EditText edtSignUpName, edtSignUpEmail, edtSignUpPhone, edtSignUpGrdPhone, edtSignUpPass, edtSignUpConfirmPass;
     ImageView icPassShow, icConfirmPassShow;
-    List<String> courseListData = new ArrayList<>();
+    List<CourseDataModel> courseListData = new ArrayList<>();
     boolean findSpecialChar = false, passShowToggle = false, conPassShowToggle = false;
 
     // Data Model for Student
@@ -86,9 +88,6 @@ public class SignupActivity extends AppCompatActivity {
         loadingDialog.setContentView(R.layout.dialog_progressbar);
         loadingDialog.setCancelable(false);
         loadingDialog.show();
-
-        // Adding item to the course list
-        loadCourseList();
 
         courseSelectorLayout = findViewById(R.id.course_selector_layout);
         txtSelectCourse = findViewById(R.id.txt_select_course);
@@ -393,33 +392,32 @@ public class SignupActivity extends AppCompatActivity {
         });
 
         // Making The Dialog
-        BottomSheetDialog personalInfoDialog = new BottomSheetDialog(SignupActivity.this, R.style.bottom_sheet_dialog);
-        Objects.requireNonNull(personalInfoDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        personalInfoDialog.getBehavior().setSkipCollapsed(true);
-        personalInfoDialog.getBehavior().setState(STATE_EXPANDED);
-        personalInfoDialog.setContentView(R.layout.bottom_dialog_course_select);
+        BottomSheetDialog courseSelectDialog = new BottomSheetDialog(SignupActivity.this, R.style.bottom_sheet_dialog);
+        Objects.requireNonNull(courseSelectDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        courseSelectDialog.getBehavior().setSkipCollapsed(true);
+        courseSelectDialog.getBehavior().setState(STATE_EXPANDED);
+        courseSelectDialog.setContentView(R.layout.bottom_dialog_course_select);
 
         // Selecting course from dialog
         courseSelectorLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                personalInfoDialog.show();
+                courseSelectDialog.show();
             }
         });
 
         // Making The List of Course
-        courseList = personalInfoDialog.findViewById(R.id.course_list);
-        assert courseList != null;
-        courseList.setAdapter(new ArrayAdapter<>(SignupActivity.this,
-                R.layout.list_item_course,
-                R.id.txt_list_item, courseListData));
+        courseList = courseSelectDialog.findViewById(R.id.course_list);
+
+        // Adding item to the course list
+        loadCourseList();
 
         // Firing on item click listener on list item
         courseList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                txtSelectCourse.setText(courseListData.get(i));
-                personalInfoDialog.dismiss();
+                txtSelectCourse.setText(courseListData.get(i).getCourseName());
+                courseSelectDialog.dismiss();
                 txtCourseEmpty.setVisibility(View.GONE);
             }
         });
@@ -604,7 +602,6 @@ public class SignupActivity extends AppCompatActivity {
         }
 
 
-
         // Create new user in Firebase
         mAuth.createUserWithEmailAndPassword(email, confirmPass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -658,9 +655,16 @@ public class SignupActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 courseListData.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    courseListData.add(dataSnapshot.getValue(String.class));
+                    courseListData.add(dataSnapshot.getValue(CourseDataModel.class));
                 }
-                courseListData.remove("All");
+                courseListData.removeIf(CourseDataModel -> CourseDataModel.getCourseName().equals("All"));
+
+                CustomAdapter courseListAdapter = new CustomAdapter(SignupActivity.this,
+                        R.layout.list_item_course,
+                        courseListData.size());
+                courseListAdapter.setCourseDataModelList(courseListData);
+
+                courseList.setAdapter(courseListAdapter);
                 loadingDialog.dismiss();
             }
 
