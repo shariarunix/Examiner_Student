@@ -657,6 +657,7 @@ public class SignupActivity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     courseListData.add(dataSnapshot.getValue(CourseDataModel.class));
                 }
+
                 courseListData.removeIf(CourseDataModel -> CourseDataModel.getCourseName().equals("All"));
 
                 CustomAdapter courseListAdapter = new CustomAdapter(SignupActivity.this,

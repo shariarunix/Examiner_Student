@@ -18,6 +18,7 @@ import com.shariarunix.examiner.DataModel.ExamDataModel;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Date;
 import java.util.List;
@@ -25,11 +26,10 @@ import java.util.TimeZone;
 
 public class ExamInfoActivity extends AppCompatActivity {
     TextView txtExamName, txtExamDate, txtExamTime, txtExamSyllabus, txtExamTotalMarks, txtExamDuration;
-    AppCompatButton btnSetAlarm, btnGiveExam, btnExamFinished;
+    AppCompatButton btnAction;
     SharedPreferences sharedPreferences;
 
     @SuppressLint("SetTextI18n")
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,104 +45,135 @@ public class ExamInfoActivity extends AppCompatActivity {
         txtExamTotalMarks = findViewById(R.id.txt_exam_total_marks);
         txtExamDuration = findViewById(R.id.txt_exam_duration);
 
-        btnSetAlarm = findViewById(R.id.btn_set_alarm);
-        btnGiveExam = findViewById(R.id.btn_give_exam);
-        btnExamFinished = findViewById(R.id.btn_exam_finish);
+        btnAction = findViewById(R.id.btn_action);
 
         ExamDataModel newExamData = (ExamDataModel) getIntent().getSerializableExtra("examData");
 
-        String examName, examDate, examTime, examSyllabus, examTotalMarks, examDuration;
-
         assert newExamData != null;
-        examName = newExamData.getExamName();
-        examDate = newExamData.getExamDate();
-        examTime = newExamData.getExamTime();
-        examSyllabus = newExamData.getExamSyllabus();
-        examTotalMarks = newExamData.getTotalMarks();
-        examDuration = newExamData.getDuration();
+        txtExamName.setText(newExamData.getExamName());
+        txtExamDate.setText(newExamData.getExamDate());
+        txtExamTime.setText(newExamData.getExamTime());
+        txtExamSyllabus.setText(newExamData.getExamSyllabus());
+        txtExamTotalMarks.setText(newExamData.getTotalMarks());
+        txtExamDuration.setText(newExamData.getDuration());
 
-        List<String> usersList = newExamData.getUsersList();
+        // Splitting the Date and Time for setting alarm on calender app
+        int[] examTimeArr = normalToInt(newExamData.getExamTime());
+        String[] examDateArr = newExamData.getExamDate().split("/");
 
-        String[] newExamDate = examDate.split("/");
+        // Exam Start time with second
+        String examStartTimeWithSecond = addSecondToTime(newExamData.getExamTime());
 
-        long examDurationLong = Long.parseLong(examDuration);
+        // Declaring Date and Time format
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm:ss a");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-        txtExamName.setText(examName);
-        txtExamDate.setText(examDate);
-        txtExamTime.setText(examTime);
-        txtExamSyllabus.setText(examSyllabus);
-        txtExamTotalMarks.setText(examTotalMarks);
-        txtExamDuration.setText(examDuration + " Min");
+        try {
+            // Parsing all time to SimpleTimeFormat
+            Date examStartTime = simpleTimeFormat.parse(examStartTimeWithSecond);
+            Date examEndTime = addExamDuration(examStartTime, newExamData.getDuration());
+            Date presentTime = simpleTimeFormat.parse(getPresentTime());
+            // Parsing all date to SimpleDateFormat
+            Date examDate = simpleDateFormat.parse(newExamData.getExamDate());
+            Date presentDate = simpleDateFormat.parse(getPresentDate());
 
-        int[] examStartTimeArray = normalToInt(examTime);
+            assert presentDate != null;
+            if (presentDate.before(examDate)) {
+                // If Exam date is before than Present date then this condition will be applied.
+                // Opening calender app for setting alarm.
 
-        String examStartTimeStr = timeValidation(examStartTimeArray[0], examStartTimeArray[1]);
-        LocalTime examStartTime = LocalTime.parse(examStartTimeStr);
-        LocalTime examEndTime = examStartTime.plusMinutes(examDurationLong);
+                goToCalender(examTimeArr, examDateArr, newExamData);
+            } else if (presentDate.after(examDate)) {
+                // If Exam date is after than Present date then this condition will be applied.
+                // Changing the action button text.
+                // Performing back pressed method on clicking action button.
 
-        int[] presentTimeInt = normalToInt(getPresentTime());
-        String presentTimeStr = timeValidation(presentTimeInt[0], presentTimeInt[1]);
-        LocalTime presentTime = LocalTime.parse(presentTimeStr);
-
-        txtExamDate.setText(examDate);
-        txtExamTime.setText(examTime);
-
-        if (examDate.compareTo(getPresentDate()) == 0) {
-            if (presentTime.isAfter(examStartTime) && presentTime.isBefore(examEndTime)) {
-
-                btnSetAlarm.setVisibility(View.GONE);
-                btnGiveExam.setVisibility(View.VISIBLE);
-                btnExamFinished.setVisibility(View.GONE);
-                // Check is user already perform this exam or not
-                if (isUserCompletedExam(usersList, userID)) {
-                    btnGiveExam.setVisibility(View.GONE);
-                    btnExamFinished.setVisibility(View.VISIBLE);
-                    btnExamFinished.setText("You've Completed The Test");
-                }
-
-            } else if (presentTime.isAfter(examEndTime)) {
-
-                btnSetAlarm.setVisibility(View.GONE);
-                btnGiveExam.setVisibility(View.GONE);
-                btnExamFinished.setVisibility(View.VISIBLE);
-
-            } else if (presentTime.isBefore(examStartTime)) {
-
-                btnSetAlarm.setVisibility(View.VISIBLE);
-                btnGiveExam.setVisibility(View.GONE);
-                btnExamFinished.setVisibility(View.GONE);
-
+                btnAction.setText("Exam Finished");
+                btnAction.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onBackPressed();
+                    }
+                });
             } else {
-                Toast.makeText(ExamInfoActivity.this, "Something Wrong, Please Try Again!", Toast.LENGTH_SHORT).show();
+                // If Exam date and Present date match with each other then this condition will be applied.
+
+                assert presentTime != null;
+                if (presentTime.after(examStartTime) && presentTime.before(examEndTime)) {
+                    // If Exam Start time is after Present time and Exam End time is before Present time then this condition will be applied.
+
+                    if (newExamData.getUsersList().contains(userID)) {
+                        // If user already completed the test then this condition will be applied.
+                        // Changing the action button text.
+                        // Performing back pressed method on clicking action button.
+
+                        btnAction.setText("You've Completed The Test");
+                        btnAction.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                onBackPressed();
+                            }
+                        });
+                    } else {
+                        // If user have not completed the test then this condition will be applied.
+                        // Changing the action button text.
+                        // Go to Exam activity for performing the exam.
+
+                        btnAction.setText("Give Exam");
+                        btnAction.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent examPage = new Intent(ExamInfoActivity.this, ExamActivity.class);
+                                examPage.putExtra("examDataModel", newExamData);
+
+                                startActivity(examPage);
+                            }
+                        });
+                    }
+                } else if (presentTime.before(examStartTime)) {
+                    // If Exam Start time is before then Present time then this condition will be applied.
+                    // Opening the calender app for setting alarm.
+
+                    goToCalender(examTimeArr, examDateArr, newExamData);
+                } else if (presentTime.after(examEndTime)) {
+                    // If Exam End time is after then Present time then this condition will be applied.
+
+                    if (newExamData.getUsersList().contains(userID)){
+                        // If user already completed the test then this condition will be applied.
+                        // Changing the action button text.
+                        // Performing back pressed method on clicking action button.
+
+                        btnAction.setText("You've Completed The Test");
+                        btnAction.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                onBackPressed();
+                            }
+                        });
+                    } else {
+                        // If user have not completed the test then this condition will be applied.
+                        // Changing the action button text.
+                        // Performing back pressed method on clicking action button.
+
+                        btnAction.setText("Exam Finished");
+                        btnAction.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                onBackPressed();
+                            }
+                        });
+                    }
+                }
             }
-        } else if (examDate.compareTo(getPresentDate()) > 0) {
-
-            btnSetAlarm.setVisibility(View.VISIBLE);
-            btnGiveExam.setVisibility(View.GONE);
-            btnExamFinished.setVisibility(View.GONE);
-
-        } else if (examDate.compareTo(getPresentDate()) < 0) {
-
-            btnSetAlarm.setVisibility(View.GONE);
-            btnGiveExam.setVisibility(View.GONE);
-            btnExamFinished.setVisibility(View.VISIBLE);
-
+        } catch (Exception e) {
+            Toast.makeText(ExamInfoActivity.this, "Something went wrong, Please try again.", Toast.LENGTH_SHORT).show();
         }
-
-        // Going to the Exam Page on clicking Give Exam Button
-        btnGiveExam.setOnClickListener(new View.OnClickListener() {
+    }
+    // Going to calender app and setting an alarm there.
+    private void goToCalender(int[] examTimeArr, String[] examDateArr, ExamDataModel newExamData) {
+        btnAction.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent examPage = new Intent(ExamInfoActivity.this, ExamActivity.class);
-                examPage.putExtra("examDataModel", newExamData);
-
-                startActivity(examPage);
-            }
-        });
-        // Opening Calender Event on clicking Set Alarm Button and set a  alarm
-        btnSetAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 Intent openCalender = new Intent(Intent.ACTION_INSERT);
                 openCalender.setType("vnd.android.cursor.item/event");
 
@@ -150,39 +181,42 @@ public class ExamInfoActivity extends AppCompatActivity {
 
                 openCalender.putExtra(CalendarContract.Events.DESCRIPTION, "Exam Syllabus : \n" + newExamData.getExamSyllabus());
 
-                GregorianCalendar calDate = new GregorianCalendar(Integer.parseInt(newExamDate[2]),
-                        Integer.parseInt(newExamDate[1]) - 1,
-                        Integer.parseInt(newExamDate[0]),
-                        examStartTimeArray[0], examStartTimeArray[1], 0);
+                GregorianCalendar calDate = new GregorianCalendar(Integer.parseInt(examDateArr[2]), Integer.parseInt(examDateArr[1]) - 1, Integer.parseInt(examDateArr[0]), examTimeArr[0], examTimeArr[1], 0);
 
                 openCalender.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calDate.getTimeInMillis());
                 openCalender.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calDate.getTimeInMillis());
                 startActivity(openCalender);
             }
         });
-        // Going back on clicking Exam Finished Button
-        btnExamFinished.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
     }
+    // Adding exam duration to exam start time and getting the exam end time
+    private Date addExamDuration(Date examStartTime, String duration) {
+        Calendar calendar = Calendar.getInstance();
+        assert examStartTime != null;
+        calendar.setTime(examStartTime);
 
+        calendar.add(Calendar.MINUTE, Integer.parseInt(duration));
+
+        return calendar.getTime();
+    }
+    // Adding second to time
+    private String addSecondToTime(String examTime) {
+        String[] examTimeArr = examTime.split(" ");
+
+        return examTimeArr[0] + ":00 " + examTimeArr[1];
+    }
+    // Get User's Device Time
+    private String getPresentTime() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sTimeFormat = new SimpleDateFormat("hh:mm:ss a");
+        sTimeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+        return sTimeFormat.format(new Date());
+    }
     // Get User's Device Date
     private String getPresentDate() {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         sDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
         return sDateFormat.format(new Date());
     }
-
-    // Get User's Device Time
-    private String getPresentTime() {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sTimeFormat = new SimpleDateFormat("hh:mm a");
-        sTimeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
-        return sTimeFormat.format(new Date());
-    }
-
     // Converting Time to 24 hr format
     private int[] normalToInt(String time) {
         String[] newTime = time.split(" ");
@@ -207,17 +241,4 @@ public class ExamInfoActivity extends AppCompatActivity {
 
         return new int[]{hr, min};
     }
-
-    // Adding 0 in front of the number smaller than 10
-    private String timeValidation(int hr, int min) {
-        String newHr = hr < 10 ? "0" + hr : String.valueOf(hr);
-        String newMin = min < 10 ? "0" + min : String.valueOf(min);
-        return newHr + ":" + newMin;
-    }
-
-    // Check is user completed the exam already
-    private boolean isUserCompletedExam(List<String> usersList, String userID) {
-        return usersList.contains(userID);
-    }
-
 }

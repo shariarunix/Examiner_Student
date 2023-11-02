@@ -261,30 +261,11 @@
     </ScrollView>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_set_alarm"
+        android:id="@+id/btn_action"
         style="@style/blue_btn_style"
         android:layout_alignParentBottom="true"
         android:layout_margin="20dp"
         android:text="Set Alarm"
-        android:visibility="visible"
-        tools:ignore="HardcodedText" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_give_exam"
-        style="@style/blue_btn_style"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
-        android:text="Give Exam"
-        android:visibility="gone"
-        tools:ignore="HardcodedText" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_exam_finish"
-        style="@style/blue_btn_style"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
-        android:text="Exam Ended"
-        android:visibility="gone"
         tools:ignore="HardcodedText" />
 
 </RelativeLayout>
