@@ -89,6 +89,16 @@
         </LinearLayout>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/txt_empty_exam"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="@font/barlow_regular"
+        android:gravity="center"
+        android:text="No Exam"
+        android:textSize="20sp"
+        android:visibility="gone"/>
+
     <ProgressBar
         android:id="@+id/home_progress_bar"
         android:layout_width="wrap_content"

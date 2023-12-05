@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -45,6 +46,7 @@ public class HomeFragment extends Fragment {
     boolean isDialogShown;
     List<ExamDataModel> examDataList = new ArrayList<>();
     ProgressBar homeProgressBar;
+    TextView txtEmptyExam;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     ListView examList;
@@ -67,13 +69,19 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        return inflater.inflate(R.layout.fragment_home, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         mReference = FirebaseDatabase.getInstance().getReference();
         sharedPreferences = requireActivity().getSharedPreferences("examinerPref", MODE_PRIVATE);
         editor = sharedPreferences.edit();
         isDialogShown = sharedPreferences.getBoolean("introDialog", false);
 
+        txtEmptyExam = view.findViewById(R.id.txt_empty_exam);
         examList = view.findViewById(R.id.exam_list);
         homeProgressBar = view.findViewById(R.id.home_progress_bar);
 
@@ -120,7 +128,6 @@ public class HomeFragment extends Fragment {
         // Load Exam data in fragment
         loadExamData(examList, userCourse);
 
-        return view;
     }
 
     // Load exam data
@@ -143,6 +150,10 @@ public class HomeFragment extends Fragment {
 
                             homeProgressBar.setVisibility(View.GONE);
                             listView.setVisibility(View.VISIBLE);
+
+                            if (examDataList.size() < 1) {
+                                txtEmptyExam.setVisibility(View.VISIBLE);
+                            }
 
                             CustomAdapter examListAdapter = new CustomAdapter(requireActivity(), R.layout.list_item_exam, examDataList.size());
                             examListAdapter.setExamDataModelList(examDataList);
