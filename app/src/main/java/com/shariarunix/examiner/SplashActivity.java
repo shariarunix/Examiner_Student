@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
     ProgressBar progressBar;
-
+    Thread threadOne;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +21,12 @@ public class SplashActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progress_bar);
 
-        Thread threadOne = new Thread(this::showProgress);
+        threadOne = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                showProgress();
+            }
+        });
         threadOne.start();
         Thread threadTwo = new Thread(() -> {
             try {
