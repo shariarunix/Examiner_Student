@@ -29,8 +29,8 @@ public class OTPSenderClass {
 
     public void sendOtp() {
         try {
-            String stringSenderEmail = "examiner.itbd@gmail.com";
-            String stringPasswordSenderEmail = "jpwtqjvoiqcqzbrb";
+            String stringSenderEmail = "demo@email";
+            String stringPasswordSenderEmail = "demo@password";
 
             String stringHost = "smtp.gmail.com";
 
